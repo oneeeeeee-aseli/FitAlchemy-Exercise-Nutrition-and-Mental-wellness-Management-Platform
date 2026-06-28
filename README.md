@@ -340,13 +340,7 @@ git push
 | **Institution** | Universiti Malaysia Terengganu (UMT) |
 | **Faculty** | Computer Science and Mathematics (FSKM) |
 | **Year** | 2025/2026 |
-| **Supervisor** | *(your supervisor name)* |
-
----
-
-## 📄 License
-
-This project is licensed under the **ISC License** — see the [LICENSE](LICENSE) file for details.
+| **Supervisor** | Ts. Dr. Sharifah Mashita Syed Mohamad |
 
 ---
 
