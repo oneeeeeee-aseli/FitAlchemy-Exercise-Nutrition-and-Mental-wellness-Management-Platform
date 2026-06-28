@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#0b6e4f"/>
+  <meta name="description" content="FitAlchemy — Your AI-powered fitness and wellness companion. Track workouts, plan meals, and get personalised coaching with CoachAlchemy."/>
+  <title>FitAlchemy — Transform Your Wellness Journey</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,700;1,400&family=Merriweather+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ── CSS Variables ─────────────────────────────────────────── */
+    :root{
+      --green:#0b6e4f; --teal:#14a97c; --accent:#f4623a;
+      --blue:#1565c0; --light:#f0f7f4; --purple:#6f42c1;
+      --dark:#0a1628;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:"Merriweather Sans",sans-serif;background:#fff;color:#222;overflow-x:hidden;}
+
+    /* ── Floating Particles ─────────────────────────────────────── */
+    #particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+    .particle{position:absolute;border-radius:50%;opacity:.08;animation:float-up linear infinite;}
+    @keyframes float-up{0%{transform:translateY(100vh) rotate(0deg);opacity:0;}10%{opacity:.08;}90%{opacity:.08;}100%{transform:translateY(-120px) rotate(720deg);opacity:0;}}
+
+    /* ── Navbar ─────────────────────────────────────────────────── */
+    .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:.8rem 1.5rem;display:flex;align-items:center;justify-content:space-between;transition:all .3s;}
+    .nav.scrolled{background:rgba(11,110,79,.97);backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,.2);}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .nav-logo{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.5);object-fit:contain;background:#fff;}
+    .nav-logo-fallback{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;color:#fff;border:2px solid rgba(255,255,255,.4);}
+    .nav-title{font-family:"Merriweather",serif;font-weight:700;font-size:1.2rem;color:#fff;}
+    .nav-cta{background:#fff;color:var(--green);font-weight:800;padding:.5rem 1.2rem;border-radius:25px;text-decoration:none;font-size:.85rem;transition:all .2s;box-shadow:0 4px 15px rgba(0,0,0,.2);}
+    .nav-cta:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.25);}
+
+    /* ── Hero ───────────────────────────────────────────────────── */
+    .hero{min-height:100vh;background:linear-gradient(160deg,var(--dark) 0%,#0d3b26 40%,var(--green) 80%,var(--teal) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6rem 1.5rem 4rem;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:25px;padding:.4rem 1.1rem;font-size:.78rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:1.8rem;backdrop-filter:blur(8px);animation:fadeDown .8s ease both;}
+    .hero-badge span{width:8px;height:8px;background:#4fffb0;border-radius:50%;display:inline-block;animation:pulse-dot 1.5s ease-in-out infinite;}
+    @keyframes pulse-dot{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:.7;}}
+    .hero h1{font-family:"Merriweather",serif;font-size:clamp(2.4rem,7vw,4.5rem);font-weight:700;color:#fff;line-height:1.15;margin-bottom:1.2rem;animation:fadeUp .9s ease .1s both;}
+    .hero h1 .accent{color:#4fffb0;}
+    .hero p{font-size:clamp(1rem,2.5vw,1.2rem);color:rgba(255,255,255,.82);line-height:1.8;max-width:600px;margin:0 auto 2.5rem;animation:fadeUp .9s ease .2s both;}
+    .hero-btns{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;animation:fadeUp .9s ease .3s both;}
+    .btn-primary-hero{background:linear-gradient(135deg,var(--teal),#0fa86a);color:#fff;padding:.85rem 2rem;border-radius:50px;font-weight:800;font-size:1rem;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 8px 25px rgba(20,169,124,.4);transition:all .25s;}
+    .btn-primary-hero:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(20,169,124,.5);}
+    .btn-outline-hero{background:rgba(255,255,255,.1);color:#fff;padding:.85rem 2rem;border-radius:50px;font-weight:700;font-size:1rem;text-decoration:none;display:inline-flex;align-items:center;gap:8px;border:2px solid rgba(255,255,255,.35);backdrop-filter:blur(8px);transition:all .25s;}
+    .btn-outline-hero:hover{background:rgba(255,255,255,.2);transform:translateY(-3px);}
+    .hero-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:2.5rem;margin-top:4rem;animation:fadeUp .9s ease .4s both;}
+    .hero-stat{text-align:center;color:#fff;}
+    .hero-stat-num{font-family:"Merriweather",serif;font-size:2rem;font-weight:700;color:#4fffb0;line-height:1;}
+    .hero-stat-label{font-size:.75rem;opacity:.7;margin-top:.3rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+    .hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.5);font-size:.75rem;display:flex;flex-direction:column;align-items:center;gap:.4rem;animation:bounce 2s ease-in-out infinite;}
+    @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
+
+    /* ── Keyframes ──────────────────────────────────────────────── */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+
+    /* ── Sections ───────────────────────────────────────────────── */
+    section{padding:5rem 1.5rem;position:relative;}
+    .section-label{display:inline-block;background:linear-gradient(135deg,var(--green),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-size:.78rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.75rem;}
+    .section-title{font-family:"Merriweather",serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:var(--dark);line-height:1.25;margin-bottom:1rem;}
+    .section-sub{color:#666;font-size:1rem;line-height:1.75;max-width:580px;margin:0 auto;}
+
+    /* ── Features ───────────────────────────────────────────────── */
+    #features{background:var(--light);}
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.5rem;margin-top:3rem;}
+    .feat-card{background:#fff;border-radius:20px;padding:2rem 1.6rem;box-shadow:0 4px 24px rgba(11,110,79,.07);border:1px solid rgba(11,110,79,.08);transition:all .3s;cursor:default;}
+    .feat-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(11,110,79,.14);border-color:var(--teal);}
+    .feat-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.2rem;}
+    .feat-title{font-weight:800;font-size:1.05rem;color:var(--dark);margin-bottom:.5rem;}
+    .feat-desc{font-size:.88rem;color:#666;line-height:1.7;}
+    .feat-tag{display:inline-block;background:var(--light);color:var(--green);font-size:.68rem;font-weight:700;padding:.2rem .65rem;border-radius:20px;margin-top:.85rem;text-transform:uppercase;letter-spacing:.4px;}
+
+    /* ── How It Works ───────────────────────────────────────────── */
+    #howitworks{background:#fff;}
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;margin-top:3rem;}
+    .step{text-align:center;padding:1.5rem 1rem;}
+    .step-num{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--teal));color:#fff;font-family:"Merriweather",serif;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;box-shadow:0 6px 20px rgba(11,110,79,.3);}
+    .step-title{font-weight:800;font-size:.95rem;color:var(--dark);margin-bottom:.4rem;}
+    .step-desc{font-size:.85rem;color:#777;line-height:1.6;}
+    .step-connector{display:none;}
+
+    /* ── Tech Stack ─────────────────────────────────────────────── */
+    #tech{background:linear-gradient(135deg,var(--dark) 0%,#0d3b26 100%);}
+    #tech .section-title{color:#fff;}
+    #tech .section-sub{color:rgba(255,255,255,.65);}
+    #tech .section-label{background:linear-gradient(135deg,#4fffb0,var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .tech-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin-top:2.5rem;}
+    .tech-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:40px;padding:.6rem 1.2rem;color:#fff;font-size:.85rem;font-weight:700;transition:all .25s;backdrop-filter:blur(8px);}
+    .tech-pill:hover{background:rgba(20,169,124,.25);border-color:var(--teal);transform:translateY(-2px);}
+    .tech-pill i{font-size:1.1rem;}
+    .tech-pill .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+    /* ── Chatbot Highlight ──────────────────────────────────────── */
+    #coach{background:var(--light);}
+    .coach-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-top:2rem;}
+    .coach-chat{background:#fff;border-radius:24px;padding:1.5rem;box-shadow:0 8px 40px rgba(11,110,79,.12);border:1px solid rgba(11,110,79,.1);}
+    .chat-head{background:linear-gradient(135deg,#3a0ca3,#7209b7);border-radius:14px;padding:.8rem 1rem;display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+    .chat-head-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:.95rem;}
+    .chat-head-info h4{font-size:.85rem;font-weight:800;color:#fff;margin:0;}
+    .chat-head-info p{font-size:.65rem;color:rgba(255,255,255,.7);margin:0;}
+    .chat-msg{margin-bottom:.65rem;display:flex;gap:8px;align-items:flex-end;}
+    .chat-msg.user{flex-direction:row-reverse;}
+    .chat-bubble{padding:.55rem .85rem;border-radius:4px 14px 14px 14px;font-size:.78rem;line-height:1.5;max-width:82%;}
+    .chat-bubble.bot{background:#f3eeff;color:#333;border:1px solid rgba(58,12,163,.1);}
+    .chat-bubble.user{background:linear-gradient(135deg,var(--green),var(--teal));color:#fff;border-radius:14px 4px 14px 14px;}
+    .chat-avatar{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;}
+    .chat-avatar.bot{background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;}
+    .chat-avatar.user{background:linear-gradient(135deg,var(--green),var(--teal));color:#fff;}
+    .typing{display:flex;gap:4px;padding:.5rem .85rem;align-items:center;}
+    .typing span{width:7px;height:7px;border-radius:50%;background:#7209b7;animation:typingBounce .8s ease-in-out infinite;}
+    .typing span:nth-child(2){animation-delay:.15s;}
+    .typing span:nth-child(3){animation-delay:.3s;}
+    @keyframes typingBounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+    .coach-points{list-style:none;}
+    .coach-points li{display:flex;align-items:flex-start;gap:12px;margin-bottom:1.2rem;}
+    .coach-points li .cp-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+    .coach-points li .cp-text strong{display:block;font-size:.9rem;font-weight:800;color:var(--dark);margin-bottom:.2rem;}
+    .coach-points li .cp-text span{font-size:.82rem;color:#777;line-height:1.5;}
+
+    /* ── Health Status ──────────────────────────────────────────── */
+    #health{background:#fff;}
+    .health-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem;}
+    .health-card{border-radius:16px;padding:1.4rem 1rem;text-align:center;border:2px solid transparent;transition:all .3s;}
+    .health-card:hover{transform:translateY(-4px);}
+    .health-icon{font-size:2rem;margin-bottom:.6rem;}
+    .health-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:.4rem;}
+    .health-status{font-weight:800;font-size:1rem;}
+
+    /* ── Screenshots ────────────────────────────────────────────── */
+    #screenshots{background:linear-gradient(135deg,var(--dark),#0d3b26);}
+    #screenshots .section-title{color:#fff;}
+    #screenshots .section-sub{color:rgba(255,255,255,.65);}
+    #screenshots .section-label{background:linear-gradient(135deg,#4fffb0,var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .screens-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-top:2.5rem;}
+    .screen-card{border-radius:20px;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);transition:all .3s;}
+    .screen-card:hover{transform:translateY(-6px);border-color:rgba(20,169,124,.5);box-shadow:0 16px 40px rgba(0,0,0,.3);}
+    .screen-img{width:100%;height:180px;object-fit:cover;display:block;}
+    .screen-mock{width:100%;height:180px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-direction:column;gap:.5rem;}
+    .screen-info{padding:1rem 1.2rem;}
+    .screen-info h4{font-size:.88rem;font-weight:800;color:#fff;margin-bottom:.25rem;}
+    .screen-info p{font-size:.75rem;color:rgba(255,255,255,.55);line-height:1.5;}
+
+    /* ── CTA ────────────────────────────────────────────────────── */
+    #cta{background:linear-gradient(135deg,var(--green) 0%,var(--teal) 60%,#0dcaf0 100%);text-align:center;padding:6rem 1.5rem;}
+    #cta h2{font-family:"Merriweather",serif;font-size:clamp(1.8rem,5vw,3rem);color:#fff;margin-bottom:1rem;}
+    #cta p{color:rgba(255,255,255,.85);font-size:1.05rem;margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto;}
+    .btn-cta{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--green);font-weight:800;font-size:1.05rem;padding:1rem 2.4rem;border-radius:50px;text-decoration:none;box-shadow:0 8px 30px rgba(0,0,0,.2);transition:all .3s;}
+    .btn-cta:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.25);}
+    .qr-note{margin-top:1.5rem;color:rgba(255,255,255,.65);font-size:.82rem;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+    /* ── Footer ─────────────────────────────────────────────────── */
+    footer{background:var(--dark);color:rgba(255,255,255,.6);text-align:center;padding:2rem 1.5rem;font-size:.82rem;}
+    footer a{color:var(--teal);text-decoration:none;}
+    .footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;margin-bottom:1rem;}
+
+    /* ── Scroll Reveal ──────────────────────────────────────────── */
+    .reveal{opacity:0;transform:translateY(40px);transition:opacity .7s ease,transform .7s ease;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    /* ── Mobile ──────────────────────────────────────────────────── */
+    @media(max-width:768px){
+      .coach-wrap{grid-template-columns:1fr;}
+      .health-cards{grid-template-columns:1fr;}
+      .hero-stats{gap:1.5rem;}
+      .hero h1{font-size:2.2rem;}
+    }
+    @media(max-width:480px){
+      .btn-primary-hero,.btn-outline-hero{width:100%;justify-content:center;}
+      .hero-btns{flex-direction:column;align-items:stretch;padding:0 1rem;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Particles -->
+<div id="particles"></div>
+
+<!-- ── Navbar ── -->
+<nav class="nav" id="navbar">
+  <a class="nav-brand" href="#">
+    <img src="/img/logo fitt.png" alt="FA" class="nav-logo" onerror="this.style.display='none';document.getElementById('logo-fb').style.display='flex';">
+    <div class="nav-logo-fallback" id="logo-fb" style="display:none;">FA</div>
+    <span class="nav-title">FitAlchemy</span>
+  </a>
+  <a href="#cta" class="nav-cta">Try Demo →</a>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero" id="home">
+  <div class="hero-badge">
+    <span></span> Live Demo Available
+  </div>
+  <h1>Transform Your<br><span class="accent">Wellness Journey</span><br>with AI Coaching</h1>
+  <p>FitAlchemy unifies workout planning, meal tracking, motivational quotes, and intelligent AI coaching — all in one beautifully designed platform.</p>
+  <div class="hero-btns">
+    <a href="#cta" class="btn-primary-hero"><i class="bi bi-rocket-takeoff-fill"></i> Try Live Demo</a>
+    <a href="#features" class="btn-outline-hero"><i class="bi bi-play-circle-fill"></i> Explore Features</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">6</div>
+      <div class="hero-stat-label">Core Modules</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">30+</div>
+      <div class="hero-stat-label">AI Intent Rules</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">3</div>
+      <div class="hero-stat-label">Live APIs</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">100%</div>
+      <div class="hero-stat-label">Free to Use</div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll to explore</span>
+    <i class="bi bi-chevron-double-down"></i>
+  </div>
+</section>
+
+<!-- ── Features ── -->
+<section id="features">
+  <div style="max-width:1100px;margin:0 auto;text-align:center;">
+    <div class="section-label">What FitAlchemy Offers</div>
+    <h2 class="section-title">Everything You Need<br>in One Platform</h2>
+    <p class="section-sub">No more juggling separate apps — FitAlchemy brings your entire wellness journey under one roof.</p>
+
+    <div class="features-grid reveal">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);">⚡</div>
+        <div class="feat-title">Smart Workout Planning</div>
+        <div class="feat-desc">Browse thousands of exercises powered by the Wger API. Add them to your personalised weekly routine, track reps, and monitor calorie burn estimates.</div>
+        <div class="feat-tag">Wger API</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);">🍽️</div>
+        <div class="feat-title">Intelligent Meal Planning</div>
+        <div class="feat-desc">Discover thousands of recipes via Spoonacular API. Plan your meals by day and type, track nutritional macros, and save your favourites.</div>
+        <div class="feat-tag">Spoonacular API</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:linear-gradient(135deg,#f3e5f5,#e1bee7);">🤖</div>
+        <div class="feat-title">CoachAlchemy AI</div>
+        <div class="feat-desc">A rule-based AI chatbot with 30+ intents supporting English, Malay & Manglish. Accessible from every page — your always-on wellness coach.</div>
+        <div class="feat-tag">Built-in AI</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:linear-gradient(135deg,#e8eaf6,#c5cae9);">✨</div>
+        <div class="feat-title">Quote Assistant</div>
+        <div class="feat-desc">Ask for motivational quotes by mood or topic using the API Ninjas service. Pick a mood, get the perfect quote. Save your favourites and share them.</div>
+        <div class="feat-tag">API Ninjas</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);">📊</div>
+        <div class="feat-title">Health Status Dashboard</div>
+        <div class="feat-desc">Automated evaluation of your Physical (BMI), Fitness (activity), and Mental (sentiment analysis of chat logs) health status — updated on demand.</div>
+        <div class="feat-tag">AI Sentiment</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:linear-gradient(135deg,#fce4ec,#f8bbd0);">📈</div>
+        <div class="feat-title">Progress Reports</div>
+        <div class="feat-desc">Daily and weekly progress tracking with WHO activity benchmarks, calorie visualisations, nutrition ratios, and an interactive streak calendar.</div>
+        <div class="feat-tag">Analytics</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── How It Works ── -->
+<section id="howitworks">
+  <div style="max-width:1000px;margin:0 auto;text-align:center;">
+    <div class="section-label">Simple to Start</div>
+    <h2 class="section-title">Up and Running in Minutes</h2>
+    <p class="section-sub">FitAlchemy is designed to be intuitive from day one — no tutorials needed.</p>
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Create Your Profile</div>
+        <div class="step-desc">Register with your name, age, height, weight, and fitness goal. FitAlchemy personalises everything around you.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Plan Your Routine</div>
+        <div class="step-desc">Browse exercises and recipes, add them to your weekly plan, and schedule them by date — all from one dashboard.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Chat with CoachAlchemy</div>
+        <div class="step-desc">Ask anything in English, Malay, or Manglish — workout tips, meal ideas, emotional support, or just a motivational quote.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Track & Improve</div>
+        <div class="step-desc">Mark workouts done, evaluate your Health Status, and watch your progress reports grow week by week.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CoachAlchemy Spotlight ── -->
+<section id="coach">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:1rem;">
+      <div class="section-label">AI Coach</div>
+      <h2 class="section-title">Meet CoachAlchemy</h2>
+      <p class="section-sub">Your intelligent wellness companion — available on every page, speaks your language.</p>
+    </div>
+    <div class="coach-wrap reveal">
+      <!-- Simulated Chat UI -->
+      <div class="coach-chat">
+        <div class="chat-head">
+          <div class="chat-head-avatar">🤖</div>
+          <div class="chat-head-info">
+            <h4>CoachAlchemy</h4>
+            <p>Your personal AI wellness coach</p>
+          </div>
+          <div style="margin-left:auto;background:rgba(255,255,255,.2);border-radius:20px;padding:.2rem .7rem;font-size:.65rem;color:#fff;font-weight:700;">● Online</div>
+        </div>
+        <!-- Messages -->
+        <div class="chat-msg" id="cm1" style="opacity:0;transition:opacity .5s;">
+          <div class="chat-avatar bot">🤖</div>
+          <div class="chat-bubble bot">Hey! 👋 I'm CoachAlchemy. Ask me anything about fitness, nutrition, or how you're feeling today!</div>
+        </div>
+        <div class="chat-msg user" id="cm2" style="opacity:0;transition:opacity .5s;">
+          <div class="chat-avatar user">🧑</div>
+          <div class="chat-bubble user">rasa penat sangat hari ni, malas nak gym</div>
+        </div>
+        <div class="chat-msg" id="cm3" style="opacity:0;transition:opacity .5s;">
+          <div class="chat-avatar bot">🤖</div>
+          <div class="chat-bubble bot">That's totally valid! 💙 Fatigue is your body talking. Here's what I suggest:<br><br>✅ Rest today — active recovery like a 15-min walk is enough<br>✅ Hydrate well (aim for 2.5L)<br>✅ Sleep 7-9 hours tonight<br><br>Tomorrow you'll feel stronger. You've got this! 💪</div>
+        </div>
+        <div class="chat-msg user" id="cm4" style="opacity:0;transition:opacity .5s;">
+          <div class="chat-avatar user">🧑</div>
+          <div class="chat-bubble user">give me a motivational quote please</div>
+        </div>
+        <div class="chat-msg" id="cm5" style="opacity:0;transition:opacity .5s;">
+          <div class="chat-avatar bot">🤖</div>
+          <div class="chat-bubble bot">✨ <em>"The secret of getting ahead is getting started."</em><br>— Mark Twain<br><br><span style="font-size:.7rem;color:#888;">Want to save this to your Favorites? Click the ❤️ button!</span></div>
+        </div>
+        <div class="chat-msg" id="cm6" style="opacity:0;transition:opacity .5s;">
+          <div class="chat-avatar bot">🤖</div>
+          <div class="chat-bubble bot" style="background:#f0eeff;"><div class="typing"><span></span><span></span><span></span></div></div>
+        </div>
+      </div>
+      <!-- Feature Points -->
+      <div>
+        <ul class="coach-points">
+          <li>
+            <div class="cp-icon" style="background:#e8f5e9;"><span>🇲🇾</span></div>
+            <div class="cp-text">
+              <strong>English + Malay + Manglish</strong>
+              <span>Type naturally however you speak. CoachAlchemy understands "rasa penat", "malas nak gym", "nak kurus macam mana" — no formal language needed.</span>
+            </div>
+          </li>
+          <li>
+            <div class="cp-icon" style="background:#e3f2fd;"><span>🧠</span></div>
+            <div class="cp-text">
+              <strong>30+ Intelligent Intents</strong>
+              <span>From injury advice to Ramadan workout tips, from beginner guides to supplement recommendations — CoachAlchemy covers it all.</span>
+            </div>
+          </li>
+          <li>
+            <div class="cp-icon" style="background:#f3e5f5;"><span>💙</span></div>
+            <div class="cp-text">
+              <strong>Emotional Support Built-In</strong>
+              <span>Feeling stressed, sad, or unmotivated? CoachAlchemy recognises your emotional state and responds with empathy and practical tips.</span>
+            </div>
+          </li>
+          <li>
+            <div class="cp-icon" style="background:#fff3e0;"><span>📊</span></div>
+            <div class="cp-text">
+              <strong>Powers Your Mental Health Score</strong>
+              <span>Every chat interaction contributes to your Mental Health Status — positive conversations raise your wellness score automatically.</span>
+            </div>
+          </li>
+          <li>
+            <div class="cp-icon" style="background:#e8f5e9;"><span>🌐</span></div>
+            <div class="cp-text">
+              <strong>Available on Every Page</strong>
+              <span>The floating purple CoachAlchemy button follows you across all pages — workout, meals, reports, quotes — always one tap away.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Health Status ── -->
+<section id="health" style="background:var(--light);">
+  <div style="max-width:900px;margin:0 auto;text-align:center;">
+    <div class="section-label">Automated Wellness Evaluation</div>
+    <h2 class="section-title">Your Health Status,<br>Always Up to Date</h2>
+    <p class="section-sub">FitAlchemy automatically evaluates three pillars of your wellness using real data — no manual entry needed.</p>
+    <div class="health-cards reveal" style="margin-top:2.5rem;">
+      <div class="health-card" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-color:rgba(46,125,50,.2);">
+        <div class="health-icon">🏋️</div>
+        <div class="health-label" style="color:#2e7d32;">Physical Status</div>
+        <div class="health-status" style="color:#1b5e20;">BMI-Based</div>
+        <p style="font-size:.78rem;color:#388e3c;margin-top:.6rem;line-height:1.6;">Calculated from your height and weight. Displayed on a live gauge — Underweight, Normal, Overweight, or Obese.</p>
+      </div>
+      <div class="health-card" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-color:rgba(21,101,192,.2);">
+        <div class="health-icon">⚡</div>
+        <div class="health-label" style="color:#1565c0;">Fitness Status</div>
+        <div class="health-status" style="color:#0d47a1;">Activity-Based</div>
+        <p style="font-size:.78rem;color:#1976d2;margin-top:.6rem;line-height:1.6;">Based on your saved workout count and estimated calorie burn compared to WHO weekly activity targets.</p>
+      </div>
+      <div class="health-card" style="background:linear-gradient(135deg,#f3e5f5,#e1bee7);border-color:rgba(111,66,193,.2);">
+        <div class="health-icon">🧠</div>
+        <div class="health-label" style="color:#6f42c1;">Mental Status</div>
+        <div class="health-status" style="color:#4a148c;">Sentiment-Based</div>
+        <p style="font-size:.78rem;color:#7b1fa2;margin-top:.6rem;line-height:1.6;">Analysed from your CoachAlchemy chat history — positive interactions raise your score toward "Motivated".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Tech Stack ── -->
+<section id="tech">
+  <div style="max-width:900px;margin:0 auto;text-align:center;">
+    <div class="section-label">Built With</div>
+    <h2 class="section-title">Modern Tech Stack</h2>
+    <p class="section-sub">Robust, scalable, and production-ready architecture built for real-world deployment.</p>
+    <div class="tech-grid reveal">
+      <div class="tech-pill"><div class="dot" style="background:#68a063;"></div>Node.js</div>
+      <div class="tech-pill"><div class="dot" style="background:#000;"></div>Express.js</div>
+      <div class="tech-pill"><div class="dot" style="background:#4479a1;"></div>MySQL</div>
+      <div class="tech-pill"><div class="dot" style="background:#7952b3;"></div>Bootstrap 5</div>
+      <div class="tech-pill"><div class="dot" style="background:#f7df1e;"></div>JavaScript (ES6+)</div>
+      <div class="tech-pill"><div class="dot" style="background:#ff6b35;"></div>Wger API</div>
+      <div class="tech-pill"><div class="dot" style="background:#1db954;"></div>Spoonacular API</div>
+      <div class="tech-pill"><div class="dot" style="background:#0dcaf0;"></div>API Ninjas</div>
+      <div class="tech-pill"><div class="dot" style="background:#14a97c;"></div>MVC Architecture</div>
+      <div class="tech-pill"><div class="dot" style="background:#e74c3c;"></div>Sentiment Analysis</div>
+      <div class="tech-pill"><div class="dot" style="background:#f4623a;"></div>RESTful APIs</div>
+      <div class="tech-pill"><div class="dot" style="background:#6f42c1;"></div>Rule-Based AI</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── App Screens ── -->
+<section id="screenshots">
+  <div style="max-width:1100px;margin:0 auto;text-align:center;">
+    <div class="section-label">App Preview</div>
+    <h2 class="section-title">See FitAlchemy in Action</h2>
+    <p class="section-sub">A clean, intuitive interface designed for real users — not just evaluators.</p>
+    <div class="screens-grid reveal">
+      <div class="screen-card">
+        <div class="screen-mock" style="background:linear-gradient(135deg,#0b6e4f,#14a97c);">
+          <span>🏠</span>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.7);font-weight:700;">Dashboard</span>
+        </div>
+        <div class="screen-info">
+          <h4>Smart Dashboard</h4>
+          <p>Today's workout + meals, BMI gauge, Health Status cards, weekly streak tracker — all in one view.</p>
+        </div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-mock" style="background:linear-gradient(135deg,#1565c0,#0d6efd);">
+          <span>⚡</span>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.7);font-weight:700;">Workout Planner</span>
+        </div>
+        <div class="screen-info">
+          <h4>Workout Planning</h4>
+          <p>Search exercises by muscle group, view tutorials, add to your routine with calendar scheduling.</p>
+        </div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-mock" style="background:linear-gradient(135deg,#e65100,#ff8f00);">
+          <span>🍽️</span>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.7);font-weight:700;">Meal Planning</span>
+        </div>
+        <div class="screen-info">
+          <h4>Meal Planning</h4>
+          <p>Thousands of recipes with full nutrition info. Plan by meal type, track macros, save favourites.</p>
+        </div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-mock" style="background:linear-gradient(135deg,#3a0ca3,#7209b7);">
+          <span>✨</span>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.7);font-weight:700;">Quote Assistant</span>
+        </div>
+        <div class="screen-info">
+          <h4>Quote Assistant</h4>
+          <p>Mood-based quote discovery, topic tags, chat history, and a favourites drawer for saved quotes.</p>
+        </div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-mock" style="background:linear-gradient(135deg,#00695c,#00897b);">
+          <span>📊</span>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.7);font-weight:700;">Reports</span>
+        </div>
+        <div class="screen-info">
+          <h4>Progress Reports</h4>
+          <p>WHO activity benchmarks, calorie charts, nutrition ratios, and full daily/weekly breakdowns.</p>
+        </div>
+      </div>
+      <div class="screen-card">
+        <div class="screen-mock" style="background:linear-gradient(135deg,#6f42c1,#9b59b6);">
+          <span>🤖</span>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.7);font-weight:700;">CoachAlchemy</span>
+        </div>
+        <div class="screen-info">
+          <h4>AI Coach Drawer</h4>
+          <p>Floating on every page — chat in English, Malay or Manglish. History persists across all pages.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section id="cta">
+  <h2>Ready to Start Your<br>Wellness Journey?</h2>
+  <p>Join FitAlchemy and experience the difference of having a complete wellness companion — for free.</p>
+  <a href="YOUR_DEPLOYED_URL_HERE/login.html" class="btn-cta" id="demo-btn">
+    <i class="bi bi-rocket-takeoff-fill"></i> Launch FitAlchemy
+  </a>
+  <div class="qr-note">
+    <i class="bi bi-qr-code-scan"></i> You scanned this from our FYP poster — welcome! 🎉
+  </div>
+  <div style="margin-top:2.5rem;display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;">
+    <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.75);font-size:.82rem;"><i class="bi bi-shield-fill-check" style="color:#4fffb0;"></i> Secure login</div>
+    <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.75);font-size:.82rem;"><i class="bi bi-phone-fill" style="color:#4fffb0;"></i> Mobile friendly</div>
+    <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.75);font-size:.82rem;"><i class="bi bi-lightning-fill" style="color:#4fffb0;"></i> No install needed</div>
+    <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.75);font-size:.82rem;"><i class="bi bi-heart-fill" style="color:#4fffb0;"></i> 100% free</div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="footer-links">
+    <a href="#home">Home</a>
+    <a href="#features">Features</a>
+    <a href="#coach">CoachAlchemy</a>
+    <a href="#tech">Tech Stack</a>
+    <a href="https://www.instagram.com/wannnkt._" target="_blank">Instagram</a>
+    <a href="https://mail.google.com/mail/?view=cm&to=wanaimi04@gmail.com&su=FitAlchemy%20FYP" target="_blank">Contact</a>
+  </div>
+  <p>© 2026 FitAlchemy — Final Year Project | Faculty of Computer Science & Mathematics (FSKM), UMT</p>
+  <p style="margin-top:.4rem;">Built with ❤️ using Node.js · Express · MySQL · Bootstrap 5</p>
+</footer>
+
+<script>
+// ── Particles ─────────────────────────────────────────────────────
+(function(){
+  const container = document.getElementById('particles');
+  const colors = ['#14a97c','#0b6e4f','#4fffb0','#f4623a','#1565c0','#6f42c1'];
+  for(let i=0;i<25;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random()*60+20;
+    p.style.cssText = [
+      'width:'+size+'px','height:'+size+'px',
+      'left:'+Math.random()*100+'%',
+      'background:'+colors[Math.floor(Math.random()*colors.length)],
+      'animation-duration:'+(Math.random()*20+15)+'s',
+      'animation-delay:'+Math.random()*20+'s'
+    ].join(';');
+    container.appendChild(p);
+  }
+})();
+
+// ── Navbar scroll ────────────────────────────────────────────────
+window.addEventListener('scroll',function(){
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);
+});
+
+// ── Scroll reveal ─────────────────────────────────────────────────
+const observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting) e.target.classList.add('visible');});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(function(el){observer.observe(el);});
+
+// ── Chat animation ────────────────────────────────────────────────
+(function(){
+  const msgs = ['cm1','cm2','cm3','cm4','cm5'];
+  const delays = [600,1400,2200,4000,5000];
+  msgs.forEach(function(id,i){
+    setTimeout(function(){
+      const el = document.getElementById(id);
+      if(el) el.style.opacity='1';
+      if(i===msgs.length-1){
+        const typing = document.getElementById('cm6');
+        if(typing) typing.style.opacity='1';
+        setTimeout(function(){
+          if(typing) typing.style.opacity='0';
+        },2000);
+      }
+    },delays[i]);
+  });
+  // Re-animate every 9s
+  setInterval(function(){
+    msgs.forEach(function(id){
+      const el = document.getElementById(id);
+      if(el) el.style.opacity='0';
+    });
+    const t = document.getElementById('cm6');
+    if(t) t.style.opacity='0';
+    setTimeout(function(){
+      msgs.forEach(function(id,i){
+        setTimeout(function(){
+          const el = document.getElementById(id);
+          if(el) el.style.opacity='1';
+          if(i===msgs.length-1){
+            const typing = document.getElementById('cm6');
+            if(typing) typing.style.opacity='1';
+            setTimeout(function(){
+              if(typing) typing.style.opacity='0';
+            },2000);
+          }
+        },delays[i]);
+      });
+    },800);
+  },9000);
+})();
+
+// ── Smooth scroll ─────────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    const target = document.querySelector(this.getAttribute('href'));
+    if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+});
+</script>
+</body>
+</html>

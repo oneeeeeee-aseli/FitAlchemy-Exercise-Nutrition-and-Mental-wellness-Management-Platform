@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <title>FitAlchemy — Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Merriweather+Sans:wght@400;600;700&family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --fa-green:  #0b6e4f;
+      --fa-teal:   #14a97c;
+      --fa-accent: #f4623a;
+      --fa-blue:   #1565c0;
+      --fa-light:  #f0f7f4;
+      --fa-orange: #e8520a;
+      --fa-mint:   #20c997;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Merriweather Sans", sans-serif;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      transition: background 0.7s ease;
+      position: relative; overflow: hidden;
+    }
+
+    body.theme-login {
+      background: linear-gradient(135deg, var(--fa-green) 0%, var(--fa-teal) 50%, var(--fa-mint) 100%);
+    }
+    body.theme-register {
+      background: linear-gradient(135deg, #7b1f00 0%, var(--fa-accent) 40%, #f59e0b 75%, var(--fa-teal) 100%);
+    }
+
+    /* ══════════════════════════════════
+       BACKGROUND SHAPES
+    ══════════════════════════════════ */
+    .bg-shapes { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .shape { position: absolute; border-radius: 50%; opacity: 0; transition: opacity 0.7s ease; }
+
+    /* ── LOGIN shapes — calm green/teal glowing orbs ── */
+    body.theme-login .shape-login { opacity: 1; }
+
+    .shape-login.s1 {
+      width: 480px; height: 480px; top: -140px; left: -140px;
+      background: radial-gradient(circle, rgba(32,201,151,.28), transparent 70%);
+      animation: floatL 8s ease-in-out infinite;
+    }
+    .shape-login.s2 {
+      width: 340px; height: 340px; bottom: -100px; right: -100px;
+      background: radial-gradient(circle, rgba(20,169,124,.32), transparent 70%);
+      animation: floatL 10s ease-in-out infinite reverse;
+    }
+    .shape-login.s3 {
+      width: 180px; height: 180px; top: 42%; left: 20%;
+      background: radial-gradient(circle, rgba(255,255,255,.12), transparent 70%);
+      animation: floatL 6s ease-in-out infinite 1s;
+    }
+    .shape-login.s4 {
+      width: 100px; height: 100px; top: 18%; right: 25%;
+      background: radial-gradient(circle, rgba(32,201,151,.22), transparent 70%);
+      animation: floatL 5s ease-in-out infinite 2s;
+    }
+    .shape-login.s5 {
+      width: 60px; height: 60px; bottom: 25%; left: 12%;
+      background: radial-gradient(circle, rgba(255,255,255,.14), transparent 70%);
+      animation: floatL 4s ease-in-out infinite 0.5s;
+    }
+
+    @keyframes floatL {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-16px) scale(1.04); }
+    }
+
+    /* ── REGISTER shapes — warm orange/amber ── */
+    body.theme-register .shape-register { opacity: 1; }
+    .shape-register.r1 {
+      width: 450px; height: 450px; top: -120px; right: -120px;
+      background: radial-gradient(circle, rgba(244,98,58,.35), transparent 70%);
+      animation: floatR 7s ease-in-out infinite;
+    }
+    .shape-register.r2 {
+      width: 320px; height: 320px; bottom: -80px; left: -80px;
+      background: radial-gradient(circle, rgba(245,158,11,.3), transparent 70%);
+      animation: floatR 9s ease-in-out infinite reverse;
+    }
+    .shape-register.r3 {
+      width: 160px; height: 160px; top: 45%; left: 18%;
+      background: radial-gradient(circle, rgba(20,169,124,.25), transparent 70%);
+      animation: floatR 5s ease-in-out infinite 1.5s;
+    }
+    .shape-register.r4 {
+      width: 90px; height: 90px; top: 15%; right: 28%;
+      background: radial-gradient(circle, rgba(232,82,10,.4), transparent 70%);
+      animation: floatR 4s ease-in-out infinite 0.5s;
+    }
+    @keyframes floatR {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-18px) scale(1.04); }
+    }
+
+    /* Floating sparkle leaves for login (subtle ✦ icons) */
+    .leaf {
+      position: fixed; pointer-events: none; z-index: 0;
+      font-size: 1rem; opacity: 0;
+      transition: opacity 0.7s ease;
+      animation: drift 12s linear infinite;
+      color: rgba(255,255,255,.18);
+    }
+    body.theme-login .leaf { opacity: 1; }
+    .leaf:nth-child(1)  { left:  8%; animation-delay:  0s;   animation-duration: 14s; font-size: .9rem; }
+    .leaf:nth-child(2)  { left: 22%; animation-delay:  3s;   animation-duration: 11s; font-size: .7rem; }
+    .leaf:nth-child(3)  { left: 40%; animation-delay:  6s;   animation-duration: 15s; font-size: 1.1rem; }
+    .leaf:nth-child(4)  { left: 60%; animation-delay:  1s;   animation-duration: 13s; font-size: .8rem; }
+    .leaf:nth-child(5)  { left: 75%; animation-delay:  4s;   animation-duration: 10s; font-size: .75rem; }
+    .leaf:nth-child(6)  { left: 88%; animation-delay:  8s;   animation-duration: 16s; font-size: .95rem; }
+    @keyframes drift {
+      0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: .8; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ══════════════════════════════════
+       WRAPPER & CARD
+    ══════════════════════════════════ */
+    .login-wrapper { width: 100%; max-width: 1060px; position: relative; z-index: 1; }
+    .auth-card {
+      border-radius: 24px; overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,.3);
+      transition: box-shadow 0.7s ease;
+    }
+    body.theme-login    .auth-card { box-shadow: 0 30px 80px rgba(11,110,79,.3); }
+    body.theme-register .auth-card { box-shadow: 0 30px 80px rgba(244,98,58,.25); }
+
+    /* ══════════════════════════════════
+       LEFT PANEL
+    ══════════════════════════════════ */
+    .brand-panel {
+      padding: 1.8rem 1.8rem 1.5rem; color: #fff;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      height: 100%; position: relative; overflow: hidden;
+      transition: background 0.7s ease;
+    }
+
+    /* LOGIN left — deep green with teal shimmer */
+    body.theme-login .brand-panel {
+      background: linear-gradient(160deg, #063d2c 0%, var(--fa-green) 45%, #0e8a61 100%);
+      border-right: none;
+    }
+
+    /* Dot pattern on login panel */
+    body.theme-login .brand-panel::after {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+
+    /* REGISTER left */
+    body.theme-register .brand-panel {
+      background: linear-gradient(160deg, #5c1a00 0%, #a33200 45%, #0b6e4f 100%);
+      border-right: none;
+    }
+    body.theme-register .brand-panel::after {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+
+    /* ── LOGO RING ── */
+    .logo-ring {
+      width: 70px; height: 70px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: .8rem; overflow: hidden;
+      position: relative; z-index: 1;
+      transition: box-shadow 0.7s ease, border-color 0.7s ease;
+    }
+    body.theme-login .logo-ring {
+      background: rgba(255,255,255,.15);
+      border: 3px solid rgba(255,255,255,.5);
+      animation: pulse-green 3s ease-in-out infinite;
+    }
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 18px rgba(32,201,151,.5), 0 0 36px rgba(20,169,124,.2); }
+      50%       { box-shadow: 0 0 36px rgba(32,201,151,.85), 0 0 64px rgba(20,169,124,.45); }
+    }
+    body.theme-register .logo-ring {
+      background: rgba(255,255,255,.15);
+      border: 3px solid rgba(255,255,255,.5);
+      animation: pulse-fire 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse-fire {
+      0%, 100% { box-shadow: 0 0 20px rgba(244,98,58,.5), 0 0 40px rgba(245,158,11,.2); }
+      50%       { box-shadow: 0 0 40px rgba(244,98,58,.85), 0 0 70px rgba(245,158,11,.45); }
+    }
+    .logo-ring img { width: 80%; height: 80%; object-fit: contain; }
+
+    /* ── BRAND HEADING ── */
+    .brand-panel h1 {
+      font-family: "Syne", sans-serif; font-size: 1.6rem; font-weight: 800;
+      margin-bottom: .3rem; position: relative; z-index: 1;
+    }
+    .brand-tagline {
+      opacity: .82; font-size: .82rem; line-height: 1.5;
+      position: relative; z-index: 1;
+    }
+
+    /* ── LOGIN feature list — with animated entrance ── */
+    .feature-list {
+      list-style: none; padding: 0; margin: 1.5rem 0 0;
+      text-align: left; width: 100%; position: relative; z-index: 1;
+    }
+    .feature-list li {
+      padding: .4rem 0; font-size: .88rem;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      opacity: 0;
+      animation: featureIn 0.5s ease forwards;
+    }
+    .feature-list li:last-child { border-bottom: none; }
+    .feature-list li:nth-child(1) { animation-delay: .1s; }
+    .feature-list li:nth-child(2) { animation-delay: .22s; }
+    .feature-list li:nth-child(3) { animation-delay: .34s; }
+    .feature-list li:nth-child(4) { animation-delay: .46s; }
+    @keyframes featureIn {
+      from { opacity: 0; transform: translateX(-12px); }
+      to   { opacity: .92; transform: translateX(0); }
+    }
+    .feature-list li i {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; flex-shrink: 0;
+      transition: background .2s;
+    }
+    .feature-list li:hover i { background: rgba(255,255,255,.28); }
+
+    /* ── SPIN WHEEL BLOCK (left panel) ── */
+    .login-welcome {
+      margin-top: 1rem; width: 100%;
+      position: relative; z-index: 1;
+      animation: fadeUp .5s ease .5s both;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .wheel-label {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 50px; padding: .3rem 1.1rem;
+      font-size: .72rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .wheel-label-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--fa-mint);
+      box-shadow: 0 0 7px rgba(32,201,151,.9);
+      animation: blinkDot 1.8s ease-in-out infinite;
+    }
+    @keyframes blinkDot { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+    /* Outer glow ring around wheel */
+    .wheel-outer-ring {
+      border-radius: 50%;
+      padding: 6px;
+      background: conic-gradient(
+        rgba(32,201,151,.6) 0deg,
+        rgba(20,169,124,.3) 60deg,
+        rgba(255,255,255,.15) 120deg,
+        rgba(32,201,151,.6) 180deg,
+        rgba(20,169,124,.3) 240deg,
+        rgba(255,255,255,.15) 300deg,
+        rgba(32,201,151,.6) 360deg
+      );
+      animation: ringRotate 8s linear infinite;
+      margin-bottom: .6rem;
+    }
+    @keyframes ringRotate { to { transform: rotate(360deg); } }
+
+    .wheel-wrap {
+      position: relative; width: 240px; height: 240px;
+      cursor: pointer;
+      background: rgba(0,0,0,.15);
+      border-radius: 50%;
+    }
+    .wheel-wrap:hover { transform: scale(1.03); transition: transform .2s ease; }
+    .wheel-wrap canvas {
+      border-radius: 50%; display: block;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,.4));
+    }
+    .wheel-pointer {
+      position: absolute; top: -14px; left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 11px solid transparent;
+      border-right: 11px solid transparent;
+      border-top: 22px solid #fff;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,.45));
+      z-index: 2;
+    }
+
+    .wheel-spin-hint {
+      font-size: .7rem; text-align: center;
+      opacity: .65; margin-top: .55rem; letter-spacing: .5px;
+      display: flex; align-items: center; gap: 5px; justify-content: center;
+    }
+    .tap-icon { animation: tapBounce 1.4s ease-in-out infinite; display: inline-block; }
+    @keyframes tapBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+    /* Confetti burst */
+    .confetti-piece {
+      position: fixed; pointer-events: none; z-index: 9999;
+      width: 8px; height: 8px; border-radius: 2px;
+      animation: confettiFall 1.4s ease-in forwards;
+    }
+    @keyframes confettiFall {
+      0%   { opacity:1; transform: translateY(0) rotate(0deg) scale(1); }
+      100% { opacity:0; transform: translateY(180px) rotate(720deg) scale(.3); }
+    }
+
+    /* ── TIP CARD (right panel, login theme only) ── */
+    .tip-panel {
+      display: none;
+      margin-top: 1.1rem;
+      background: linear-gradient(135deg, rgba(11,110,79,.08), rgba(20,169,124,.13));
+      border: 1.5px solid rgba(20,169,124,.28);
+      border-radius: 14px; padding: 1rem 1.15rem;
+      animation: tipSlideIn .4s ease both;
+    }
+    @keyframes tipSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    body.theme-login .tip-panel { display: block; }
+    .tip-panel-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: .45rem;
+    }
+    .tip-panel-emoji { font-size: 1.6rem; line-height: 1; }
+    .tip-panel-cat {
+      font-size: .68rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1.2px; color: var(--fa-green); opacity: .85;
+    }
+    .tip-panel-text {
+      font-size: .83rem; line-height: 1.55; color: #2d4a3e; font-weight: 500;
+      transition: opacity .35s ease;
+    }
+    .tip-panel-text.fade { opacity: 0; }
+    .tip-panel-prompt {
+      font-size: .72rem; color: #8aab98; margin-top: .4rem; font-style: italic;
+    }
+
+    /* ── REGISTER welcome content ── */
+    .welcome-content { display: none; width: 100%; position: relative; z-index: 1; }
+    body.theme-register .welcome-content { display: block; }
+    body.theme-register .feature-list    { display: none; }
+    body.theme-register .login-welcome   { display: none; }
+
+    .welcome-badge {
+      display: inline-block;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 50px; padding: .3rem 1rem;
+      font-size: .74rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 1rem;
+      animation: badgePop 0.5s cubic-bezier(.34,1.56,.64,1) 0.2s both;
+    }
+    @keyframes badgePop {
+      from { transform: scale(0.6); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    .welcome-steps { margin: 1.5rem 0; text-align: left; }
+    .step-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: .6rem 0; border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .step-item:last-child { border-bottom: none; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,.2); border: 2px solid rgba(255,255,255,.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;
+    }
+    .step-text strong { display: block; font-size: .88rem; font-weight: 700; }
+    .step-text span   { font-size: .78rem; opacity: .75; }
+
+    .confetti-row {
+      display: flex; justify-content: center; gap: 8px;
+      margin-top: 1.2rem; font-size: 1.4rem;
+    }
+    .confetti-row span { animation: bounceE 1.6s ease-in-out infinite; }
+    .confetti-row span:nth-child(2) { animation-delay: .15s; }
+    .confetti-row span:nth-child(3) { animation-delay: .30s; }
+    .confetti-row span:nth-child(4) { animation-delay: .45s; }
+    .confetti-row span:nth-child(5) { animation-delay: .60s; }
+    @keyframes bounceE {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    /* ══════════════════════════════════
+       RIGHT PANEL (form)
+    ══════════════════════════════════ */
+    .form-panel {
+      padding: 2.5rem 2rem;
+      transition: background 0.7s ease;
+    }
+    body.theme-login    .form-panel { background: var(--fa-light); }
+    body.theme-register .form-panel { background: #1c0a00; }
+
+    .form-panel h2 {
+      font-family: "Syne", sans-serif; font-size: 1.45rem; font-weight: 800;
+      margin-bottom: 1.25rem; transition: all 0.5s ease;
+    }
+    body.theme-login .form-panel h2 {
+      background: linear-gradient(135deg, var(--fa-green), var(--fa-teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    body.theme-register .form-panel h2 {
+      background: linear-gradient(135deg, var(--fa-accent), #f59e0b);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── TAB SWITCHER ── */
+    .tab-switcher {
+      display: flex; margin-bottom: 1.25rem;
+      border-radius: 12px; overflow: hidden;
+      transition: border-color 0.5s ease, box-shadow 0.5s ease;
+    }
+    body.theme-login    .tab-switcher {
+      border: 2px solid var(--fa-teal);
+      box-shadow: 0 0 16px rgba(20,169,124,.2);
+    }
+    body.theme-register .tab-switcher {
+      border: 2px solid var(--fa-accent);
+      box-shadow: 0 0 16px rgba(244,98,58,.25);
+    }
+
+    .tab-btn {
+      flex: 1; padding: .5rem; font-weight: 700; font-size: .83rem;
+      border: none; cursor: pointer; transition: all .3s;
+      font-family: "DM Sans", sans-serif;
+    }
+    body.theme-login  .tab-btn        { background: var(--fa-light); color: var(--fa-green); }
+    body.theme-login  .tab-btn.active { background: linear-gradient(135deg, var(--fa-green), var(--fa-teal)); color: #fff; }
+    body.theme-register .tab-btn        { background: #2a0f00; color: #f59e0b; }
+    body.theme-register .tab-btn.active { background: linear-gradient(135deg, var(--fa-accent), #f59e0b); color: #fff; }
+
+    /* ── FORM LABELS ── */
+    .form-label {
+      font-weight: 600; font-size: .82rem; margin-bottom: .35rem;
+      display: block; transition: color 0.5s ease;
+    }
+    body.theme-login    .form-label { color: var(--fa-green); }
+    body.theme-register .form-label { color: #f59e0b; }
+
+    /* ── INPUTS ── */
+    .form-control {
+      width: 100%; border-radius: 10px; padding: .6rem 1rem;
+      font-size: .9rem; transition: all .2s; outline: none;
+      font-family: "DM Sans", sans-serif;
+    }
+    body.theme-login .form-control {
+      border: 2px solid #c8e6d4; background: #fff; color: #333;
+    }
+    body.theme-login .form-control::placeholder { color: #a8c4b0; }
+    body.theme-login .form-control:focus {
+      border-color: var(--fa-teal);
+      box-shadow: 0 0 0 3px rgba(20,169,124,.15);
+      background: #fff;
+    }
+    body.theme-register .form-control {
+      border: 2px solid #4a1800; background: #2a0f00; color: #fde8d8;
+    }
+    body.theme-register .form-control::placeholder { color: #7a3a1a; }
+    body.theme-register .form-control:focus {
+      border-color: var(--fa-accent);
+      box-shadow: 0 0 0 3px rgba(244,98,58,.2);
+      background: #341200;
+    }
+
+    /* Login trust badges inside form */
+    .login-trust {
+      display: none; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem;
+    }
+    body.theme-login .login-trust { display: flex; }
+    .trust-chip {
+      background: rgba(11,110,79,.08); border: 1px solid rgba(20,169,124,.25);
+      border-radius: 50px; padding: .2rem .75rem;
+      font-size: .72rem; font-weight: 700; color: var(--fa-green);
+    }
+
+    /* Register perks chips */
+    .register-perks { display: none; margin-bottom: 1rem; gap: 8px; flex-wrap: wrap; }
+    body.theme-register .register-perks { display: flex; }
+    .perk-chip {
+      background: rgba(244,98,58,.15); border: 1px solid rgba(244,98,58,.35);
+      border-radius: 50px; padding: .2rem .75rem;
+      font-size: .72rem; font-weight: 700; color: #f59e0b;
+    }
+
+    /* ── SUBMIT BUTTON ── */
+    .btn-primary-fa {
+      border: none; color: #fff; font-weight: 700; border-radius: 12px;
+      padding: .7rem 1.5rem; width: 100%; font-size: .92rem;
+      cursor: pointer; transition: all .25s;
+      font-family: "DM Sans", sans-serif; letter-spacing: .3px;
+    }
+    body.theme-login .btn-primary-fa {
+      background: linear-gradient(135deg, var(--fa-green), var(--fa-teal));
+      box-shadow: 0 4px 16px rgba(11,110,79,.3);
+    }
+    body.theme-login .btn-primary-fa:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(11,110,79,.45);
+    }
+    body.theme-register .btn-primary-fa {
+      background: linear-gradient(135deg, var(--fa-orange), var(--fa-accent), #f59e0b);
+      box-shadow: 0 4px 20px rgba(244,98,58,.35);
+    }
+    body.theme-register .btn-primary-fa:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(244,98,58,.55);
+    }
+
+    /* ── LINK BUTTON ── */
+    .link-btn {
+      background: none; border: none; font-weight: 600;
+      cursor: pointer; text-decoration: underline;
+      font-size: .83rem; padding: 0; transition: color .2s;
+    }
+    body.theme-login    .link-btn       { color: var(--fa-teal); }
+    body.theme-login    .link-btn:hover { color: var(--fa-green); }
+    body.theme-register .link-btn       { color: #f59e0b; }
+    body.theme-register .link-btn:hover { color: var(--fa-accent); }
+
+    /* ── SLIDE-IN ANIMATION ── */
+    .form-slide-in { animation: slideIn 0.35s cubic-bezier(.34,1.56,.64,1) both; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(14px) scale(.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── POPUPS ── */
+    #popupContainer { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: 350px; }
+    .popup-notification { background: #fff; border-radius: 14px; padding: 1rem 1.25rem; box-shadow: 0 8px 30px rgba(0,0,0,.15); display: flex; align-items: flex-start; gap: 12px; transform: translateX(120%); transition: transform .4s ease; border-left: 4px solid #ccc; position: relative; overflow: hidden; }
+    .popup-notification.show { transform: translateX(0); }
+    .popup-notification.success { border-left-color: #0b6e4f; }
+    .popup-notification.error   { border-left-color: #dc3545; }
+    .popup-notification.info    { border-left-color: #0d6efd; }
+    .popup-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1rem; flex-shrink: 0; }
+    .success .popup-icon { background: #e8f5e9; color: #0b6e4f; }
+    .error   .popup-icon { background: #fdecea; color: #dc3545; }
+    .info    .popup-icon { background: #e3f2fd; color: #0d6efd; }
+    .popup-title   { font-weight: 700; font-size: .9rem; margin-bottom: 2px; }
+    .popup-message { font-size: .82rem; color: #555; }
+    .popup-close   { position: absolute; top: 8px; right: 10px; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #aaa; line-height: 1; }
+    .popup-progress { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--fa-teal); width: 100%; animation: shrink 4s linear forwards; }
+    @keyframes shrink { from{width:100%} to{width:0%} }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:767px){
+      .brand-panel { border-radius: 24px 24px 0 0 !important; }
+      .form-panel  { border-radius: 0 0 24px 24px !important; }
+      .wheel-area  { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body class="theme-login">
+
+  <!-- Background shapes -->
+  <div class="bg-shapes">
+    <div class="shape shape-login s1"></div>
+    <div class="shape shape-login s2"></div>
+    <div class="shape shape-login s3"></div>
+    <div class="shape shape-login s4"></div>
+    <div class="shape shape-login s5"></div>
+    <div class="shape shape-register r1"></div>
+    <div class="shape shape-register r2"></div>
+    <div class="shape shape-register r3"></div>
+    <div class="shape shape-register r4"></div>
+  </div>
+
+  <!-- Floating sparkle particles (login only) -->
+  <div class="leaf">✦</div>
+  <div class="leaf">✦</div>
+  <div class="leaf">✦</div>
+  <div class="leaf">✦</div>
+  <div class="leaf">✦</div>
+  <div class="leaf">✦</div>
+
+  <div id="popupContainer"></div>
+
+  <div class="login-wrapper">
+    <div class="auth-card">
+      <div class="row g-0">
+
+        <!-- ══ LEFT: Brand Panel ══ -->
+        <div class="col-md-5">
+          <div class="brand-panel">
+            <div class="logo-ring">
+              <img src="/img/logo fitt.png" alt="FitAlchemy"
+                   onerror="this.style.display='none'; document.getElementById('logo-ph').style.display='flex';">
+              <div id="logo-ph" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900;color:#fff;">FA</div>
+            </div>
+            <h1>FitAlchemy</h1>
+            <p class="brand-tagline" id="brandTagline">Your personal fitness &amp; nutrition command centre.</p>
+
+            <!-- LOGIN: animated feature list + stats -->
+            <ul class="feature-list">
+              <li><i class="bi bi-lightning-fill"></i> Personalised Workout Routines</li>
+              <li><i class="bi bi-egg-fried"></i> Smart Meal Planning</li>
+              <li><i class="bi bi-stars"></i> Daily Motivation Quotes</li>
+              <li><i class="bi bi-robot"></i> AI Fitness Coach</li>
+            </ul>
+            <div class="login-welcome">
+              <div class="wheel-label">
+                <span class="wheel-label-dot"></span>
+                Spin for a tip!
+              </div>
+              <div class="wheel-outer-ring">
+                <div class="wheel-wrap" id="wheelWrap" onclick="spinWheel()">
+                  <div class="wheel-pointer"></div>
+                  <canvas id="wheelCanvas" width="240" height="240"></canvas>
+                </div>
+              </div>
+              <div class="wheel-spin-hint">
+                <span class="tap-icon">👆</span> tap the wheel to spin
+              </div>
+            </div>
+
+            <!-- REGISTER: welcome content -->
+            <div class="welcome-content">
+              <span class="welcome-badge">🔥 Start Your Journey</span>
+              <div class="welcome-steps">
+                <div class="step-item">
+                  <div class="step-num">1</div>
+                  <div class="step-text">
+                    <strong>Create Your Account</strong>
+                    <span>Takes less than 60 seconds</span>
+                  </div>
+                </div>
+                <div class="step-item">
+                  <div class="step-num">2</div>
+                  <div class="step-text">
+                    <strong>Set Up Your Goals</strong>
+                    <span>Weight loss, muscle gain, wellness</span>
+                  </div>
+                </div>
+                <div class="step-item">
+                  <div class="step-num">3</div>
+                  <div class="step-text">
+                    <strong>Start Your Journey</strong>
+                    <span>Workouts, meals &amp; motivation await</span>
+                  </div>
+                </div>
+              </div>
+              <div class="confetti-row">
+                <span>💪</span><span>🥗</span><span>🔥</span><span>🏆</span><span>⚡</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ RIGHT: Form Panel ══ -->
+        <div class="col-md-7">
+          <div class="form-panel">
+
+            <div id="loginRegisterSection">
+              <div class="tab-switcher">
+                <button class="tab-btn active" id="tabLogin"     onclick="showTab('login')">Login</button>
+                <button class="tab-btn"         id="tabRegister" onclick="showTab('register')">Register</button>
+              </div>
+
+              <!-- Login trust chips -->
+              <div class="login-trust">
+                <span class="trust-chip">🔒 Secure Login</span>
+                <span class="trust-chip">⚡ Instant Access</span>
+                <span class="trust-chip">🌿 Your Data, Safe</span>
+              </div>
+
+              <!-- Register perks chips -->
+              <div class="register-perks">
+                <span class="perk-chip">🆓 Free Forever</span>
+                <span class="perk-chip">🔒 Secure</span>
+                <span class="perk-chip">⚡ Instant Access</span>
+              </div>
+
+              <!-- Login Form -->
+              <form id="loginForm" class="form-slide-in">
+                <h2>Welcome Back 👋</h2>
+                <div class="mb-3">
+                  <label class="form-label" for="loginEmail"><i class="bi bi-envelope me-1"></i>Email</label>
+                  <input id="loginEmail" type="email" class="form-control" placeholder="your@email.com" required/>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="loginPassword"><i class="bi bi-lock me-1"></i>Password</label>
+                  <input id="loginPassword" type="password" class="form-control" placeholder="••••••••" required/>
+                </div>
+                <button type="submit" class="btn-primary-fa mb-2">
+                  <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                </button>
+                <div id="loginMsg" style="font-size:.85rem;margin-top:.5rem;"></div>
+                <div class="text-center mt-3">
+                  <button type="button" class="link-btn" id="forgotPasswordLink">Forgot password?</button>
+                </div>
+              </form>
+
+              <!-- Tip card — shows below forgot password after wheel spin -->
+              <div class="tip-panel" id="tipPanel">
+                <div class="tip-panel-header">
+                  <span class="tip-panel-emoji" id="tipEmoji">🎯</span>
+                  <span class="tip-panel-cat" id="tipCategory">Spin the wheel!</span>
+                </div>
+                <div class="tip-panel-text" id="tipText">Tap the wheel on the left to unlock your personalised fitness tip for today.</div>
+                <div class="tip-panel-prompt">← Spin the wheel to refresh</div>
+              </div>
+
+              <!-- Register Form -->
+              <form id="registerForm" style="display:none;">
+                <h2>Let's Get Started 🔥</h2>
+                <div class="mb-3">
+                  <label class="form-label" for="registerEmail"><i class="bi bi-envelope me-1"></i>Email</label>
+                  <input id="registerEmail" type="email" class="form-control" placeholder="your@email.com" required/>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="registerPassword"><i class="bi bi-lock me-1"></i>Password</label>
+                  <input id="registerPassword" type="password" class="form-control" placeholder="Create a strong password" required/>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="confirmPassword"><i class="bi bi-lock-fill me-1"></i>Confirm Password</label>
+                  <input id="confirmPassword" type="password" class="form-control" placeholder="Repeat your password" required/>
+                </div>
+                <button type="submit" class="btn-primary-fa mb-2">
+                  <i class="bi bi-person-plus me-1"></i>Create Account
+                </button>
+                <div id="registerMsg" style="font-size:.85rem;margin-top:.5rem;"></div>
+              </form>
+            </div>
+
+            <!-- Reset Password section -->
+            <div id="resetSection" style="display:none;">
+              <h2>Reset Password 🔑</h2>
+              <p style="font-size:.88rem;margin-bottom:1.2rem;color:#666;">Enter your email and we'll send you a reset code.</p>
+              <form id="requestResetForm">
+                <div class="mb-3">
+                  <label class="form-label" for="resetEmail"><i class="bi bi-envelope me-1"></i>Email</label>
+                  <input id="resetEmail" type="email" class="form-control" placeholder="your@email.com" required/>
+                </div>
+                <button type="submit" class="btn-primary-fa mb-2">
+                  <i class="bi bi-send me-1"></i>Send Reset Code
+                </button>
+                <div id="requestResetMsg" style="font-size:.85rem;margin-top:.5rem;"></div>
+              </form>
+              <form id="resetPasswordForm" style="display:none;">
+                <div class="mb-3">
+                  <label class="form-label" for="resetCode"><i class="bi bi-key me-1"></i>Reset Code</label>
+                  <input id="resetCode" type="text" class="form-control" placeholder="Enter code from email"/>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="newPassword"><i class="bi bi-lock me-1"></i>New Password</label>
+                  <input id="newPassword" type="password" class="form-control" placeholder="••••••••"/>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="confirmPassword2"><i class="bi bi-lock-fill me-1"></i>Confirm Password</label>
+                  <input id="confirmPassword2" type="password" class="form-control" placeholder="••••••••"/>
+                </div>
+                <button type="submit" class="btn-primary-fa mb-2">
+                  <i class="bi bi-check-circle me-1"></i>Reset Password
+                </button>
+                <div id="resetPasswordMsg" style="font-size:.85rem;margin-top:.5rem;display:none;"></div>
+              </form>
+              <div class="text-center mt-3">
+                <button type="button" class="link-btn" id="backToLoginLink">
+                  <i class="bi bi-arrow-left me-1"></i>Back to Login
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+
+    // ── THEME SWITCHER ─────────────────────────────────────────────────────────
+    function showTab(tab) {
+      const body         = document.body;
+      const loginForm    = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const tabLogin     = document.getElementById('tabLogin');
+      const tabRegister  = document.getElementById('tabRegister');
+      const tagline      = document.getElementById('brandTagline');
+
+      if (tab === 'login') {
+        body.className = 'theme-login';
+        loginForm.style.display = 'block';
+        loginForm.classList.add('form-slide-in');
+        setTimeout(() => loginForm.classList.remove('form-slide-in'), 400);
+        registerForm.style.display = 'none';
+        tabLogin.classList.add('active');
+        tabRegister.classList.remove('active');
+        tagline.textContent = 'Your personal fitness & nutrition command centre.';
+      } else {
+        body.className = 'theme-register';
+        registerForm.style.display = 'block';
+        registerForm.classList.add('form-slide-in');
+        setTimeout(() => registerForm.classList.remove('form-slide-in'), 400);
+        loginForm.style.display = 'none';
+        tabRegister.classList.add('active');
+        tabLogin.classList.remove('active');
+        tagline.textContent = "Let's build the best version of you. 🔥";
+      }
+    }
+
+    // ── FORGOT PASSWORD ────────────────────────────────────────────────────────
+    document.getElementById('forgotPasswordLink').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('loginRegisterSection').style.display = 'none';
+      document.getElementById('resetSection').style.display = 'block';
+    };
+
+    document.getElementById('backToLoginLink').onclick = function(e) {
+      e.preventDefault();
+      document.getElementById('loginRegisterSection').style.display = 'block';
+      document.getElementById('resetSection').style.display = 'none';
+      document.getElementById('requestResetForm').reset();
+      document.getElementById('resetPasswordForm').reset();
+      document.getElementById('requestResetMsg').textContent = '';
+      document.getElementById('resetPasswordMsg').textContent = '';
+      document.getElementById('resetPasswordForm').style.display = 'none';
+      showTab('login');
+    };
+
+    // ── LOGIN ──────────────────────────────────────────────────────────────────
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email    = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        const el = document.getElementById('loginMsg');
+        if (response.ok) {
+          localStorage.setItem('token', data.token || '');
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('userId', data.userId || '');
+          el.style.color = 'green';
+          el.textContent = 'Login successful! Redirecting...';
+          showPopup('success', 'Login Successful! 🎉', 'Welcome back! Redirecting to dashboard...', 2000);
+          setTimeout(() => { window.location.href = '/dashboard.html'; }, 2000);
+        } else {
+          el.style.color = 'red';
+          el.textContent = data.message || 'Login failed';
+          showPopup('error', 'Login Failed ❌', data.message || 'Invalid email or password. Please try again.');
+        }
+      } catch (err) {
+        document.getElementById('loginMsg').style.color = 'red';
+        document.getElementById('loginMsg').textContent = 'An error occurred. Please try again.';
+      }
+    });
+
+    // ── REGISTER ───────────────────────────────────────────────────────────────
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email    = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+      try {
+        const response = await fetch('/api/register', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        const el = document.getElementById('registerMsg');
+        if (response.ok) {
+          el.style.color = '#f59e0b';
+          el.textContent = 'Registration successful! Please login.';
+          showPopup('success', 'Welcome to FitAlchemy! 🎊', 'Your account has been created. Please login to continue.', 4000);
+          document.getElementById('registerForm').reset();
+          setTimeout(() => showTab('login'), 2000);
+        } else {
+          el.style.color = '#f4623a';
+          el.textContent = data.message || 'Registration failed';
+          showPopup('error', 'Registration Failed ❌', data.message || 'Unable to create account. Please try again.');
+        }
+      } catch (err) {
+        document.getElementById('registerMsg').style.color = '#f4623a';
+        document.getElementById('registerMsg').textContent = 'An error occurred. Please try again.';
+      }
+    });
+
+    // ── REQUEST RESET ──────────────────────────────────────────────────────────
+    document.getElementById('requestResetForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('resetEmail').value;
+      try {
+        const response = await fetch('/api/request-reset', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await response.json();
+        const el = document.getElementById('requestResetMsg');
+        if (response.ok) {
+          el.style.color = 'green';
+          el.textContent = data.message || 'Reset code sent to your email!';
+          showPopup('info', 'Reset Code Sent! 📧', 'Check your email for the verification code.', 4000);
+          document.getElementById('resetPasswordForm').style.display = 'flex';
+          document.getElementById('resetPasswordForm').style.flexDirection = 'column';
+          document.getElementById('resetPasswordForm').style.gap = '18px';
+        } else {
+          el.style.color = 'red';
+          el.textContent = data.message || 'Failed to send reset code';
+        }
+      } catch (err) {
+        document.getElementById('requestResetMsg').style.color = 'red';
+        document.getElementById('requestResetMsg').textContent = 'An error occurred. Please try again.';
+      }
+    });
+
+    // ── RESET PASSWORD ─────────────────────────────────────────────────────────
+    document.getElementById('resetPasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email       = document.getElementById('resetEmail').value;
+      const resetCode   = document.getElementById('resetCode').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPw2  = document.getElementById('confirmPassword2').value;
+      const el          = document.getElementById('resetPasswordMsg');
+      el.style.display  = 'block';
+      if (newPassword !== confirmPw2) {
+        el.style.color = 'red'; el.textContent = 'Passwords do not match!'; return;
+      }
+      try {
+        const response = await fetch('/api/reset-password', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code: resetCode, newPassword })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          el.style.color = 'green';
+          el.textContent = data.message || 'Password reset successful! Redirecting...';
+          showPopup('success', 'Password Reset Successful! 🔑', 'Your password has been updated. Redirecting to login...', 3000);
+          setTimeout(() => { document.getElementById('backToLoginLink').click(); }, 3000);
+        } else {
+          el.style.color = 'red';
+          el.textContent = data.message || 'Failed to reset password';
+        }
+      } catch (err) {
+        el.style.color = 'red';
+        el.textContent = 'An error occurred. Please try again.';
+      }
+    });
+
+    // ── POPUPS ─────────────────────────────────────────────────────────────────
+    function showPopup(type, title, message, duration = 4000) {
+      const popup = document.createElement('div');
+      popup.className = `popup-notification ${type}`;
+      const icons = { success: '✓', error: '✕', info: 'ℹ' };
+      popup.innerHTML = `
+        <div class="popup-icon">${icons[type] || '!'}</div>
+        <div class="popup-content">
+          <div class="popup-title">${title}</div>
+          <div class="popup-message">${message}</div>
+        </div>
+        <button class="popup-close" onclick="closePopup(this)">×</button>
+        <div class="popup-progress"></div>
+      `;
+      document.getElementById('popupContainer').appendChild(popup);
+      setTimeout(() => popup.classList.add('show'), 10);
+      setTimeout(() => closePopup(popup), duration);
+    }
+
+    function closePopup(element) {
+      const popup = element.classList ? element : element.parentElement;
+      popup.classList.remove('show');
+      setTimeout(() => popup.remove(), 500);
+    }
+
+    // ── FITNESS TIP SPIN WHEEL ─────────────────────────────────────────────────
+    const SEGMENTS = [
+      { label: 'Workout',   emoji: '💪', color: '#0b6e4f', light: '#1a9468', tip: { emoji:'💪', cat:'Workout',   text:'Do 10 jumping jacks right now — your body will thank you later!' } },
+      { label: 'Nutrition', emoji: '🥗', color: '#0e7a58', light: '#12956b', tip: { emoji:'🥗', cat:'Nutrition', text:'Drink a glass of water before every meal. It boosts metabolism and reduces overeating.' } },
+      { label: 'Recovery',  emoji: '😴', color: '#0f8c62', light: '#13a874', tip: { emoji:'😴', cat:'Recovery',  text:'Muscles grow during sleep, not training. Aim for 7–9 hours tonight.' } },
+      { label: 'Mindset',   emoji: '🧠', color: '#14a97c', light: '#18c490', tip: { emoji:'🧠', cat:'Mindset',   text:'Progress, not perfection. One good session beats waiting for the "perfect" motivation.' } },
+      { label: 'Hydration', emoji: '💧', color: '#17b887', light: '#1cd49e', tip: { emoji:'💧', cat:'Hydration', text:'Feeling tired? You might just be dehydrated. Drink 500ml of water right now.' } },
+      { label: 'Challenge', emoji: '🔥', color: '#20c997', light: '#2ddba8', tip: { emoji:'🔥', cat:'Challenge', text:'Add one extra rep to every set today. Small pushes compound into big results.' } },
+    ];
+
+    const canvas   = document.getElementById('wheelCanvas');
+    const ctx      = canvas ? canvas.getContext('2d') : null;
+    const N        = SEGMENTS.length;
+    const ARC      = (2 * Math.PI) / N;
+    let   angle    = 0;
+    let   spinning = false;
+
+    function drawWheel(rot) {
+      if (!ctx) return;
+      const cx = canvas.width / 2, cy = canvas.height / 2, r = cx - 4;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      SEGMENTS.forEach((seg, i) => {
+        const start = rot + i * ARC;
+        const end   = start + ARC;
+        const mid   = start + ARC / 2;
+
+        // Gradient fill per slice
+        const gx = cx + (r * 0.55) * Math.cos(mid);
+        const gy = cy + (r * 0.55) * Math.sin(mid);
+        const grad = ctx.createRadialGradient(gx, gy, 0, cx, cy, r);
+        grad.addColorStop(0, seg.light);
+        grad.addColorStop(1, seg.color);
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, start, end);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,.35)';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Text label — positioned mid-radius
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(mid);
+        // Emoji
+        ctx.font = '15px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(seg.emoji, r * 0.72, 0);
+        // Label
+        ctx.font = 'bold 11px "DM Sans", "Merriweather Sans", sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,.95)';
+        ctx.fillText(seg.label, r * 0.42, 0);
+        ctx.restore();
+      });
+
+      // Outer ring border
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+      ctx.strokeStyle = 'rgba(255,255,255,.4)';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      // Centre button
+      const centerGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 26);
+      centerGrad.addColorStop(0, 'rgba(255,255,255,.4)');
+      centerGrad.addColorStop(1, 'rgba(255,255,255,.1)');
+      ctx.beginPath();
+      ctx.arc(cx, cy, 26, 0, 2 * Math.PI);
+      ctx.fillStyle = centerGrad;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,.7)';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.font = '18px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('⚡', cx, cy);
+    }
+
+    function burstConfetti(x, y) {
+      const colors = ['#20c997','#14a97c','#fff','#f4623a','#f59e0b','#0b6e4f'];
+      for (let i = 0; i < 22; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.cssText = `
+          left: ${x + (Math.random()-0.5)*60}px;
+          top:  ${y + (Math.random()-0.5)*40}px;
+          background: ${colors[Math.floor(Math.random()*colors.length)]};
+          transform: rotate(${Math.random()*360}deg);
+          animation-delay: ${Math.random()*0.3}s;
+          border-radius: ${Math.random()>.5?'50%':'2px'};
+        `;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1600);
+      }
+    }
+
+    function showTip(segIdx) {
+      const t       = SEGMENTS[segIdx].tip;
+      const emojiEl = document.getElementById('tipEmoji');
+      const catEl   = document.getElementById('tipCategory');
+      const textEl  = document.getElementById('tipText');
+      const panel   = document.getElementById('tipPanel');
+      if (!textEl) return;
+
+      // Confetti at wheel centre
+      const rect = canvas.getBoundingClientRect();
+      burstConfetti(rect.left + rect.width/2, rect.top + rect.height/2);
+
+      textEl.classList.add('fade');
+      setTimeout(() => {
+        emojiEl.textContent = t.emoji;
+        catEl.textContent   = t.cat;
+        textEl.textContent  = t.text;
+        const prompt = panel.querySelector('.tip-panel-prompt');
+        if (prompt) prompt.style.display = 'none';
+        textEl.classList.remove('fade');
+        panel.style.animation = 'none';
+        panel.offsetHeight;
+        panel.style.animation = 'tipSlideIn .4s ease both';
+      }, 350);
+    }
+
+    function spinWheel() {
+      if (spinning) return;
+      spinning = true;
+
+      // Spin cursor feedback
+      const wrap = document.getElementById('wheelWrap');
+      if (wrap) wrap.style.cursor = 'wait';
+
+      const extraSpins = 5 + Math.random() * 5;
+      const targetRot  = angle + extraSpins * 2 * Math.PI + Math.random() * 2 * Math.PI;
+      const duration   = 3200;
+      const start      = performance.now();
+      const startAngle = angle;
+
+      function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+
+      function frame(now) {
+        const elapsed  = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        angle = startAngle + (targetRot - startAngle) * easeOut(progress);
+        drawWheel(angle);
+        if (progress < 1) {
+          requestAnimationFrame(frame);
+        } else {
+          spinning = false;
+          if (wrap) wrap.style.cursor = 'pointer';
+          // Pointer sits at the top = -π/2 in canvas coords.
+          // We need to find which segment occupies that angle after rotation.
+          const pointerAngle = -Math.PI / 2;
+          // Normalise: shift the pointer angle into the wheel's rotated frame
+          const norm   = ((pointerAngle - angle) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+          const segIdx = Math.floor(norm / ARC) % N;
+          showTip(segIdx);
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // Init
+    drawWheel(0);
+  </script>
+</body>
+</html>

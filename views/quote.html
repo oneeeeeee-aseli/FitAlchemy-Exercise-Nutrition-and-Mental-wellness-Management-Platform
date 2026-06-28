@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <title>FitAlchemy — Quote Assistant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Merriweather+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    :root{--fa-green:#0b6e4f;--fa-teal:#14a97c;--fa-accent:#f4623a;--fa-blue:#1565c0;--fa-light:#f0f7f4;--q-purple:#6f42c1;--q-cyan:#0dcaf0;}
+    *{box-sizing:border-box;}
+    body{font-family:"Merriweather Sans",sans-serif;background:var(--fa-light);min-height:100vh;display:flex;flex-direction:column;}
+
+    /* ── Navbar ── */
+    .fa-nav{background:linear-gradient(135deg,var(--fa-green) 0%,var(--fa-teal) 100%);box-shadow:0 4px 20px rgba(11,110,79,.3);padding:.6rem 1.5rem;position:sticky;top:0;z-index:1000;}
+    .fa-nav .navbar-brand{font-family:"Merriweather",serif;font-weight:700;font-size:1.4rem;color:#fff !important;display:flex;align-items:center;gap:10px;}
+    .fa-nav .navbar-brand img{width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,.5);object-fit:contain;background:#fff;}
+    .fa-nav .nav-link{color:rgba(255,255,255,.85) !important;font-weight:600;padding:.45rem 1rem !important;border-radius:8px;transition:all .2s;}
+    .fa-nav .nav-link:hover,.fa-nav .nav-link.active{background:rgba(255,255,255,.2);color:#fff !important;}
+    .fa-nav .btn-logout{background:rgba(220,53,69,.9);border:none;color:#fff;font-weight:700;border-radius:8px;padding:.45rem 1.2rem;transition:all .2s;}
+    .fa-nav .btn-logout:hover{background:#dc3545;transform:translateY(-1px);}
+
+    /* ── Hero ── */
+    .page-hero{background:linear-gradient(135deg,var(--q-purple) 0%,#9b59b6 40%,var(--q-cyan) 100%);color:#fff;padding:2.5rem 0 2rem;text-align:center;position:relative;overflow:hidden;}
+    .page-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+    .page-hero h1{font-family:"Merriweather",serif;font-size:2.2rem;font-weight:700;margin-bottom:.25rem;position:relative;}
+    .page-hero p{opacity:.85;font-size:1rem;margin:0;position:relative;}
+
+    /* ── Layout ── */
+    .main-wrap{flex:1;padding:2rem 0;}
+
+    /* ── Big Quote Display Card ── */
+    .quote-stage{background:#fff;border-radius:24px;box-shadow:0 8px 40px rgba(111,66,193,.12);border:1px solid rgba(111,66,193,.1);overflow:hidden;margin-bottom:1.5rem;}
+    .quote-stage-header{background:linear-gradient(135deg,var(--q-purple),var(--q-cyan));padding:1.1rem 1.6rem;display:flex;align-items:center;gap:10px;color:#fff;}
+    .quote-stage-header h2{font-size:1rem;font-weight:800;margin:0;text-transform:uppercase;letter-spacing:.8px;}
+    .quote-stage-body{padding:2rem 2.2rem;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;}
+    .big-quote-text{font-family:"Merriweather",serif;font-size:1.4rem;font-style:italic;color:#2d2d2d;line-height:1.8;margin-bottom:1.2rem;position:relative;}
+    .big-quote-text::before{content:'\201C';font-size:5rem;color:rgba(111,66,193,.12);font-family:Georgia,serif;position:absolute;top:-1.5rem;left:-1.5rem;line-height:1;}
+    .big-quote-text::after{content:'\201D';font-size:5rem;color:rgba(111,66,193,.12);font-family:Georgia,serif;position:absolute;bottom:-3rem;right:-1.5rem;line-height:1;}
+    .big-quote-author{font-weight:800;color:var(--q-purple);font-size:.95rem;letter-spacing:.3px;}
+    .big-quote-category{display:inline-block;background:linear-gradient(135deg,var(--q-purple),var(--q-cyan));color:#fff;font-size:.7rem;font-weight:700;padding:.25rem .8rem;border-radius:20px;margin-top:.6rem;letter-spacing:.5px;text-transform:uppercase;}
+    .quote-empty{color:#bbb;font-style:italic;font-size:.95rem;padding:1rem 0;}
+    .quote-empty i{font-size:2.5rem;display:block;margin-bottom:.6rem;opacity:.3;}
+    .quote-stage-actions{padding:1.1rem 1.6rem;border-top:1px solid #f0f0f0;background:#fafafa;display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;}
+    .q-btn{height:42px;padding:0 1.4rem;border-radius:12px;border:none;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .22s;display:inline-flex;align-items:center;gap:7px;}
+    .q-btn:hover{transform:translateY(-2px);opacity:.9;}
+    .q-btn-new{background:linear-gradient(135deg,var(--q-purple),#9b59b6);color:#fff;box-shadow:0 4px 14px rgba(111,66,193,.3);}
+    .q-btn-save{background:linear-gradient(135deg,#f4623a,#ffc107);color:#fff;box-shadow:0 4px 14px rgba(244,98,58,.3);}
+    .q-btn-share{background:linear-gradient(135deg,#1565c0,#0d6efd);color:#fff;box-shadow:0 4px 14px rgba(21,101,192,.3);}
+
+    /* ── Mood Picker ── */
+    .mood-card{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(111,66,193,.08);border:1px solid rgba(111,66,193,.1);overflow:hidden;margin-bottom:1.5rem;}
+    .mood-card-head{background:linear-gradient(135deg,#2d1b69,var(--q-purple));padding:.9rem 1.4rem;display:flex;align-items:center;gap:8px;color:#fff;}
+    .mood-card-head h3{font-size:.92rem;font-weight:800;margin:0;text-transform:uppercase;letter-spacing:.6px;}
+    .mood-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;padding:1rem 1.2rem;}
+    .mood-chip{background:var(--fa-light);border:2px solid transparent;border-radius:14px;padding:.6rem .5rem;text-align:center;cursor:pointer;transition:all .2s;font-size:.75rem;font-weight:700;color:#555;}
+    .mood-chip:hover{border-color:var(--q-purple);color:var(--q-purple);background:#f3eeff;transform:translateY(-2px);}
+    .mood-chip.active{background:linear-gradient(135deg,var(--q-purple),#9b59b6);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(111,66,193,.3);}
+    .mood-chip .mood-em{font-size:1.4rem;display:block;margin-bottom:.2rem;}
+
+    /* ── Chat Input ── */
+    .ask-card{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(111,66,193,.08);border:1px solid rgba(111,66,193,.1);overflow:hidden;margin-bottom:1.5rem;}
+    .ask-card-head{background:linear-gradient(135deg,var(--q-purple),var(--q-cyan));padding:.9rem 1.4rem;display:flex;align-items:center;gap:8px;color:#fff;}
+    .ask-card-head h3{font-size:.92rem;font-weight:800;margin:0;text-transform:uppercase;letter-spacing:.6px;}
+    .ask-body{padding:1rem 1.2rem;}
+    .ask-input-row{display:flex;gap:8px;}
+    .ask-input{flex:1;border:2px solid #e9ecef;border-radius:12px;padding:.65rem 1rem;font-size:.9rem;font-family:"Merriweather Sans",sans-serif;transition:all .2s;}
+    .ask-input:focus{border-color:var(--q-purple);box-shadow:0 0 0 3px rgba(111,66,193,.12);outline:none;}
+    .ask-send{background:linear-gradient(135deg,var(--q-purple),var(--q-cyan));border:none;color:#fff;border-radius:12px;padding:.65rem 1.3rem;font-weight:700;cursor:pointer;transition:all .2s;font-size:.88rem;white-space:nowrap;}
+    .ask-send:hover{opacity:.9;transform:translateY(-1px);}
+    .ask-send:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+    .quick-chips{margin-top:.8rem;display:flex;flex-wrap:wrap;gap:.4rem;}
+    .qchip{background:rgba(111,66,193,.08);border:1px solid rgba(111,66,193,.2);color:var(--q-purple);border-radius:20px;padding:.3rem .85rem;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;}
+    .qchip:hover{background:var(--q-purple);color:#fff;border-color:var(--q-purple);}
+
+    /* ── Quote History ── */
+    .history-card{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(111,66,193,.08);border:1px solid rgba(111,66,193,.1);overflow:hidden;margin-bottom:1.5rem;}
+    .history-head{background:linear-gradient(135deg,#2d1b69,var(--q-purple));padding:.85rem 1.2rem;display:flex;align-items:center;justify-content:space-between;}
+    .history-head-title{color:#fff;font-weight:800;font-size:.92rem;display:flex;align-items:center;gap:8px;}
+    .history-count{background:rgba(255,255,255,.25);color:#fff;font-size:.7rem;font-weight:800;padding:.1rem .5rem;border-radius:20px;}
+    .history-clear-btn{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.35);color:#fff;border-radius:8px;padding:.25rem .8rem;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;}
+    .history-clear-btn:hover{background:rgba(220,53,69,.8);border-color:transparent;}
+    .history-body{max-height:360px;overflow-y:auto;padding:.8rem 1rem;}
+    .history-body::-webkit-scrollbar{width:4px;}
+    .history-body::-webkit-scrollbar-thumb{background:var(--q-purple);border-radius:4px;}
+    .history-empty{text-align:center;padding:1.8rem 1rem;color:#bbb;font-size:.83rem;line-height:1.8;}
+    .history-empty i{font-size:2rem;display:block;margin-bottom:.4rem;opacity:.3;}
+    .history-item{margin-bottom:.9rem;padding-bottom:.9rem;border-bottom:1px solid #f3eeff;}
+    .history-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+    .history-ts{font-size:.62rem;color:#bbb;font-weight:600;letter-spacing:.4px;margin-bottom:.35rem;display:flex;align-items:center;gap:4px;}
+    .history-user{display:flex;justify-content:flex-end;margin-bottom:.3rem;}
+    .history-user span{background:linear-gradient(135deg,var(--q-purple),#9b59b6);color:#fff;border-radius:14px 14px 4px 14px;padding:.4rem .8rem;font-size:.78rem;font-weight:600;max-width:88%;line-height:1.4;}
+    .history-bot{display:flex;align-items:flex-start;gap:7px;}
+    .history-bot-icon{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--q-purple),var(--q-cyan));display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;margin-top:2px;color:#fff;}
+    .history-bot span{background:#f3eeff;color:#333;border-radius:4px 14px 14px 14px;padding:.4rem .8rem;font-size:.76rem;line-height:1.5;max-width:90%;border:1px solid rgba(111,66,193,.1);}
+
+    /* ── Loading dots ── */
+    .loading-dots{display:inline-flex;gap:4px;align-items:center;}
+    .loading-dots span{width:7px;height:7px;border-radius:50%;background:var(--q-purple);animation:bounce .8s ease-in-out infinite;}
+    .loading-dots span:nth-child(2){animation-delay:.15s;}
+    .loading-dots span:nth-child(3){animation-delay:.3s;}
+    @keyframes bounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+
+    /* ── Right side info cards ── */
+    .info-card{background:#fff;border-radius:20px;box-shadow:0 4px 20px rgba(111,66,193,.08);border:1px solid rgba(111,66,193,.1);overflow:hidden;margin-bottom:1.2rem;}
+    .info-card-head{padding:.85rem 1.2rem;display:flex;align-items:center;gap:8px;color:#fff;}
+    .info-card-head h4{font-size:.88rem;font-weight:800;margin:0;text-transform:uppercase;letter-spacing:.5px;}
+    .info-card-body{padding:1rem 1.2rem;}
+    .tip-item{display:flex;align-items:flex-start;gap:10px;padding:.6rem 0;border-bottom:1px solid #f3eeff;}
+    .tip-item:last-child{border-bottom:none;}
+    .tip-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+    .tip-title{font-weight:700;color:#333;font-size:.8rem;margin-bottom:.15rem;}
+    .tip-desc{font-size:.72rem;color:#888;line-height:1.45;}
+    .tag-cloud{display:flex;flex-wrap:wrap;gap:.4rem;}
+    .tag-badge{background:linear-gradient(135deg,rgba(111,66,193,.1),rgba(13,202,240,.1));border:1px solid rgba(111,66,193,.2);color:var(--q-purple);border-radius:20px;padding:.25rem .75rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;}
+    .tag-badge:hover{background:linear-gradient(135deg,var(--q-purple),var(--q-cyan));color:#fff;border-color:transparent;}
+
+    /* ── Quote transition ── */
+    .quote-stage-body.fading{opacity:0;transform:scale(.98);transition:opacity .25s,transform .25s;}
+    .quote-stage-body.appearing{opacity:1;transform:scale(1);transition:opacity .35s,transform .35s;}
+
+    /* ── Popup ── */
+    #popupContainer{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:340px;}
+    .popup-notification{background:#fff;border-radius:14px;padding:1rem 1.25rem;box-shadow:0 8px 30px rgba(0,0,0,.15);display:flex;align-items:flex-start;gap:12px;transform:translateX(120%);transition:transform .4s ease;border-left:4px solid #ccc;position:relative;overflow:hidden;}
+    .popup-notification.show{transform:translateX(0);}
+    .popup-notification.success{border-left-color:var(--fa-green);}
+    .popup-notification.error{border-left-color:#dc3545;}
+    .popup-notification.info{border-left-color:var(--q-purple);}
+    .popup-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;}
+    .success .popup-icon{background:#e8f5e9;color:var(--fa-green);}
+    .error   .popup-icon{background:#fdecea;color:#dc3545;}
+    .info    .popup-icon{background:#f3eeff;color:var(--q-purple);}
+    .popup-title{font-weight:700;font-size:.9rem;margin-bottom:2px;color:#222;}
+    .popup-message{font-size:.82rem;color:#555;}
+    .popup-close{position:absolute;top:8px;right:10px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:#aaa;}
+    .popup-progress{position:absolute;bottom:0;left:0;height:3px;background:var(--q-purple);width:100%;animation:shrinkBar 3.5s linear forwards;}
+    @keyframes shrinkBar{from{width:100%}to{width:0%}}
+
+    /* ── Footer ── */
+    .fa-footer{background:linear-gradient(135deg,#0b6e4f 0%,#0d7a58 40%,#14a97c 100%);color:rgba(255,255,255,.9);padding:3rem 0 0;margin-top:auto;}
+    .f-logo{font-family:"Merriweather",serif;font-size:1.6rem;font-weight:700;color:#fff;letter-spacing:.5px;}
+    .f-tagline{font-size:.88rem;opacity:.78;line-height:1.65;margin:.5rem 0 1.25rem;max-width:300px;}
+    .f-social-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:10px;}
+    .f-sico{width:42px;height:42px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;text-decoration:none;transition:all .25s;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);}
+    .f-sico:hover{transform:translateY(-3px) scale(1.1);color:#fff;border-color:#fff;}
+    .f-sico-fb:hover{background:#1877f2;border-color:#1877f2;}
+    .f-sico-tw:hover{background:#000;border-color:#000;}
+    .f-sico-ig:hover{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%);border-color:#d6249f;}
+    .f-sico-yt:hover{background:#ff0000;border-color:#ff0000;}
+    .f-sico-li:hover{background:#0077b5;border-color:#0077b5;}
+    .f-col-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.55);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,.15);}
+    .f-link{display:flex;align-items:center;color:rgba(255,255,255,.8);text-decoration:none;font-size:.88rem;font-weight:500;padding:.32rem 0;transition:all .2s;}
+    .f-link:hover{color:#fff;padding-left:4px;}
+    .f-link i{opacity:.6;font-size:.82rem;}
+    .f-disclaimer{background:rgba(0,0,0,.12);border-radius:12px;padding:1rem 1.1rem;font-size:.82rem;line-height:1.7;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.1);display:flex;align-items:flex-start;gap:4px;}
+    .f-divider{border:none;border-top:1px solid rgba(255,255,255,.15);margin:2.5rem 0 0;}
+    .f-bottom{padding:1rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:.8rem;color:rgba(255,255,255,.55);}
+
+    @media(max-width:768px){
+      .big-quote-text{font-size:1.1rem;}
+      .mood-grid{grid-template-columns:repeat(3,1fr);}
+      .page-hero h1{font-size:1.7rem;}
+      .f-tagline{max-width:100%;}
+      .f-bottom{justify-content:center;text-align:center;}
+      .stats-bar{gap:.8rem;}
+    }
+  </style>
+</head>
+<body>
+<div id="popupContainer"></div>
+
+<!-- ── Navbar ── -->
+<nav class="navbar navbar-expand-lg fa-nav">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/dashboard.html">
+      <img id="site-logo" src="/img/logo fitt.png" alt="FA" onerror="this.style.display='none';document.getElementById('logo-placeholder').style.display='flex';">
+      <span id="logo-placeholder" style="display:none;width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:50%;align-items:center;justify-content:center;font-weight:900;font-size:.75rem;color:#fff;flex-shrink:0;">FA</span>
+      FitAlchemy
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <i class="bi bi-list text-white fs-4"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav mx-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="/dashboard.html"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/wger.html"><i class="bi bi-lightning-fill me-1"></i>Workout</a></li>
+        <li class="nav-item"><a class="nav-link" href="/spoonacular.html"><i class="bi bi-egg-fried me-1"></i>Meal Planning</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/quote.html"><i class="bi bi-chat-quote-fill me-1"></i>Quotes</a></li>
+        <li class="nav-item"><a class="nav-link" href="/report.html"><i class="bi bi-bar-chart-fill me-1"></i>Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="/profile.html"><i class="bi bi-person-fill me-1"></i>Profile</a></li>
+      </ul>
+      <button class="btn-logout ms-3" onclick="logout()"><i class="bi bi-box-arrow-right me-1"></i>Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="page-hero">
+  <div class="container">
+    <h1><i class="bi bi-stars me-2"></i>Quote Assistant</h1>
+    <p>Ask for a quote on any topic — fitness, success, wisdom, courage and more</p>
+  </div>
+</div>
+
+<!-- ── Main ── -->
+<div class="main-wrap">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- Left: Quote stage + chat input + history -->
+      <div class="col-lg-8">
+
+        <!-- Big Quote Display -->
+        <div class="quote-stage">
+          <div class="quote-stage-header">
+            <i class="bi bi-stars" style="font-size:1.1rem;"></i>
+            <h2>Today's Quote</h2>
+            <span id="quote-category-tag" style="margin-left:auto;background:rgba(255,255,255,.2);font-size:.7rem;font-weight:700;padding:.2rem .7rem;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;display:none;"></span>
+          </div>
+          <div class="quote-stage-body" id="quote-display-body">
+            <div class="quote-empty">
+              <i class="bi bi-chat-quote"></i>
+              Ask me for a quote below, or pick a mood to get started!
+            </div>
+          </div>
+          <div class="quote-stage-actions">
+            <button class="q-btn q-btn-new" onclick="fetchRandomQuote()"><i class="bi bi-shuffle"></i> New Quote</button>
+            <button class="q-btn q-btn-save" id="save-btn" onclick="saveFavoriteQuote()" style="display:none;"><i class="bi bi-heart-fill"></i> Save</button>
+            <button class="q-btn q-btn-share" id="share-btn" onclick="copyQuote()" style="display:none;"><i class="bi bi-clipboard"></i> Copy</button>
+          </div>
+        </div>
+
+        <!-- Ask Input -->
+        <div class="ask-card">
+          <div class="ask-card-head">
+            <i class="bi bi-search-heart" style="font-size:1.1rem;"></i>
+            <h3>Ask for a Quote</h3>
+          </div>
+          <div class="ask-body">
+            <div class="ask-input-row">
+              <input type="text" class="ask-input" id="userInput" placeholder='e.g. "Give me a fitness quote" or "I need motivation"' onkeypress="handleKeyPress(event)"/>
+              <button class="ask-send" id="sendBtn" onclick="sendMessage()"><i class="bi bi-send-fill me-1"></i>Ask</button>
+            </div>
+            <div class="quick-chips" id="quick-chips">
+              <span class="qchip" onclick="askChip('Give me a fitness quote')">💪 Fitness</span>
+              <span class="qchip" onclick="askChip('I need a quote about success')">🎯 Success</span>
+              <span class="qchip" onclick="askChip('Quote about perseverance')">🔥 Perseverance</span>
+              <span class="qchip" onclick="askChip('Give me a happiness quote')">😊 Happiness</span>
+              <span class="qchip" onclick="askChip('Share some wisdom with me')">💡 Wisdom</span>
+              <span class="qchip" onclick="askChip('Motivate me to work hard')">💼 Hard Work</span>
+              <span class="qchip" onclick="askChip('I am feeling sad today')">😔 Feeling Sad</span>
+              <span class="qchip" onclick="askChip('Give me a courage quote')">🦁 Courage</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div class="history-card">
+          <div class="history-head">
+            <div class="history-head-title">
+              <i class="bi bi-clock-history"></i> Quote History
+              <span class="history-count" id="historyCount">0</span>
+            </div>
+            <button class="history-clear-btn" onclick="clearHistory()"><i class="bi bi-trash3 me-1"></i>Clear All</button>
+          </div>
+          <div class="history-body" id="historyBody">
+            <div class="history-empty"><i class="bi bi-chat-quote"></i>No history yet — start asking for quotes!</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Mood picker + tips + tags -->
+      <div class="col-lg-4">
+
+        <!-- Mood Picker -->
+        <div class="mood-card">
+          <div class="mood-card-head">
+            <i class="bi bi-emoji-smile-fill" style="font-size:1.1rem;"></i>
+            <h3>How are you feeling?</h3>
+          </div>
+          <div class="mood-grid">
+            <div class="mood-chip" onclick="pickMood('resilience','I am feeling sad and need support')"><span class="mood-em">😔</span>Sad</div>
+            <div class="mood-chip" onclick="pickMood('courage','I am stressed and anxious')"><span class="mood-em">😰</span>Stressed</div>
+            <div class="mood-chip" onclick="pickMood('inspirational','I want morning motivation')"><span class="mood-em">🌅</span>Morning</div>
+            <div class="mood-chip" onclick="pickMood('mindset','I have no motivation today')"><span class="mood-em">😴</span>Lazy</div>
+            <div class="mood-chip" onclick="pickMood('happiness','I am feeling happy today')"><span class="mood-em">😊</span>Happy</div>
+            <div class="mood-chip" onclick="pickMood('success','I want to achieve my goals')"><span class="mood-em">🎯</span>Focused</div>
+            <div class="mood-chip" onclick="pickMood('inspirational','Give me a fitness quote')"><span class="mood-em">💪</span>Active</div>
+            <div class="mood-chip" onclick="pickMood('wisdom','Share some wisdom with me')"><span class="mood-em">🧠</span>Reflective</div>
+            <div class="mood-chip" onclick="pickMood('courage','I need courage to face challenges')"><span class="mood-em">🦁</span>Brave</div>
+          </div>
+        </div>
+
+        <!-- How it works -->
+        <div class="info-card">
+          <div class="info-card-head" style="background:linear-gradient(135deg,var(--q-purple),#9b59b6);">
+            <i class="bi bi-lightbulb-fill" style="font-size:1rem;"></i>
+            <h4>How it works</h4>
+          </div>
+          <div class="info-card-body">
+            <div class="tip-item">
+              <div class="tip-icon" style="background:#f3eeff;"><i class="bi bi-emoji-smile-fill" style="color:var(--q-purple);"></i></div>
+              <div><div class="tip-title">Pick a Mood</div><div class="tip-desc">Choose how you feel and get a matching quote instantly.</div></div>
+            </div>
+            <div class="tip-item">
+              <div class="tip-icon" style="background:#e3f2fd;"><i class="bi bi-search-heart" style="color:#1565c0;"></i></div>
+              <div><div class="tip-title">Ask Freely</div><div class="tip-desc">Type any topic — fitness, heartbreak, courage, Islam — it understands.</div></div>
+            </div>
+            <div class="tip-item">
+              <div class="tip-icon" style="background:#fff3e0;"><i class="bi bi-heart-fill" style="color:#f4623a;"></i></div>
+              <div><div class="tip-title">Save Favourites</div><div class="tip-desc">Tap Save on any quote and access it anytime from the ❤️ button.</div></div>
+            </div>
+            <div class="tip-item">
+              <div class="tip-icon" style="background:#e8f5e9;"><i class="bi bi-clipboard-check" style="color:var(--fa-teal);"></i></div>
+              <div><div class="tip-title">Copy & Share</div><div class="tip-desc">Copy any quote to your clipboard and share with friends.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Topic Tags -->
+        <div class="info-card">
+          <div class="info-card-head" style="background:linear-gradient(135deg,#0dcaf0,var(--q-purple));">
+            <i class="bi bi-tags-fill" style="font-size:1rem;"></i>
+            <h4>Browse by Topic</h4>
+          </div>
+          <div class="info-card-body">
+            <div class="tag-cloud">
+              <span class="tag-badge" onclick="askChip('Inspirational quote')">✨ Inspirational</span>
+              <span class="tag-badge" onclick="askChip('Mindset quote')">🧠 Mindset</span>
+              <span class="tag-badge" onclick="askChip('Life quote')">🌱 Life</span>
+              <span class="tag-badge" onclick="askChip('Philosophy quote')">🔭 Philosophy</span>
+              <span class="tag-badge" onclick="askChip('Truth quote')">🪞 Truth</span>
+              <span class="tag-badge" onclick="askChip('Islamic quote')">🌙 Islamic</span>
+              <span class="tag-badge" onclick="askChip('Resilience quote')">🛡️ Resilience</span>
+              <span class="tag-badge" onclick="askChip('Leadership quote')">👑 Leadership</span>
+              <span class="tag-badge" onclick="askChip('Discipline quote')">⚡ Discipline</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<footer class="fa-footer">
+  <div class="container">
+    <div class="row g-4 align-items-start">
+      <div class="col-lg-4 col-md-12">
+        <div class="f-logo mb-2">💪 FitAlchemy</div>
+        <p class="f-tagline">Transform your fitness journey with personalized workouts, meal plans, and daily motivation.</p>
+        <div class="f-social-row">
+          <a href="https://www.facebook.com/share/184stgLqiz/?mibextid=wwXIfr" target="_blank" class="f-sico f-sico-fb" title="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="https://x.com/" target="_blank" class="f-sico f-sico-tw" title="Twitter/X"><i class="bi bi-twitter-x"></i></a>
+          <a href="https://www.instagram.com/wannnkt._" target="_blank" class="f-sico f-sico-ig" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="https://www.youtube.com/@WANAIMIFIRDAUSBINWANAZARIE" target="_blank" class="f-sico f-sico-yt" title="YouTube"><i class="bi bi-youtube"></i></a>
+          <a href="https://www.linkedin.com/" target="_blank" class="f-sico f-sico-li" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-4 col-6">
+        <div class="f-col-title">Quick Links</div>
+        <a href="/dashboard.html" class="f-link"><i class="bi bi-house-fill me-2"></i>Dashboard</a>
+        <a href="/wger.html" class="f-link"><i class="bi bi-lightning-fill me-2"></i>Workout</a>
+        <a href="/spoonacular.html" class="f-link"><i class="bi bi-egg-fried me-2"></i>Meal Planning</a>
+        <a href="/quote.html" class="f-link"><i class="bi bi-chat-quote-fill me-2"></i>Quotes</a>
+      </div>
+      <div class="col-lg-2 col-md-4 col-6">
+        <div class="f-col-title">Support</div>
+        <a href="javascript:void(0)" onclick="showFooterModal('help')" class="f-link"><i class="bi bi-question-circle me-2"></i>Help Center</a>
+        <a href="https://mail.google.com/mail/?view=cm&to=wanaimi04@gmail.com&su=FitAlchemy%20Support" target="_blank" class="f-link"><i class="bi bi-envelope me-2"></i>Contact Us</a>
+        <a href="javascript:void(0)" onclick="showFooterModal('privacy')" class="f-link"><i class="bi bi-shield-check me-2"></i>Privacy Policy</a>
+        <a href="javascript:void(0)" onclick="showFooterModal('terms')" class="f-link"><i class="bi bi-file-text me-2"></i>Terms of Service</a>
+      </div>
+      <div class="col-lg-4 col-md-4">
+        <div class="f-col-title">Disclaimer</div>
+        <div class="f-disclaimer">
+          <i class="bi bi-info-circle-fill me-2" style="font-size:1.1rem;opacity:.7;flex-shrink:0;"></i>
+          FitAlchemy content is for general informational purposes only. Always consult a qualified healthcare provider before starting any new exercise or diet plan. Individual results may vary.
+        </div>
+      </div>
+    </div>
+    <div class="f-divider"></div>
+    <div class="f-bottom">
+      <span>&copy; 2025 FitAlchemy &mdash; All Rights Reserved</span>
+      <span>Empowering Your Fitness Transformation 💪</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ── Auth ──
+  const userId = localStorage.getItem('userId');
+  if (!userId) window.location.href = '/login.html';
+  function logout() { localStorage.removeItem('userId'); window.location.href = '/login.html'; }
+
+  // ── State ──
+  let currentQuote    = null;
+  let currentMoodEl   = null;
+  let quotesTodayCount = 0;
+
+  // ── Popup ──
+  function showPopup(type, title, message, duration) {
+    duration = duration || 3500;
+    const popup = document.createElement('div');
+    popup.className = 'popup-notification ' + type;
+    const icons = { success:'✓', error:'✕', info:'ℹ' };
+    popup.innerHTML =
+      '<div class="popup-icon">'+(icons[type]||'!')+'</div>' +
+      '<div class="popup-content"><div class="popup-title">'+title+'</div><div class="popup-message">'+message+'</div></div>' +
+      '<button class="popup-close" onclick="this.parentElement.classList.remove(\'show\');setTimeout(function(){if(this.parentElement)this.parentElement.remove();}.bind(this),500)">×</button>' +
+      '<div class="popup-progress"></div>';
+    document.getElementById('popupContainer').appendChild(popup);
+    setTimeout(() => popup.classList.add('show'), 10);
+    setTimeout(() => { popup.classList.remove('show'); setTimeout(() => { if (popup.parentNode) popup.remove(); }, 500); }, duration);
+  }
+
+  // ── Quote Tag Extractor ──
+  function extractQuoteTag(msg) {
+    const m = msg.toLowerCase();
+    const map = [
+      { tag:'inspirational', words:['fitness','exercise','workout','gym','sport','training','lifting','running','cardio','muscle','strength','morning','today','daily','wake up','pagi','semangat'] },
+      { tag:'resilience',    words:['sad','sadness','crying','cry','hopeless','giving up','give up','broken','hurt','pain','struggle','hard time','difficult','sedih','putus asa','patah hati','susah','dugaan'] },
+      { tag:'courage',       words:['scared','fear','afraid','nervous','anxiety','anxious','worried','stress','stressed','panic','takut','risau','bimbang','tekanan'] },
+      { tag:'mindset',       words:['lazy','unmotivated','procrastinat','no motivation','lost motivation','demotivated','malas','tak semangat','hilang semangat'] },
+      { tag:'happiness',     words:['happy','happiness','joy','smile','positive','grateful','gratitude','blessed','thankful','gembira','seronok','syukur','bahagia'] },
+      { tag:'resilience',    words:['resilience','resilient','bounce back','overcome','recover','persistence','persevere','tabah','sabar','ketabahan','cekal'] },
+      { tag:'success',       words:['success','achieve','goal','accomplish','win','victory','progress','improve','milestone','target','berjaya','capai','matlamat'] },
+      { tag:'success',       words:['hard work','work hard','effort','dedication','discipline','consistent','hustle','grind','bekerja keras','usaha','tekun','gigih'] },
+      { tag:'wisdom',        words:['wisdom','wise','knowledge','learn','education','think','reflect','understand','insight','experience','ilmu','bijak','belajar'] },
+      { tag:'life',          words:['life','living','purpose','meaning','journey','path','direction','health','wellness','balance','lifestyle','hidup','tujuan'] },
+      { tag:'courage',       words:['courage','brave','bold','confidence','risk','try','dare','berani','yakin','cuba'] },
+      { tag:'mindset',       words:['mindset','attitude','perspective','belief','mental','growth','focus','concentrate','fokus'] },
+      { tag:'islamic',       words:['allah','quran','islam','doa','solat','iman','taqwa','syukur','tawakal','insyaallah','alhamdulillah','hadith','sunnah','nabi'] },
+      { tag:'philosophy',    words:['philosophy','meaning','existence','truth','reality','nature','falsafah','kebenaran'] },
+      { tag:'truth',         words:['truth','honest','real','genuine','authentic','sincere','jujur','benar','ikhlas'] },
+      { tag:'leadership',    words:['leader','leadership','team','manage','inspire others','guide','pemimpin'] },
+    ];
+    for (const entry of map) {
+      if (entry.words.some(w => m.includes(w))) return entry.tag;
+    }
+    if (/how (do|can|to|should)/.test(m)) return 'wisdom';
+    if (/why (am|do|should|is)/.test(m))  return 'philosophy';
+    if (/i (feel|am|been|was)/.test(m))   return 'resilience';
+    return 'inspirational';
+  }
+
+  // ── Quote Fetch (batch cache) ──
+  const QUOTE_CACHE_EXPIRY = 24 * 60 * 60 * 1000;
+
+  async function fetchQuoteForTag(tag, message) {
+    const cacheKey = 'quote_batch_' + tag;
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const { quotes, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < QUOTE_CACHE_EXPIRY && quotes && quotes.length > 0) {
+          const servedKey = 'quote_served_' + tag;
+          const served    = JSON.parse(localStorage.getItem(servedKey) || '[]');
+          const unserved  = quotes.filter(q => !served.includes(q.content));
+          const pool      = unserved.length > 0 ? unserved : quotes;
+          const picked    = pool[Math.floor(Math.random() * pool.length)];
+          localStorage.setItem(servedKey, JSON.stringify([...served, picked.content].slice(-10)));
+          return { tag, data: picked };
+        }
+      }
+    } catch(e) {}
+    const res    = await fetch('/api/quote/batch?category=' + encodeURIComponent(tag) + '&message=' + encodeURIComponent(message || tag));
+    const body   = await res.json();
+    const quotes = body.quotes || [];
+    if (quotes.length > 0) {
+      try { localStorage.setItem(cacheKey, JSON.stringify({ quotes, timestamp: Date.now() })); } catch(e) {}
+    }
+    const picked = quotes.length > 0 ? quotes[Math.floor(Math.random() * quotes.length)] : null;
+    return { tag, data: picked };
+  }
+
+  // ── Display Quote ──
+  function displayQuote(quoteData, tag) {
+    currentQuote = quoteData;
+    const body = document.getElementById('quote-display-body');
+    body.classList.add('fading');
+    setTimeout(() => {
+      body.innerHTML =
+        '<div class="big-quote-text">' + quoteData.quote + '</div>' +
+        '<div class="big-quote-author">— ' + (quoteData.author || 'Unknown') + '</div>' +
+        (tag ? '<div class="big-quote-category">' + tag + '</div>' : '');
+      body.classList.remove('fading');
+      body.classList.add('appearing');
+      setTimeout(() => body.classList.remove('appearing'), 400);
+
+      // Show action buttons
+      document.getElementById('save-btn').style.display = '';
+      document.getElementById('share-btn').style.display = '';
+
+      // Update category tag in header
+      const catTag = document.getElementById('quote-category-tag');
+      catTag.textContent = tag || '';
+      catTag.style.display = tag ? '' : 'none';
+
+      // Update last category label
+
+
+      // Increment today count
+      quotesTodayCount++;
+    }, 250);
+  }
+
+  // ── Show loading state ──
+  function showQuoteLoading() {
+    const body = document.getElementById('quote-display-body');
+    body.innerHTML = '<div style="text-align:center;padding:1rem 0;"><div class="loading-dots"><span></span><span></span><span></span></div><div style="margin-top:.8rem;font-size:.82rem;color:#aaa;font-style:italic;">Finding the perfect quote...</div></div>';
+    document.getElementById('save-btn').style.display = 'none';
+    document.getElementById('share-btn').style.display = 'none';
+  }
+
+  // ── Send from input ──
+  async function sendMessage() {
+    const input   = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const message = input.value.trim();
+    if (!message) return;
+    input.value = ''; input.disabled = true; sendBtn.disabled = true;
+    showQuoteLoading();
+    const tag = extractQuoteTag(message);
+    try {
+      const { data } = await fetchQuoteForTag(tag, message);
+      if (data && data.content) {
+        displayQuote({ quote: data.content, author: data.author, category: data.category || tag }, tag);
+        await logToHistory(message, `Here's a ${tag} quote: "${data.content}" — ${data.author || 'Unknown'}`);
+        setTimeout(loadHistory, 800);
+      } else {
+        document.getElementById('quote-display-body').innerHTML = '<div class="quote-empty"><i class="bi bi-exclamation-circle"></i>Could not find a quote. Please try again!</div>';
+      }
+    } catch(e) {
+      document.getElementById('quote-display-body').innerHTML = '<div class="quote-empty"><i class="bi bi-exclamation-circle"></i>Something went wrong. Please try again!</div>';
+    }
+    input.disabled = false; sendBtn.disabled = false; input.focus();
+  }
+
+  // ── Quick chip ──
+  function askChip(prompt) {
+    document.getElementById('userInput').value = prompt;
+    sendMessage();
+  }
+
+  // ── Mood picker ──
+  async function pickMood(tag, message) {
+    // Toggle active chip
+    document.querySelectorAll('.mood-chip').forEach(c => c.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    showQuoteLoading();
+    try {
+      const { data } = await fetchQuoteForTag(tag, message);
+      if (data && data.content) {
+        displayQuote({ quote: data.content, author: data.author, category: data.category || tag }, tag);
+        await logToHistory(message, `Here's a ${tag} quote: "${data.content}" — ${data.author || 'Unknown'}`);
+        setTimeout(loadHistory, 800);
+      }
+    } catch(e) {}
+  }
+
+  // ── Random quote (shuffle button) ──
+  async function fetchRandomQuote() {
+    const tags = ['inspirational','success','wisdom','happiness','resilience','courage','mindset','life'];
+    const tag  = tags[Math.floor(Math.random() * tags.length)];
+    showQuoteLoading();
+    try {
+      const { data } = await fetchQuoteForTag(tag, tag);
+      if (data && data.content) {
+        displayQuote({ quote: data.content, author: data.author, category: data.category || tag }, tag);
+      }
+    } catch(e) {}
+  }
+
+  // ── Key press ──
+  function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+
+  // ── Log to chatlog (shared with CoachAlchemy for health metrics) ──
+  async function logToHistory(userMessage, botResponse) {
+    try {
+      await fetch('/api/chatlog/save', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, userMessage, botResponse })
+      });
+    } catch(e) { console.error('Chatlog save error:', e); }
+  }
+
+  // ── History ──
+  function formatTimestamp(ts) {
+    const d = new Date(ts);
+    return d.toLocaleDateString('en-MY',{day:'numeric',month:'short',year:'numeric'}) + ' · ' +
+           d.toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'});
+  }
+
+  async function loadHistory() {
+    try {
+      const res  = await fetch(`/api/chatlog?userId=${userId}`);
+      const logs = await res.json();
+      renderHistory(logs);
+    } catch(e) { console.error('History load error:', e); }
+  }
+
+  function renderHistory(logs) {
+    const body  = document.getElementById('historyBody');
+    const count = document.getElementById('historyCount');
+    count.textContent = logs.length;
+    if (!logs || !logs.length) {
+      body.innerHTML = '<div class="history-empty"><i class="bi bi-chat-quote"></i>No history yet — start asking for quotes!</div>';
+      return;
+    }
+    const LIMIT = 20;
+    const shown = logs.slice(0, LIMIT);
+    const extra = logs.length - LIMIT;
+    let html = extra > 0 ? `<div style="text-align:center;padding:.4rem 0 .7rem;font-size:.7rem;color:#aaa;font-style:italic;"><i class="bi bi-info-circle me-1"></i>Showing latest ${LIMIT} of ${logs.length}.</div>` : '';
+    html += shown.map(log => `
+      <div class="history-item">
+        <div class="history-ts"><i class="bi bi-clock"></i>${formatTimestamp(log.timestamp)}</div>
+        <div class="history-user"><span>🧑 ${log.user_message}</span></div>
+        <div class="history-bot">
+          <div class="history-bot-icon"><i class="bi bi-stars"></i></div>
+          <span>${log.bot_response}</span>
+        </div>
+      </div>`).join('');
+    body.innerHTML = html;
+    body.scrollTop = 0;
+  }
+
+  // ── Confirm modal ──
+  function showConfirmModal(title, message, confirmText, cancelText) {
+    return new Promise(resolve => {
+      const modal = document.createElement('div');
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);';
+      modal.innerHTML = `
+        <div style="background:#fff;border-radius:20px;width:92vw;max-width:400px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+          <div style="background:linear-gradient(135deg,#dc3545,#e74c3c);padding:1.1rem 1.4rem;">
+            <div style="font-weight:800;font-size:1rem;color:#fff;">${title}</div>
+          </div>
+          <div style="padding:1.4rem;">
+            <p style="font-size:.88rem;color:#444;line-height:1.7;margin-bottom:1.2rem;">${message}</p>
+            <div style="display:flex;gap:8px;">
+              <button id="cCancelBtn" style="flex:1;background:#f8f9fa;border:2px solid #dee2e6;color:#666;border-radius:10px;padding:.6rem;font-weight:700;font-size:.85rem;cursor:pointer;">${cancelText}</button>
+              <button id="cOkBtn" style="flex:1;background:linear-gradient(135deg,#dc3545,#e74c3c);border:none;color:#fff;border-radius:10px;padding:.6rem;font-weight:700;font-size:.85rem;cursor:pointer;">${confirmText}</button>
+            </div>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+      modal.querySelector('#cOkBtn').onclick     = () => { modal.remove(); resolve(true);  };
+      modal.querySelector('#cCancelBtn').onclick = () => { modal.remove(); resolve(false); };
+      modal.addEventListener('click', e => { if (e.target === modal) { modal.remove(); resolve(false); } });
+    });
+  }
+
+  async function clearHistory() {
+    const ok = await showConfirmModal('🗑️ Clear History', 'Clear all quote history? This also affects your Mental Health score.', 'Clear All', 'Cancel');
+    if (!ok) return;
+    try {
+      await fetch('/api/chatlog', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ userId }) });
+      renderHistory([]);
+      showPopup('info', 'History Cleared 🗑️', 'Your quote history has been cleared.');
+    } catch(e) { showPopup('error', 'Error ❌', 'Could not clear history. Please try again.'); }
+  }
+
+  // ── Save favorite ──
+  async function saveFavoriteQuote() {
+    if (!currentQuote) return;
+    try {
+      let res  = await fetch(`/api/favorites?userId=${userId}`);
+      let favs = await res.json();
+      if (!favs.quote) favs.quote = [];
+      const already = favs.quote.some(q => (q.content || q.quote) === currentQuote.quote && q.author === currentQuote.author);
+      if (already) { showPopup('info', 'Already Saved 💙', 'This quote is already in your favorites!'); return; }
+      favs.quote.push({ content: currentQuote.quote, author: currentQuote.author, category: currentQuote.category, _saved_at: new Date().toISOString() });
+      res = await fetch('/api/favorites', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ userId, favorites: favs }) });
+      if (res.ok) {
+        showPopup('success', 'Saved! ❤️', 'Quote added to your favorites.');
+
+        // Update FAB badge if drawer is present
+        const badge = document.getElementById('fav-fab-badge');
+        if (badge) { badge.textContent = favs.quote.length; badge.style.display = 'flex'; }
+        if (typeof loadFavDrawer === 'function' && document.getElementById('fav-drawer')?.classList.contains('open')) loadFavDrawer();
+      } else {
+        showPopup('error', 'Failed ❌', 'Could not save. Please try again.');
+      }
+    } catch(e) { showPopup('error', 'Error ❌', 'An error occurred. Please try again.'); }
+  }
+
+  // ── Copy quote ──
+  function copyQuote() {
+    if (!currentQuote) return;
+    const text = `"${currentQuote.quote}" — ${currentQuote.author || 'Unknown'}`;
+    navigator.clipboard.writeText(text).then(() => {
+      showPopup('success', 'Copied! 📋', 'Quote copied to clipboard.');
+    }).catch(() => {
+      showPopup('error', 'Failed ❌', 'Could not copy. Please try manually.');
+    });
+  }
+
+  // ── Init ──
+  async function init() {
+    loadHistory();
+    // Load fav count
+    try {
+      const res  = await fetch(`/api/favorites?userId=${userId}`);
+      const data = await res.json();
+      const count = data.quote && Array.isArray(data.quote) ? data.quote.length : 0;
+
+    } catch(e) {}
+    // Load a random quote on page open
+    fetchRandomQuote();
+  }
+  init();
+</script>
+
+<!-- ── Footer Modals ── -->
+<div id="footerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:20px;width:92vw;max-width:500px;max-height:80vh;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);display:flex;flex-direction:column;">
+    <div id="footerModalHead" style="padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div style="font-weight:800;font-size:1rem;color:#fff;" id="footerModalTitle"></div>
+      <button onclick="closeFooterModal()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:30px;height:30px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+    <div id="footerModalBody" style="padding:1.4rem;overflow-y:auto;font-size:.88rem;line-height:1.8;color:#444;"></div>
+  </div>
+</div>
+<script>
+const FOOTER_CONTENT = {
+  help: { title:'❓ Help Center', color:'linear-gradient(135deg,var(--fa-green),var(--fa-teal))', body:`<p><strong>Welcome to FitAlchemy Help Center!</strong></p><p><strong>🏋️ Workout Page</strong><br>Browse exercises by category, read tutorials, and add them to your routine.</p><p><strong>🍽️ Meal Planning</strong><br>Search for recipes or browse daily recommendations. Add meals to your weekly plan and track nutrition.</p><p><strong>💬 CoachAlchemy</strong><br>Chat with your AI fitness coach from any page using the floating button (bottom-right).</p><p><strong>✨ Quote Assistant</strong><br>Ask for motivational quotes by topic or mood. Save favourites and copy to share.</p><p><strong>📊 Dashboard</strong><br>View your saved workouts, meal plan, favorites, body stats and health status all in one place.</p>` },
+  privacy: { title:'🔒 Privacy Policy', color:'linear-gradient(135deg,#1565c0,#0d6efd)', body:`<p><strong>FitAlchemy Privacy Policy</strong><br><em>Last updated: April 2026</em></p><p><strong>Data We Collect</strong><br>We collect your email, password (encrypted), profile information, workout routines, meal plans, and chat interactions.</p><p><strong>How We Use Your Data</strong><br>Your data is used solely to provide FitAlchemy services. We do not sell or share your data with third parties.</p><p><strong>Third-Party APIs</strong><br>FitAlchemy uses Spoonacular (meal data), Wger (exercise data), and API Ninjas (quotes). These services have their own privacy policies.</p>` },
+  terms: { title:'📄 Terms of Service', color:'linear-gradient(135deg,#6f42c1,#0dcaf0)', body:`<p><strong>FitAlchemy Terms of Service</strong><br><em>Last updated: April 2026</em></p><p><strong>Acceptance</strong><br>By using FitAlchemy, you agree to these terms.</p><p><strong>Health Disclaimer</strong><br>FitAlchemy is a wellness tracking tool and is not a substitute for professional medical advice.</p><p><strong>AI Coach Disclaimer</strong><br>CoachAlchemy is an AI assistant. Responses are for informational purposes only.</p>` }
+};
+function showFooterModal(type) {
+  const c = FOOTER_CONTENT[type]; if (!c) return;
+  document.getElementById('footerModalHead').style.background = c.color;
+  document.getElementById('footerModalTitle').textContent = c.title;
+  document.getElementById('footerModalBody').innerHTML = c.body;
+  document.getElementById('footerModal').style.display = 'flex';
+}
+function closeFooterModal() { document.getElementById('footerModal').style.display = 'none'; }
+document.getElementById('footerModal').addEventListener('click', function(e) { if (e.target===this) closeFooterModal(); });
+</script>
+
+<!-- ═══ FLOATING FAVORITE QUOTES BUTTON + DRAWER ═══ -->
+<style>
+  #fav-fab{position:fixed;left:1.4rem;bottom:1.4rem;height:56px;padding:0 1.4rem 0 1.1rem;border-radius:30px;border:none;cursor:pointer;z-index:1060;background:linear-gradient(135deg,#f4623a,#ffc107);color:#fff;font-size:1.4rem;display:flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(244,98,58,.4);transition:all .25s;}
+  #fav-fab:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 26px rgba(244,98,58,.5);}
+  #fav-fab .fav-fab-label{font-size:.92rem;font-weight:800;letter-spacing:.4px;white-space:nowrap;}
+  .fav-fab-badge{position:absolute;top:-6px;right:-6px;background:#dc3545;color:#fff;font-size:.65rem;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff;}
+  #fav-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1055;opacity:0;visibility:hidden;transition:opacity .3s ease;}
+  #fav-drawer-overlay.open{opacity:1;visibility:visible;}
+  #fav-drawer{position:fixed;top:0;left:0;height:100%;width:360px;max-width:90vw;background:#fff;z-index:1058;box-shadow:8px 0 30px rgba(0,0,0,.15);transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+  #fav-drawer.open{transform:translateX(0);}
+  .fav-drawer-head{background:linear-gradient(135deg,#f4623a,#ffc107);color:#fff;padding:1.1rem 1.3rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .fav-drawer-head h2{font-size:1.05rem;font-weight:800;margin:0;display:flex;align-items:center;gap:8px;letter-spacing:.5px;}
+  .fav-drawer-close{background:rgba(255,255,255,.25);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;}
+  .fav-drawer-close:hover{background:rgba(255,255,255,.4);}
+  .fav-drawer-body{flex:1;overflow-y:auto;padding:1rem 1.1rem;}
+  .fav-quote-list{display:flex;flex-direction:column;gap:.4rem;}
+  .fav-quote-item{background:#fffaf3;border:1px solid rgba(244,98,58,.15);border-radius:10px;padding:.5rem .7rem;display:flex;gap:8px;align-items:flex-start;transition:all .2s;}
+  .fav-quote-item:hover{box-shadow:0 4px 14px rgba(244,98,58,.12);border-color:#ffc107;}
+  .fav-quote-icon{font-size:.95rem;color:#f4623a;flex-shrink:0;margin-top:2px;}
+  .fav-quote-body{flex:1;min-width:0;}
+  .fav-quote-content{font-size:.78rem;font-style:italic;color:#444;line-height:1.4;}
+  .fav-quote-meta{font-size:.65rem;color:#999;margin-top:4px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+  .fav-quote-meta .fav-quote-author{font-weight:700;color:#e65100;}
+  .fav-quote-remove{width:24px;height:24px;border-radius:6px;border:none;background:linear-gradient(135deg,#dc3545,#c0392b);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.68rem;flex-shrink:0;transition:all .2s;}
+  .fav-quote-remove:hover{opacity:.85;transform:translateY(-1px);}
+  @media(max-width:576px){#fav-fab{left:1rem;bottom:1rem;height:50px;padding:0 1rem 0 .9rem;font-size:1.2rem;}#fav-fab .fav-fab-label{font-size:.8rem;}}
+</style>
+
+<button id="fav-fab" onclick="toggleFavDrawer()" title="Favorite Quotes">
+  <i class="bi bi-heart-fill"></i>
+  <span class="fav-fab-label">Favorite Quotes</span>
+  <span id="fav-fab-badge" class="fav-fab-badge" style="display:none;">0</span>
+</button>
+<div id="fav-drawer-overlay" onclick="toggleFavDrawer()"></div>
+<div id="fav-drawer">
+  <div class="fav-drawer-head">
+    <h2><i class="bi bi-heart-fill"></i> Favorite Quotes</h2>
+    <button class="fav-drawer-close" onclick="toggleFavDrawer()"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="fav-drawer-body" id="fav-drawer-content">
+    <div style="color:#aaa;font-size:.85rem;text-align:center;padding:1rem;">Loading...</div>
+  </div>
+</div>
+
+<script>
+  function toggleFavDrawer() {
+    const drawer = document.getElementById('fav-drawer');
+    const overlay = document.getElementById('fav-drawer-overlay');
+    const isOpen = drawer.classList.toggle('open');
+    overlay.classList.toggle('open');
+    if (isOpen) loadFavDrawer();
+  }
+
+  async function loadFavDrawer() {
+    const el = document.getElementById('fav-drawer-content');
+    try {
+      const res    = await fetch(`/api/favorites?userId=${userId}`);
+      const data   = await res.json();
+      const quotes = data.quote && Array.isArray(data.quote) ? data.quote : [];
+      const badge  = document.getElementById('fav-fab-badge');
+      if (quotes.length > 0) { badge.textContent = quotes.length; badge.style.display = 'flex'; }
+      else badge.style.display = 'none';
+
+      if (!quotes.length) {
+        el.innerHTML = '<div style="text-align:center;padding:1.5rem 0;color:#aaa;"><div style="font-size:2rem;margin-bottom:.5rem;">💛</div><div style="font-size:.8rem;font-style:italic;">No favorite quotes yet.<br>Save a quote to see it here!</div></div>';
+        return;
+      }
+      el.innerHTML = '<div class="fav-quote-list">' + quotes.map((q, idx) => {
+        const savedDate = q._saved_at ? new Date(q._saved_at).toLocaleDateString('en-MY',{day:'numeric',month:'short',year:'numeric'}) : '—';
+        return '<div class="fav-quote-item">' +
+          '<div class="fav-quote-icon"><i class="bi bi-quote"></i></div>' +
+          '<div class="fav-quote-body">' +
+            '<div class="fav-quote-content">' + (q.content || q.q || '') + '</div>' +
+            '<div class="fav-quote-meta"><span class="fav-quote-author">— ' + (q.author || q.a || 'Unknown') + '</span><span><i class="bi bi-calendar3"></i> ' + savedDate + '</span></div>' +
+          '</div>' +
+          '<button class="fav-quote-remove" onclick="removeFavQuote(' + idx + ')"><i class="bi bi-trash-fill"></i></button>' +
+        '</div>';
+      }).join('') + '</div>';
+    } catch(e) { el.innerHTML = '<div style="color:#e74c3c;font-size:.82rem;">Failed to load favorites.</div>'; }
+  }
+
+  async function removeFavQuote(idx) {
+    let res  = await fetch(`/api/favorites?userId=${userId}`);
+    let data = await res.json();
+    if (data.quote) {
+      const removed = data.quote[idx];
+      const label = removed && (removed.content || removed.q) ? '"' + (removed.content || removed.q).slice(0,40) + '…"' : 'Quote';
+      data.quote.splice(idx, 1);
+      const saveRes = await fetch('/api/favorites', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ userId, favorites: data }) });
+      if (saveRes.ok) showPopup('info', 'Quote Removed 🗑️', label + ' removed from your favourites.');
+      else showPopup('error', 'Remove Failed ❌', 'Could not remove. Please try again.');
+      loadFavDrawer();
+    }
+  }
+
+  // Load badge on page open
+  (async () => {
+    try {
+      const res   = await fetch(`/api/favorites?userId=${userId}`);
+      const data  = await res.json();
+      const count = data.quote && Array.isArray(data.quote) ? data.quote.length : 0;
+      const badge = document.getElementById('fav-fab-badge');
+      if (count > 0) { badge.textContent = count; badge.style.display = 'flex'; }
+    } catch(e) {}
+  })();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     COACHALCHEMY FLOATING DRAWER — inject before </body>
+     Works on: dashboard, wger, spoonacular, quote, report
+════════════════════════════════════════════════════════ -->
+<style>
+  /* ── FAB Button ── */
+  #coach-fab{position:fixed;right:1.4rem;bottom:1.4rem;height:56px;padding:0 1.4rem 0 1.1rem;border-radius:30px;border:none;cursor:pointer;z-index:1060;background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;font-size:1.3rem;display:flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(58,12,163,.45);transition:all .25s;}
+  #coach-fab:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 26px rgba(58,12,163,.55);}
+  #coach-fab .coach-fab-label{font-size:.92rem;font-weight:800;letter-spacing:.4px;white-space:nowrap;}
+  #coach-fab-badge{position:absolute;top:-6px;right:-6px;background:#dc3545;color:#fff;font-size:.65rem;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff;display:none;}
+
+  /* ── Overlay ── */
+  #coach-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1065;opacity:0;visibility:hidden;transition:opacity .3s ease;}
+  #coach-overlay.open{opacity:1;visibility:visible;}
+
+  /* ── Drawer ── */
+  #coach-drawer{position:fixed;top:0;right:0;height:100%;width:400px;max-width:95vw;background:#fff;z-index:1070;box-shadow:-8px 0 40px rgba(58,12,163,.18);transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+  #coach-drawer.open{transform:translateX(0);}
+
+  /* ── Drawer Head ── */
+  .coach-drawer-head{background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;padding:1rem 1.2rem;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .coach-drawer-head-info{flex:1;}
+  .coach-drawer-head-info h2{font-size:1rem;font-weight:800;margin:0;letter-spacing:.4px;}
+  .coach-drawer-head-info p{font-size:.72rem;opacity:.8;margin:0;margin-top:2px;}
+  .coach-drawer-avatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border:2px solid rgba(255,255,255,.35);}
+  .coach-head-actions{display:flex;gap:6px;align-items:center;}
+  .coach-head-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:.3rem .75rem;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .coach-head-btn:hover{background:rgba(255,255,255,.32);}
+  .coach-head-close{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.18);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;}
+  .coach-head-close:hover{background:rgba(220,53,69,.7);}
+
+  /* ── Page awareness badge ── */
+
+
+  /* ── Messages ── */
+  .coach-messages{flex:1;overflow-y:auto;padding:1rem;background:#f8f7ff;display:flex;flex-direction:column;gap:.75rem;}
+  .coach-messages::-webkit-scrollbar{width:4px;}
+  .coach-messages::-webkit-scrollbar-thumb{background:#7209b7;border-radius:4px;}
+  .coach-msg{display:flex;gap:8px;align-items:flex-start;}
+  .coach-msg.user{flex-direction:row-reverse;}
+  .coach-msg-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;margin-top:2px;}
+  .coach-msg.bot .coach-msg-avatar{background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;}
+  .coach-msg.user .coach-msg-avatar{background:linear-gradient(135deg,#f4623a,#ffc107);color:#fff;}
+  .coach-msg-bubble{max-width:82%;padding:.65rem .9rem;border-radius:4px 16px 16px 16px;font-size:.83rem;line-height:1.65;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .coach-msg.bot .coach-msg-bubble{background:#fff;color:#333;border:1px solid rgba(58,12,163,.1);}
+  .coach-msg.user .coach-msg-bubble{background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;border-radius:16px 4px 16px 16px;}
+  .coach-msg-bubble strong{color:inherit;}
+
+  /* ── Quote display inside bubble ── */
+  .coach-quote-card{background:linear-gradient(135deg,#3a0ca3,#7209b7);border-radius:12px;padding:.8rem 1rem;margin-top:.5rem;color:#fff;}
+  .coach-quote-text{font-style:italic;font-size:.85rem;line-height:1.6;margin-bottom:.4rem;}
+  .coach-quote-author{font-size:.72rem;opacity:.8;font-weight:600;}
+  .coach-save-btn{margin-top:.6rem;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:.3rem .8rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+  .coach-save-btn:hover{background:rgba(255,255,255,.35);}
+
+  /* ── Loading dots ── */
+  .coach-loading-dots{display:inline-flex;gap:4px;align-items:center;padding:.2rem 0;}
+  .coach-loading-dots span{width:7px;height:7px;border-radius:50%;background:#7209b7;animation:coachBounce .8s ease-in-out infinite;}
+  .coach-loading-dots span:nth-child(2){animation-delay:.15s;}
+  .coach-loading-dots span:nth-child(3){animation-delay:.3s;}
+  @keyframes coachBounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+
+  /* ── Quick chips ── */
+  .coach-chips{padding:.7rem 1rem;border-top:1px solid #f0eeff;background:#fff;display:flex;flex-wrap:wrap;gap:.35rem;}
+  .coach-chip{background:#f0eeff;border:1px solid rgba(114,9,183,.2);color:#3a0ca3;border-radius:20px;padding:.28rem .75rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .coach-chip:hover{background:#7209b7;color:#fff;border-color:#7209b7;}
+
+  /* ── Input ── */
+  .coach-input-row{display:flex;gap:8px;padding:.8rem 1rem;border-top:2px solid #f0eeff;background:#fff;flex-shrink:0;}
+  .coach-input{flex:1;border:2px solid #e9ecef;border-radius:12px;padding:.55rem .9rem;font-size:.85rem;font-family:"Merriweather Sans",sans-serif;transition:all .2s;}
+  .coach-input:focus{border-color:#7209b7;box-shadow:0 0 0 3px rgba(114,9,183,.12);outline:none;}
+  .coach-send{background:linear-gradient(135deg,#3a0ca3,#7209b7);border:none;color:#fff;border-radius:12px;padding:.55rem 1.1rem;font-weight:700;cursor:pointer;transition:all .2s;font-size:.82rem;white-space:nowrap;}
+  .coach-send:hover{opacity:.9;transform:translateY(-1px);}
+  .coach-send:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+
+  @media(max-width:576px){
+    #coach-fab{right:1rem;bottom:1rem;height:50px;padding:0 1rem 0 .9rem;font-size:1.1rem;}
+    #coach-fab .coach-fab-label{font-size:.8rem;}
+    #coach-drawer{width:100%;max-width:100%;}
+  }
+</style>
+
+<button id="coach-fab" onclick="toggleCoachDrawer()" title="CoachAlchemy">
+  <i class="bi bi-robot"></i>
+  <span class="coach-fab-label">CoachAlchemy</span>
+  <span id="coach-fab-badge"></span>
+</button>
+
+<div id="coach-overlay" onclick="toggleCoachDrawer()"></div>
+
+<div id="coach-drawer">
+  <!-- Head -->
+  <div class="coach-drawer-head">
+    <div class="coach-drawer-avatar">🤖</div>
+    <div class="coach-drawer-head-info">
+      <h2>CoachAlchemy</h2>
+      <p>Your personal AI wellness coach</p>
+    </div>
+    <div class="coach-head-actions">
+
+      <button class="coach-head-btn" onclick="coachNewChat()" title="Start fresh conversation">🔄 New Chat</button>
+      <button class="coach-head-close" onclick="toggleCoachDrawer()"><i class="bi bi-x-lg"></i></button>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="coach-messages" id="coach-messages"></div>
+
+  <!-- Quick chips -->
+  <div class="coach-chips" id="coach-chips">
+    <span class="coach-chip" onclick="coachQuickSend('Give me a workout tip')">💪 Workout Tip</span>
+    <span class="coach-chip" onclick="coachQuickSend('Suggest a healthy meal')">🍽️ Meal Idea</span>
+    <span class="coach-chip" onclick="coachQuickSend('Motivate me to keep going')">✨ Motivate Me</span>
+    <span class="coach-chip" onclick="coachQuickSend('How am I doing overall?')">📊 My Overview</span>
+    <span class="coach-chip" onclick="coachQuickSend('I am feeling stressed')">😤 Stressed</span>
+    <span class="coach-chip" onclick="coachQuickSend('How can I sleep better?')">😴 Sleep Tips</span>
+    <span class="coach-chip" onclick="coachQuickSend('Suggest something based on my condition')">🎯 Suggest For Me</span>
+    <span class="coach-chip" onclick="coachQuickSend('Hello, what can you do?')">👋 What can you do</span>
+  </div>
+
+  <!-- Input -->
+  <div class="coach-input-row">
+    <input type="text" class="coach-input" id="coach-input" placeholder="Ask CoachAlchemy anything..." onkeypress="coachHandleKey(event)"/>
+    <button class="coach-send" id="coach-send-btn" onclick="coachSend()"><i class="bi bi-send-fill me-1"></i>Send</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'coachalchemy_history_' + (localStorage.getItem('userId') || 'guest');
+  const MAX_HISTORY = 50;
+
+  const WELCOME = `Hey! 👋 I'm <strong>CoachAlchemy</strong>, your personal wellness coach!<br><br>
+Here's what I can help you with:<br>
+💪 <strong>Workout</strong> — exercise tips, routines, form guidance<br>
+🍽️ <strong>Meal</strong> — meal ideas, macros, nutrition advice<br>
+✨ <strong>Quotes</strong> — motivation and inspiration<br>
+💙 <strong>Wellness</strong> — stress, sleep, hydration, mental health<br>
+📊 <strong>Your Status</strong> — personalised health overview<br><br>
+What would you like today? 🚀`;
+
+  // ── History ──
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+    catch(e) { return []; }
+  }
+  function saveHistory(msgs) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs.slice(-MAX_HISTORY))); } catch(e) {}
+  }
+
+  // ── Render ──
+  function renderMessages(msgs) {
+    const container = document.getElementById('coach-messages');
+    container.innerHTML = '';
+    msgs.forEach(m => appendBubble(m.role, m.html, false));
+    scrollCoach();
+  }
+
+  function appendBubble(role, html, scroll) {
+    if (scroll === undefined) scroll = true;
+    const container = document.getElementById('coach-messages');
+    const wrap = document.createElement('div');
+    wrap.className = 'coach-msg ' + role;
+    const icon = role === 'bot' ? '🤖' : '🧑';
+    wrap.innerHTML = '<div class="coach-msg-avatar">' + icon + '</div><div class="coach-msg-bubble">' + html + '</div>';
+    container.appendChild(wrap);
+    if (scroll) scrollCoach();
+  }
+
+  function scrollCoach() {
+    const c = document.getElementById('coach-messages');
+    c.scrollTop = c.scrollHeight;
+  }
+
+  // ── Loading ──
+  let loadingEl = null;
+  function showLoading() {
+    const container = document.getElementById('coach-messages');
+    loadingEl = document.createElement('div');
+    loadingEl.className = 'coach-msg bot';
+    loadingEl.innerHTML = '<div class="coach-msg-avatar">🤖</div><div class="coach-msg-bubble"><div class="coach-loading-dots"><span></span><span></span><span></span></div></div>';
+    container.appendChild(loadingEl);
+    scrollCoach();
+  }
+  function removeLoading() { if (loadingEl) { loadingEl.remove(); loadingEl = null; } }
+
+  // ── Toggle drawer ──
+  window.toggleCoachDrawer = function() {
+    const drawer  = document.getElementById('coach-drawer');
+    const overlay = document.getElementById('coach-overlay');
+    const isOpen  = drawer.classList.toggle('open');
+    overlay.classList.toggle('open');
+    if (isOpen) {
+      const msgs = loadHistory();
+      if (msgs.length === 0) {
+        appendBubble('bot', WELCOME);
+        saveHistory([{ role:'bot', html: WELCOME }]);
+      } else {
+        renderMessages(msgs);
+      }
+      setTimeout(function(){ document.getElementById('coach-input').focus(); }, 350);
+    }
+  };
+
+  // ── New Chat ──
+  window.coachNewChat = function() {
+    localStorage.removeItem(STORAGE_KEY);
+    document.getElementById('coach-messages').innerHTML = '';
+    appendBubble('bot', WELCOME);
+    saveHistory([{ role:'bot', html: WELCOME }]);
+    document.getElementById('coach-input').focus();
+  };
+
+  // ── Send ──
+  window.coachSend = async function() {
+    const input   = document.getElementById('coach-input');
+    const sendBtn = document.getElementById('coach-send-btn');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const userId = localStorage.getItem('userId');
+    input.value = ''; input.disabled = true; sendBtn.disabled = true;
+
+    appendBubble('user', message);
+    const msgs = loadHistory();
+    msgs.push({ role:'user', html: message });
+    showLoading();
+
+    try {
+      const res  = await fetch('/api/coach', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ message, userId })
+      });
+      const data = await res.json();
+      removeLoading();
+
+      let botHtml = data.text || "Sorry, I couldn't process that. Please try again!";
+
+      if (data.intent === 'quote' && data.quote) {
+        const q = data.quote;
+        botHtml += '<div class="coach-quote-card">' +
+          '<div class="coach-quote-text">\u201C' + q.quote + '\u201D</div>' +
+          '<div class="coach-quote-author">\u2014 ' + (q.author || 'Unknown') + '</div>' +
+          '<button class="coach-save-btn" onclick="coachSaveQuote(\'' + encodeURIComponent(q.quote) + '\',\'' + encodeURIComponent(q.author || '') + '\',\'' + encodeURIComponent(q.category || '') + '\')">' +
+          '<i class="bi bi-heart-fill"></i> Save to Favorites</button></div>';
+      }
+
+      appendBubble('bot', botHtml);
+      msgs.push({ role:'bot', html: botHtml });
+      saveHistory(msgs);
+
+      try {
+        await fetch('/api/chatlog/save', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ userId, userMessage: message, botResponse: data.text || '' })
+        });
+      } catch(e) {}
+
+    } catch(err) {
+      removeLoading();
+      appendBubble('bot', "Something went wrong 😓. Please try again!");
+    }
+
+    input.disabled = false; sendBtn.disabled = false; input.focus();
+  };
+
+  window.coachQuickSend = function(prompt) {
+    document.getElementById('coach-input').value = prompt;
+    coachSend();
+  };
+
+  window.coachHandleKey = function(e) { if (e.key === 'Enter') coachSend(); };
+
+  window.coachSaveQuote = async function(encodedQuote, encodedAuthor, encodedCat) {
+    const userId = localStorage.getItem('userId');
+    const quote  = decodeURIComponent(encodedQuote);
+    const author = decodeURIComponent(encodedAuthor);
+    const cat    = decodeURIComponent(encodedCat);
+    try {
+      let res  = await fetch('/api/favorites?userId=' + userId);
+      let favs = await res.json();
+      if (!favs.quote) favs.quote = [];
+      const already = favs.quote.some(function(q){ return (q.content || q.quote) === quote && q.author === author; });
+      if (already) { coachShowToast('Already in favorites! 💙'); return; }
+      favs.quote.push({ content: quote, author: author, category: cat, _saved_at: new Date().toISOString() });
+      res = await fetch('/api/favorites', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ userId, favorites: favs }) });
+      if (res.ok) {
+        coachShowToast('Quote saved to favorites! ❤️');
+        const badge = document.getElementById('fav-fab-badge');
+        if (badge) { badge.textContent = favs.quote.length; badge.style.display = 'flex'; }
+      } else {
+        coachShowToast('Failed to save. Try again.');
+      }
+    } catch(e) { coachShowToast('Error saving quote.'); }
+  };
+
+  window.coachShowToast = function(msg) {
+    if (typeof showPopup === 'function') { showPopup('success', 'CoachAlchemy', msg); return; }
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:80px;right:1.5rem;background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;padding:.7rem 1.3rem;border-radius:12px;font-weight:700;font-size:.85rem;z-index:9999;box-shadow:0 6px 20px rgba(58,12,163,.35);';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 3000);
+  };
+})();
+</script>
+
+
+</body>

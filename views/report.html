@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <title>FitAlchemy — Reports</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,600,700" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    :root{--fa-green:#0b6e4f;--fa-teal:#14a97c;--fa-accent:#f4623a;--fa-blue:#1565c0;--fa-light:#f0f7f4;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Merriweather Sans',sans-serif;background:var(--fa-light);min-height:100vh;}
+
+    /* NAVBAR */
+    .fa-nav{background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));}
+    .fa-nav .navbar-brand{font-family:"Merriweather",serif;font-weight:700;font-size:1.4rem;color:#fff !important;display:flex;align-items:center;gap:10px;}
+    .fa-nav .navbar-brand img{width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,.5);object-fit:contain;background:#fff;}
+    .fa-nav .nav-link{color:rgba(255,255,255,.85) !important;font-weight:600;padding:.45rem 1rem !important;border-radius:8px;transition:all .2s;}
+    .fa-nav .nav-link:hover,.fa-nav .nav-link.active{background:rgba(255,255,255,.2);color:#fff !important;}
+    .fa-nav .btn-logout{background:rgba(220,53,69,.9);border:none;color:#fff;font-weight:700;border-radius:8px;padding:.45rem 1.2rem;transition:all .2s;}
+    .fa-nav .btn-logout:hover{background:#dc3545;transform:translateY(-1px);}
+
+    /* MODE TABS */
+    .mode-tabs{display:flex;background:#fff;border-radius:14px;padding:4px;box-shadow:0 2px 12px rgba(11,110,79,.1);margin-bottom:1.5rem;border:1px solid rgba(11,110,79,.08);}
+    .mode-tab{flex:1;padding:.6rem;border-radius:10px;border:none;background:none;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;color:#888;}
+    .mode-tab.active{background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));color:#fff;box-shadow:0 3px 10px rgba(11,110,79,.25);}
+
+    /* DATE PICKER */
+    .date-picker-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.2rem;flex-wrap:wrap;}
+    .date-input{border:2px solid rgba(11,110,79,.15);border-radius:10px;padding:.5rem .9rem;font-size:.85rem;font-weight:600;background:#fff;color:#333;outline:none;transition:border-color .2s;}
+    .date-input:focus{border-color:var(--fa-teal);}
+    .btn-load{background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));color:#fff;border:none;border-radius:10px;padding:.5rem 1.2rem;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;}
+    .btn-load:hover{opacity:.9;}
+    .btn-nav{background:#fff;border:2px solid rgba(11,110,79,.2);border-radius:10px;padding:.5rem .9rem;font-size:.85rem;cursor:pointer;transition:all .2s;color:var(--fa-green);font-weight:700;}
+    .btn-nav:hover{background:var(--fa-light);}
+
+    /* STAT CARDS */
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin-bottom:1.2rem;}
+    .stat-card{background:#fff;border-radius:14px;padding:1rem;text-align:center;box-shadow:0 2px 12px rgba(11,110,79,.08);border:1px solid rgba(11,110,79,.08);transition:transform .2s;}
+    .stat-card:hover{transform:translateY(-2px);}
+    .stat-icon{font-size:1.6rem;margin-bottom:.3rem;}
+    .stat-value{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:1px;line-height:1;margin-bottom:.2rem;}
+    .stat-label{font-size:.62rem;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+    .stat-sub{font-size:.68rem;color:#aaa;margin-top:.15rem;}
+
+    /* WHO BAR */
+    .who-bar-wrap{background:#fff;border-radius:14px;padding:1rem 1.2rem;margin-bottom:1.2rem;box-shadow:0 2px 12px rgba(11,110,79,.08);border:1px solid rgba(11,110,79,.08);}
+    .who-bar-title{font-size:.8rem;font-weight:800;color:#333;margin-bottom:.6rem;display:flex;align-items:center;gap:6px;}
+    .who-bar-track{height:10px;background:#f0f0f0;border-radius:6px;overflow:hidden;position:relative;}
+    .who-bar-fill{height:100%;border-radius:6px;background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));transition:width .8s ease;}
+    .who-bar-target{position:absolute;right:0;top:-3px;width:2px;height:16px;background:#e74c3c;}
+    .who-bar-labels{display:flex;justify-content:space-between;font-size:.65rem;color:#aaa;margin-top:.3rem;}
+
+    /* CONSISTENCY SCORE */
+    .score-wrap{background:#fff;border-radius:14px;padding:1rem 1.2rem;margin-bottom:1.2rem;box-shadow:0 2px 12px rgba(11,110,79,.08);border:1px solid rgba(11,110,79,.08);text-align:center;}
+    .score-circle{width:80px;height:80px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto .5rem;border:4px solid;}
+    .score-num{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1;}
+    .score-pct{font-size:.6rem;font-weight:700;}
+
+    /* DAILY BREAKDOWN */
+    .day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;margin-bottom:1.2rem;}
+    .day-cell{background:#fff;border-radius:10px;padding:.5rem .3rem;text-align:center;border:2px solid transparent;transition:all .2s;}
+    .day-cell.has-activity{border-color:var(--fa-teal);background:#f0fdf4;}
+    .day-cell.today{border-color:var(--fa-green);background:#e8f5e9;}
+    .day-name{font-size:.6rem;font-weight:800;color:#888;text-transform:uppercase;margin-bottom:.2rem;}
+    .day-date{font-size:.65rem;font-weight:700;color:#333;margin-bottom:.3rem;}
+    .day-dots{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;}
+    .dot{width:8px;height:8px;border-radius:50%;}
+    .dot-workout{background:var(--fa-teal);}
+    .dot-meal{background:#f4623a;}
+    .day-mins{font-size:.55rem;color:#888;margin-top:.2rem;}
+
+    /* PLAN LIST */
+    .plan-section{background:#fff;border-radius:14px;padding:1rem 1.2rem;margin-bottom:1rem;box-shadow:0 2px 12px rgba(11,110,79,.08);border:1px solid rgba(11,110,79,.08);}
+    .plan-section-title{font-size:.82rem;font-weight:800;color:#333;margin-bottom:.8rem;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.5px;}
+    .plan-item{display:flex;align-items:center;gap:.75rem;padding:.6rem .8rem;border-radius:10px;background:#f8fffe;border:1.5px solid rgba(11,110,79,.08);margin-bottom:.5rem;transition:all .2s;}
+    .plan-item.completed{opacity:.6;background:#f0f0f0;}
+    .plan-item.completed .plan-name{text-decoration:line-through;}
+    .plan-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--fa-teal);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.7rem;transition:all .2s;flex-shrink:0;}
+    .plan-check.done{background:var(--fa-teal);border-color:var(--fa-teal);color:#fff;}
+    .plan-img{width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+    .plan-img-placeholder{width:40px;height:40px;border-radius:8px;background:var(--fa-light);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+    .plan-info{flex:1;min-width:0;}
+    .plan-name{font-size:.82rem;font-weight:700;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .plan-meta{font-size:.68rem;color:#aaa;margin-top:2px;}
+    .plan-badge{font-size:.6rem;font-weight:700;padding:.15rem .5rem;border-radius:6px;background:var(--fa-light);color:var(--fa-green);}
+
+    /* EMPTY STATE */
+    .empty-state{text-align:center;padding:2.5rem 1rem;color:#bbb;}
+    .empty-state i{font-size:2.5rem;display:block;margin-bottom:.6rem;opacity:.4;}
+
+    /* LOADING */
+    .loading-state{text-align:center;padding:2rem;color:#aaa;font-size:.85rem;}
+
+    /* FOOTER */
+    .fa-footer{background:linear-gradient(135deg,#0b6e4f 0%,#0d7a58 40%,#14a97c 100%);color:rgba(255,255,255,.9);padding:3rem 0 0;margin-top:auto;}
+    .f-logo{font-family:"Merriweather",serif;font-size:1.6rem;font-weight:700;color:#fff;letter-spacing:.5px;}
+    .f-tagline{font-size:.88rem;opacity:.78;line-height:1.65;margin:.5rem 0 1.25rem;max-width:300px;}
+    .f-social-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:10px;}
+    .f-sico{width:42px;height:42px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;text-decoration:none;transition:all .25s;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);}
+    .f-sico:hover{transform:translateY(-3px) scale(1.1);color:#fff;border-color:#fff;}
+    .f-sico-fb:hover{background:#1877f2;border-color:#1877f2;}
+    .f-sico-tw:hover{background:#000;border-color:#000;}
+    .f-sico-ig:hover{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%);border-color:#d6249f;}
+    .f-sico-yt:hover{background:#ff0000;border-color:#ff0000;}
+    .f-sico-li:hover{background:#0077b5;border-color:#0077b5;}
+    .f-col-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.55);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,.15);}
+    .f-link{display:flex;align-items:center;color:rgba(255,255,255,.8);text-decoration:none;font-size:.88rem;font-weight:500;padding:.32rem 0;transition:all .2s;}
+    .f-link:hover{color:#fff;padding-left:4px;}
+    .f-link i{opacity:.6;font-size:.82rem;}
+    .f-disclaimer{background:rgba(0,0,0,.12);border-radius:12px;padding:1rem 1.1rem;font-size:.82rem;line-height:1.7;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.1);display:flex;align-items:flex-start;gap:4px;}
+    .f-divider{border:none;border-top:1px solid rgba(255,255,255,.15);margin:2.5rem 0 0;}
+    .f-bottom{padding:1rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:.8rem;color:rgba(255,255,255,.55);}
+    @media(max-width:768px){.f-tagline{max-width:100%;}.f-bottom{justify-content:center;text-align:center;}}
+
+    /* POPUP */
+    #popupContainer{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:320px;}
+    .popup-notification{background:#fff;border-radius:14px;padding:.9rem 1.1rem;box-shadow:0 8px 30px rgba(0,0,0,.15);display:flex;align-items:flex-start;gap:10px;transform:translateX(120%);transition:transform .4s ease;border-left:4px solid #ccc;}
+    .popup-notification.show{transform:translateX(0);}
+    .popup-notification.success{border-left-color:var(--fa-green);}
+    .popup-notification.error{border-left-color:#dc3545;}
+    .popup-title{font-weight:700;font-size:.85rem;margin-bottom:2px;}
+    .popup-message{font-size:.78rem;color:#555;}
+  </style>
+</head>
+<body>
+<div id="popupContainer"></div>
+
+<!-- NAVBAR -->
+<nav class="fa-nav navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/dashboard.html">
+      <img id="site-logo" src="/img/logo fitt.png" alt="FA"
+           onerror="this.style.display='none';document.getElementById('logo-placeholder').style.display='flex';">
+      <span id="logo-placeholder" style="display:none;width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:50%;align-items:center;justify-content:center;font-weight:900;font-size:.75rem;color:#fff;flex-shrink:0;">FA</span>
+      FitAlchemy
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <i class="bi bi-list text-white fs-4"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav mx-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="/dashboard.html"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/wger.html"><i class="bi bi-lightning-fill me-1"></i>Workout</a></li>
+        <li class="nav-item"><a class="nav-link" href="/spoonacular.html"><i class="bi bi-egg-fried me-1"></i>Meal Planning</a></li>
+        <li class="nav-item"><a class="nav-link" href="/quote.html"><i class="bi bi-chat-quote-fill me-1"></i>Quotes</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/report.html"><i class="bi bi-bar-chart-fill me-1"></i>Reports</a></li>
+        <li class="nav-item"><a class="nav-link" href="/profile.html"><i class="bi bi-person-fill me-1"></i>Profile</a></li>
+      </ul>
+      <button class="btn-logout btn" onclick="logout()"><i class="bi bi-box-arrow-right me-1"></i>Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero" style="background:linear-gradient(135deg,var(--fa-green) 0%,var(--fa-teal) 60%,#20c997 100%);padding:2rem 0 1.5rem;">
+  <div class="container" style="text-align:center;">
+    <h1 style="font-family:'Merriweather',serif;font-weight:700;font-size:1.8rem;color:#fff;margin-bottom:.3rem;"><i class="bi bi-bar-chart-fill me-2"></i>Daily & Weekly Reports</h1>
+    <p style="color:rgba(255,255,255,.8);font-size:.9rem;margin:0;">Track your workout consistency, calorie balance and wellness progress</p>
+  </div>
+</div>
+
+<div class="container py-4" style="max-width:900px;">
+
+  <!-- MODE TABS -->
+  <div class="mode-tabs mb-3">
+    <button class="mode-tab active" id="tabDaily"  onclick="switchMode('daily')"><i class="bi bi-calendar-day me-1"></i>Daily Report</button>
+    <button class="mode-tab"        id="tabWeekly" onclick="switchMode('weekly')"><i class="bi bi-calendar-week me-1"></i>Weekly Report</button>
+  </div>
+
+  <!-- DATE CONTROLS -->
+  <div class="date-picker-row">
+    <button class="btn-nav" onclick="navigateDate(-1)"><i class="bi bi-chevron-left"></i></button>
+    <input type="date" class="date-input" id="dateInput"/>
+    <button class="btn-nav" onclick="navigateDate(1)"><i class="bi bi-chevron-right"></i></button>
+    <button class="btn-load" onclick="loadReport()"><i class="bi bi-search me-1"></i>Load Report</button>
+    <button class="btn-nav" onclick="goToday()"><i class="bi bi-calendar-check me-1"></i>Today</button>
+  </div>
+  <div id="dateRangeLabel" style="font-size:.75rem;color:#888;margin-bottom:1rem;font-weight:600;"></div>
+
+  <!-- REPORT CONTENT -->
+  <div id="reportContent">
+    <div class="loading-state"><i class="bi bi-hourglass-split" style="font-size:2rem;display:block;margin-bottom:.5rem;"></i>Select a date and load your report</div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+  <footer class="fa-footer">
+    <div class="container">
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-4 col-md-12">
+          <div class="f-logo mb-2">💪 FitAlchemy</div>
+          <p class="f-tagline">Transform your fitness journey with personalized workouts, meal plans, and daily motivation.</p>
+          <div class="f-social-row">
+            <a href="https://www.facebook.com/share/184stgLqiz/?mibextid=wwXIfr" target="_blank" class="f-sico f-sico-fb" title="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://x.com/" target="_blank" class="f-sico f-sico-tw" title="Twitter/X"><i class="bi bi-twitter-x"></i></a>
+            <a href="https://www.instagram.com/wannnkt._" target="_blank" class="f-sico f-sico-ig" title="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.youtube.com/@WANAIMIFIRDAUSBINWANAZARIE" target="_blank" class="f-sico f-sico-yt" title="YouTube"><i class="bi bi-youtube"></i></a>
+            <a href="https://www.linkedin.com/" target="_blank" class="f-sico f-sico-li" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+          <div class="f-col-title">Quick Links</div>
+          <a href="/dashboard.html" class="f-link"><i class="bi bi-house-fill me-2"></i>Dashboard</a>
+          <a href="/wger.html" class="f-link"><i class="bi bi-lightning-fill me-2"></i>Workout</a>
+          <a href="/spoonacular.html" class="f-link"><i class="bi bi-egg-fried me-2"></i>Meal Planning</a>
+          <a href="/quote.html" class="f-link"><i class="bi bi-chat-quote-fill me-2"></i>Quotes</a>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+          <div class="f-col-title">Support</div>
+          <a href="javascript:void(0)" onclick="showFooterModal('help')" class="f-link"><i class="bi bi-question-circle me-2"></i>Help Center</a>
+          <a href="https://mail.google.com/mail/?view=cm&to=wanaimi04@gmail.com&su=FitAlchemy%20Support" target="_blank" class="f-link"><i class="bi bi-envelope me-2"></i>Contact Us</a>
+          <a href="javascript:void(0)" onclick="showFooterModal('privacy')" class="f-link"><i class="bi bi-shield-check me-2"></i>Privacy Policy</a>
+          <a href="javascript:void(0)" onclick="showFooterModal('terms')" class="f-link"><i class="bi bi-file-text me-2"></i>Terms of Service</a>
+        </div>
+        <div class="col-lg-4 col-md-4">
+          <div class="f-col-title">Disclaimer</div>
+          <div class="f-disclaimer">
+            <i class="bi bi-info-circle-fill me-2" style="font-size:1.1rem;opacity:.7;flex-shrink:0;"></i>
+            FitAlchemy content is for general informational purposes only. Always consult a qualified healthcare provider before starting any new exercise or diet plan. Individual results may vary.
+          </div>
+        </div>
+      </div>
+      <div class="f-divider"></div>
+      <div class="f-bottom">
+        <span>&copy; 2025 FitAlchemy &mdash; All Rights Reserved</span>
+        <span>Empowering Your Fitness Transformation 💪</span>
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  const userId = localStorage.getItem('userId');
+  if (!localStorage.getItem('userId') || localStorage.getItem('loggedIn') !== 'true') {
+    window.location.href = 'login.html';
+  }
+  function logout() { localStorage.removeItem('userId'); localStorage.removeItem('loggedIn'); window.location.href = '/login.html'; }
+
+  let currentMode = 'daily';
+  let currentDate = new Date();
+
+  function formatDate(d) {
+    const dt = d || new Date();
+    return dt.getFullYear() + '-' +
+      String(dt.getMonth()+1).padStart(2,'0') + '-' +
+      String(dt.getDate()).padStart(2,'0');
+  }
+  function getMonday(d) {
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff));
+  }
+
+  function switchMode(mode) {
+    currentMode = mode;
+    document.getElementById('tabDaily').className  = 'mode-tab' + (mode === 'daily'  ? ' active' : '');
+    document.getElementById('tabWeekly').className = 'mode-tab' + (mode === 'weekly' ? ' active' : '');
+    updateDateInput();
+    loadReport();
+  }
+
+  function updateDateInput() {
+    const input = document.getElementById('dateInput');
+    if (currentMode === 'daily') {
+      input.type  = 'date';
+      input.value = formatDate(currentDate);
+    } else {
+      input.type  = 'week';
+      // Set week input value (YYYY-Www format)
+      const mon   = getMonday(new Date(currentDate));
+      const year  = mon.getFullYear();
+      const week  = getWeekNumber(mon);
+      input.value = year + '-W' + String(week).padStart(2, '0');
+    }
+  }
+
+  function getWeekNumber(d) {
+    const date  = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = date.getUTCDay() || 7;
+    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+    return Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  }
+
+  function navigateDate(dir) {
+    if (currentMode === 'daily') {
+      currentDate.setDate(currentDate.getDate() + dir);
+    } else {
+      currentDate.setDate(currentDate.getDate() + (dir * 7));
+    }
+    updateDateInput();
+    loadReport();
+  }
+
+  function goToday() {
+    currentDate = new Date();
+    updateDateInput();
+    loadReport();
+  }
+
+  async function loadReport() {
+    const input = document.getElementById('dateInput');
+    document.getElementById('reportContent').innerHTML = '<div class="loading-state"><i class="bi bi-hourglass-split" style="font-size:2rem;display:block;margin-bottom:.5rem;animation:spin 1s linear infinite;"></i>Loading report...</div>';
+
+    if (currentMode === 'daily') {
+      const date = input.value || formatDate(new Date());
+      document.getElementById('dateRangeLabel').textContent = '📅 ' + new Date(date + 'T00:00:00').toLocaleDateString('en-MY', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+      await loadDailyReport(date);
+    } else {
+      // Get Monday of selected week
+      let weekStart;
+      if (input.value && input.value.includes('W')) {
+        const [year, week] = input.value.split('-W');
+        const jan4 = new Date(parseInt(year), 0, 4);
+        const monday = new Date(jan4.getTime() + ((parseInt(week) - getWeekNumber(jan4)) * 7 * 86400000));
+        monday.setDate(monday.getDate() - monday.getDay() + 1);
+        weekStart = formatDate(monday);
+      } else {
+        weekStart = formatDate(getMonday(new Date(currentDate)));
+      }
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+      document.getElementById('dateRangeLabel').textContent =
+        '📅 Week: ' + new Date(weekStart + 'T00:00:00').toLocaleDateString('en-MY', { day:'numeric', month:'short' }) +
+        ' – ' + new Date(formatDate(weekEnd) + 'T00:00:00').toLocaleDateString('en-MY', { day:'numeric', month:'short', year:'numeric' });
+      await loadWeeklyReport(weekStart);
+    }
+  }
+
+  // ── DAILY REPORT ────────────────────────────────────────────────────────────
+  async function loadDailyReport(date) {
+    const res  = await fetch('/api/report/daily?userId=' + userId + '&date=' + date);
+    const data = await res.json();
+    const w = data.workouts, m = data.meals;
+
+    let html = '';
+
+    // Stat cards
+    html += '<div class="stat-grid">';
+    html += statCard('🏋️', w.minutes, 'min', 'Workout Time',   w.minutes >= 30 ? '#2e7d32' : '#e65100', w.completed + '/' + w.total + ' completed');
+    html += statCard('🔥', w.caloriesBurnt, 'kcal', 'Calories Burnt', '#e74c3c', w.total + ' exercise(s)');
+    html += statCard('🍽️', m.caloriesIn, 'kcal', 'Calories In',   '#1565c0', m.completed + '/' + m.total + ' meals');
+    html += statCard('⚖️', data.balance.netCalories >= 0 ? '+' + data.balance.netCalories : data.balance.netCalories, 'kcal', 'Net Balance', data.balance.netCalories <= 0 ? '#2e7d32' : '#e65100', data.balance.fatRatioPct ? 'Fat: ' + data.balance.fatRatioPct + '%' : '');
+    html += '</div>';
+
+    // Nutrition breakdown
+    if (m.total > 0) {
+      html += '<div class="plan-section mb-3">';
+      html += '<div class="plan-section-title"><i class="bi bi-pie-chart-fill" style="color:#f4623a;"></i> Nutrition Breakdown</div>';
+      html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;text-align:center;">';
+      html += '<div><div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#e74c3c;">' + m.protein + 'g</div><div style="font-size:.65rem;color:#888;font-weight:700;">PROTEIN</div></div>';
+      html += '<div><div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#f39c12;">' + m.carbs + 'g</div><div style="font-size:.65rem;color:#888;font-weight:700;">CARBS</div></div>';
+      html += '<div><div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#3498db;">' + m.fat + 'g</div><div style="font-size:.65rem;color:#888;font-weight:700;">FAT</div></div>';
+      html += '</div>';
+      if (data.balance.fatRatioPct) {
+        const fatPct = parseFloat(data.balance.fatRatioPct);
+        const fatColor = fatPct <= 30 ? '#2e7d32' : '#e65100';
+        html += '<div class="who-bar-wrap mt-2" style="padding:.6rem .8rem;">';
+        html += '<div class="who-bar-title" style="font-size:.72rem;"><i class="bi bi-info-circle" style="color:' + fatColor + ';"></i> Fat Ratio: <strong style="color:' + fatColor + ';">' + fatPct + '%</strong> (WHO limit: 30%)</div>';
+        html += '<div class="who-bar-track"><div class="who-bar-fill" style="width:' + Math.min(100, fatPct / 0.4) + '%;background:' + fatColor + ';"></div></div>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+
+    // Workout plan list
+    html += '<div class="plan-section mb-3">';
+    html += '<div class="plan-section-title"><i class="bi bi-lightning-fill" style="color:var(--fa-teal);"></i> Today\'s Workouts</div>';
+    if (w.items.length === 0) {
+      html += '<div class="empty-state" style="padding:1rem;"><i class="bi bi-calendar-x"></i>No workouts planned for this day.<br><a href="/wger.html" style="color:var(--fa-teal);font-weight:700;">Add exercises →</a></div>';
+    } else {
+      w.items.forEach(item => {
+        html += planItem(item, 'workout', date);
+      });
+    }
+    html += '</div>';
+
+    // Meal plan list
+    html += '<div class="plan-section mb-3">';
+    html += '<div class="plan-section-title"><i class="bi bi-egg-fried" style="color:#f4623a;"></i> Today\'s Meals</div>';
+    if (m.items.length === 0) {
+      html += '<div class="empty-state" style="padding:1rem;"><i class="bi bi-calendar-x"></i>No meals planned for this day.<br><a href="/spoonacular.html" style="color:#f4623a;font-weight:700;">Add meals →</a></div>';
+    } else {
+      m.items.forEach(item => {
+        html += planItem(item, 'meal', date);
+      });
+    }
+    html += '</div>';
+
+    document.getElementById('reportContent').innerHTML = html;
+  }
+
+  // ── WEEKLY REPORT ────────────────────────────────────────────────────────────
+  async function loadWeeklyReport(weekStart) {
+    const res  = await fetch('/api/report/weekly?userId=' + userId + '&weekStart=' + weekStart);
+    const data = await res.json();
+    const s = data.summary, w = s.workouts, m = s.meals, c = s.consistency;
+
+    let html = '';
+
+    // Consistency score
+    const scoreColor = c.score >= 80 ? '#2e7d32' : c.score >= 60 ? '#f39c12' : c.score >= 40 ? '#e65100' : '#e74c3c';
+    html += '<div class="score-wrap mb-3">';
+    html += '<div class="plan-section-title" style="justify-content:center;"><i class="bi bi-trophy-fill" style="color:#f39c12;"></i> Weekly Consistency Score</div>';
+    html += '<div class="score-circle" style="border-color:' + scoreColor + ';color:' + scoreColor + ';">';
+    html += '<div class="score-num">' + c.score + '</div><div class="score-pct">/ 100</div></div>';
+    html += '<div style="font-weight:800;color:' + scoreColor + ';font-size:.9rem;">' + c.label + '</div>';
+    html += '<div style="font-size:.72rem;color:#aaa;margin-top:.3rem;">Based on workout minutes vs WHO target + meal plan adherence</div>';
+    html += '</div>';
+
+    // Stat cards
+    html += '<div class="stat-grid">';
+    html += statCard('🏋️', w.totalMinutes, 'min', 'Total Workout',  w.whoMet ? '#2e7d32' : '#e65100', 'WHO target: 150 min');
+    html += statCard('🔥', w.caloriesBurnt, 'kcal', 'Calories Burnt', '#e74c3c', w.total + ' exercise(s)');
+    html += statCard('📅', w.activeDays, 'days', 'Active Days',    w.activeDays >= 3 ? '#2e7d32' : '#e65100', 'out of 7 days');
+    html += statCard('🍽️', m.caloriesIn, 'kcal', 'Calories In',    '#1565c0', 'avg ' + m.avgDailyCalories + ' kcal/day');
+    html += '</div>';
+
+    // WHO bar
+    html += '<div class="who-bar-wrap">';
+    html += '<div class="who-bar-title"><i class="bi bi-activity" style="color:' + (w.whoMet ? '#2e7d32' : '#e65100') + ';"></i> WHO 2020 Physical Activity Target — <strong style="color:' + (w.whoMet ? '#2e7d32' : '#e65100') + ';">' + w.totalMinutes + ' / 150 min</strong>' + (w.whoMet ? ' ✅ Met!' : ' ⚠️ Not yet') + '</div>';
+    html += '<div class="who-bar-track"><div class="who-bar-fill" style="width:' + Math.min(100, (w.totalMinutes / 150) * 100) + '%;"></div></div>';
+    html += '<div class="who-bar-labels"><span>0 min</span><span>150 min (WHO min)</span><span>300 min</span></div>';
+    html += '</div>';
+
+    // Nutrition summary
+    html += '<div class="plan-section mb-3">';
+    html += '<div class="plan-section-title"><i class="bi bi-pie-chart-fill" style="color:#f4623a;"></i> Weekly Nutrition Summary</div>';
+    html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;text-align:center;">';
+    html += '<div><div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#e74c3c;">' + m.protein + 'g</div><div style="font-size:.65rem;color:#888;font-weight:700;">TOTAL PROTEIN</div></div>';
+    html += '<div><div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#f39c12;">' + m.carbs + 'g</div><div style="font-size:.65rem;color:#888;font-weight:700;">TOTAL CARBS</div></div>';
+    html += '<div><div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem;color:#3498db;">' + m.fat + 'g</div><div style="font-size:.65rem;color:#888;font-weight:700;">TOTAL FAT</div></div>';
+    html += '</div></div>';
+
+    // Daily breakdown grid
+    html += '<div class="plan-section mb-3">';
+    html += '<div class="plan-section-title"><i class="bi bi-grid-3x2-gap-fill" style="color:var(--fa-teal);"></i> Daily Breakdown</div>';
+    html += '<div class="day-grid">';
+    const todayStr = formatDate(new Date());
+    data.dailyBreakdown.forEach(day => {
+      const isToday = day.date === todayStr;
+      const hasAct  = day.workouts > 0 || day.meals > 0;
+      html += '<div class="day-cell' + (hasAct ? ' has-activity' : '') + (isToday ? ' today' : '') + '" onclick="goToDay(\'' + day.date + '\')" style="cursor:pointer;">';
+      html += '<div class="day-name">' + day.dayName + '</div>';
+      html += '<div class="day-date">' + new Date(day.date + 'T00:00:00').getDate() + '</div>';
+      html += '<div class="day-dots">';
+      for (let i = 0; i < Math.min(day.workouts, 3); i++) html += '<div class="dot dot-workout"></div>';
+      for (let i = 0; i < Math.min(day.meals, 3); i++)    html += '<div class="dot dot-meal"></div>';
+      html += '</div>';
+      if (day.workoutMin > 0) html += '<div class="day-mins">' + day.workoutMin + 'm</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '<div style="display:flex;gap:1rem;font-size:.68rem;color:#888;margin-top:.3rem;">';
+    html += '<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--fa-teal);margin-right:4px;"></span>Workout</span>';
+    html += '<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f4623a;margin-right:4px;"></span>Meal</span>';
+    html += '<div style="font-size:.65rem;color:#aaa;margin-left:auto;">Click a day for details</div>';
+    html += '</div></div>';
+
+    document.getElementById('reportContent').innerHTML = html;
+  }
+
+  // ── HELPERS ──────────────────────────────────────────────────────────────────
+  function statCard(icon, value, unit, label, color, sub) {
+    return '<div class="stat-card"><div class="stat-icon">' + icon + '</div>' +
+      '<div class="stat-value" style="color:' + color + ';">' + (value || 0) + '</div>' +
+      '<div class="stat-label">' + unit + ' · ' + label + '</div>' +
+      (sub ? '<div class="stat-sub">' + sub + '</div>' : '') + '</div>';
+  }
+
+  function planItem(item, type, date) {
+    const done  = item.is_completed == 1;
+    const icon  = type === 'workout' ? '💪' : '🍽️';
+    const meta  = type === 'workout'
+      ? (item.reps ? item.reps + ' reps · est. ' + Math.max(5, Math.round((parseInt(item.reps)||10)*0.2)) + ' min' : '')
+      : ((item.calories ? Math.round(item.calories) + ' kcal' : '') + (item.meal ? ' · ' + item.meal : ''));
+
+    return '<div class="plan-item' + (done ? ' completed' : '') + '" id="item-' + type + '-' + item.id + '">' +
+      '<div class="plan-check' + (done ? ' done' : '') + '" onclick="toggleComplete(' + item.id + ',\'' + type + '\',' + (done ? 0 : 1) + ',\'' + date + '\')">' +
+      (done ? '<i class="bi bi-check-lg"></i>' : '') + '</div>' +
+      '<div class="plan-img-placeholder">' + icon + '</div>' +
+      '<div class="plan-info"><div class="plan-name">' + (item.name || item.title || 'Unknown') + '</div>' +
+      '<div class="plan-meta">' + meta + '</div></div>' +
+      (item.category ? '<span class="plan-badge">' + item.category + '</span>' : '') +
+      '</div>';
+  }
+
+  async function toggleComplete(id, type, status, date) {
+    const endpoint = type === 'workout' ? '/api/report/workout/complete' : '/api/report/meal/complete';
+    await fetch(endpoint, {
+      method:  'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ userId, id, status: !!status })
+    });
+    // Reload the day's report
+    await loadDailyReport(date);
+  }
+
+  function goToDay(date) {
+    currentMode = 'daily';
+    currentDate = new Date(date + 'T00:00:00');
+    document.getElementById('tabDaily').className  = 'mode-tab active';
+    document.getElementById('tabWeekly').className = 'mode-tab';
+    updateDateInput();
+    loadReport();
+  }
+
+  function showPopup(type, title, message) {
+    const popup = document.createElement('div');
+    popup.className = 'popup-notification ' + type;
+    popup.innerHTML = '<div><div class="popup-title">' + title + '</div><div class="popup-message">' + message + '</div></div>';
+    document.getElementById('popupContainer').appendChild(popup);
+    setTimeout(() => popup.classList.add('show'), 10);
+    setTimeout(() => { popup.classList.remove('show'); setTimeout(() => popup.remove(), 500); }, 3500);
+  }
+
+  // Init
+  updateDateInput();
+  loadReport();
+</script>
+
+<div id="footerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:20px;width:92vw;max-width:500px;max-height:80vh;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);display:flex;flex-direction:column;">
+    <div id="footerModalHead" style="padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div style="font-weight:800;font-size:1rem;color:#fff;" id="footerModalTitle"></div>
+      <button onclick="closeFooterModal()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:30px;height:30px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+    <div id="footerModalBody" style="padding:1.4rem;overflow-y:auto;font-size:.88rem;line-height:1.8;color:#444;"></div>
+  </div>
+</div>
+
+<script>
+const FOOTER_CONTENT = {
+  help: {
+    title: '❓ Help Center',
+    color: 'linear-gradient(135deg,var(--fa-green),var(--fa-teal))',
+    body: `<p><strong>Welcome to FitAlchemy Help Center!</strong></p>
+      <p><strong>🏋️ Workout Page</strong><br>Browse exercises by category, read tutorials, and add them to your routine. Use the Calorie Burn Estimator to track your burn.</p>
+      <p><strong>🍽️ Meal Planning</strong><br>Search for recipes or browse daily recommendations. Add meals to your weekly plan and track nutrition.</p>
+      <p><strong>💬 CoachAlchemy</strong><br>Chat with your AI fitness coach. Ask for workout tips, meal ideas, or motivational quotes.</p>
+      <p><strong>👤 Profile</strong><br>Update your personal info, height, weight, fitness goals and dietary preferences. Your health status is auto-evaluated based on your data.</p>
+      <p><strong>📊 Dashboard</strong><br>View your saved workouts, meal plan, favorites, body stats and health status all in one place.</p>
+      <p><strong>📈 Reports</strong><br>View daily and weekly summaries of your workout minutes, calories burnt, calories consumed, and consistency score vs WHO targets.</p>
+      <p style="margin-top:1rem;color:#888;font-size:.8rem;">For further assistance, contact us at <a href="https://mail.google.com/mail/?view=cm&to=wanaimi04@gmail.com&su=FitAlchemy%20Support" target="_blank" style="color:var(--fa-teal);">wanaimi04@gmail.com</a></p>`
+  },
+  privacy: {
+    title: '🔒 Privacy Policy',
+    color: 'linear-gradient(135deg,#1565c0,#0d6efd)',
+    body: `<p><strong>FitAlchemy Privacy Policy</strong><br><em>Last updated: April 2026</em></p>
+      <p><strong>Data We Collect</strong><br>We collect your email, password (encrypted), profile information (name, age, height, weight, fitness goals), workout routines, meal plans, and chat interactions with CoachAlchemy.</p>
+      <p><strong>How We Use Your Data</strong><br>Your data is used solely to provide FitAlchemy services including health tracking, personalised recommendations, and fitness coaching. We do not sell or share your data with third parties.</p>
+      <p><strong>Data Storage</strong><br>All data is stored securely in our database. Passwords are encrypted using bcrypt. Profile images are stored as encrypted base64 data.</p>
+      <p><strong>Your Rights</strong><br>You may update or delete your profile data at any time through the Profile page. To request full account deletion, contact us at wanaimi04@gmail.com.</p>
+      <p><strong>Third-Party APIs</strong><br>FitAlchemy uses Spoonacular (meal data), Wger (exercise data), and API Ninjas (calorie estimation). These services have their own privacy policies.</p>
+      <p style="color:#888;font-size:.8rem;">By using FitAlchemy, you agree to this privacy policy.</p>`
+  },
+  terms: {
+    title: '📄 Terms of Service',
+    color: 'linear-gradient(135deg,#6f42c1,#0dcaf0)',
+    body: `<p><strong>FitAlchemy Terms of Service</strong><br><em>Last updated: April 2026</em></p>
+      <p><strong>Acceptance</strong><br>By using FitAlchemy, you agree to these terms. If you do not agree, please do not use this service.</p>
+      <p><strong>Account Responsibility</strong><br>You are responsible for maintaining the confidentiality of your account credentials. You agree to provide accurate information during registration.</p>
+      <p><strong>Health Disclaimer</strong><br>FitAlchemy is a wellness tracking tool and is not a substitute for professional medical advice. Health status evaluations are estimates based on general guidelines (WHO, FAO). Always consult a qualified healthcare provider before making health decisions.</p>
+      <p><strong>Acceptable Use</strong><br>You agree not to misuse FitAlchemy, attempt to hack or disrupt the service, or use it for any unlawful purpose.</p>
+      <p><strong>AI Coach Disclaimer</strong><br>CoachAlchemy is an AI assistant. Responses are for informational purposes only and should not be treated as professional fitness or medical advice.</p>
+      <p><strong>Changes</strong><br>We reserve the right to update these terms at any time. Continued use of FitAlchemy constitutes acceptance of any changes.</p>
+      <p style="color:#888;font-size:.8rem;">Questions? Contact us at wanaimi04@gmail.com</p>`
+  }
+};
+
+function showFooterModal(type) {
+  const c = FOOTER_CONTENT[type];
+  if (!c) return;
+  document.getElementById('footerModalHead').style.background = c.color;
+  document.getElementById('footerModalTitle').textContent = c.title;
+  document.getElementById('footerModalBody').innerHTML = c.body;
+  document.getElementById('footerModal').style.display = 'flex';
+}
+function closeFooterModal() {
+  document.getElementById('footerModal').style.display = 'none';
+}
+document.getElementById('footerModal').addEventListener('click', function(e) {
+  if (e.target === this) closeFooterModal();
+});
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     COACHALCHEMY FLOATING DRAWER — inject before </body>
+     Works on: dashboard, wger, spoonacular, quote, report
+════════════════════════════════════════════════════════ -->
+<style>
+  /* ── FAB Button ── */
+  #coach-fab{position:fixed;right:1.4rem;bottom:1.4rem;height:56px;padding:0 1.4rem 0 1.1rem;border-radius:30px;border:none;cursor:pointer;z-index:1060;background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;font-size:1.3rem;display:flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(58,12,163,.45);transition:all .25s;}
+  #coach-fab:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 26px rgba(58,12,163,.55);}
+  #coach-fab .coach-fab-label{font-size:.92rem;font-weight:800;letter-spacing:.4px;white-space:nowrap;}
+  #coach-fab-badge{position:absolute;top:-6px;right:-6px;background:#dc3545;color:#fff;font-size:.65rem;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff;display:none;}
+
+  /* ── Overlay ── */
+  #coach-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1065;opacity:0;visibility:hidden;transition:opacity .3s ease;}
+  #coach-overlay.open{opacity:1;visibility:visible;}
+
+  /* ── Drawer ── */
+  #coach-drawer{position:fixed;top:0;right:0;height:100%;width:400px;max-width:95vw;background:#fff;z-index:1070;box-shadow:-8px 0 40px rgba(58,12,163,.18);transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+  #coach-drawer.open{transform:translateX(0);}
+
+  /* ── Drawer Head ── */
+  .coach-drawer-head{background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;padding:1rem 1.2rem;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .coach-drawer-head-info{flex:1;}
+  .coach-drawer-head-info h2{font-size:1rem;font-weight:800;margin:0;letter-spacing:.4px;}
+  .coach-drawer-head-info p{font-size:.72rem;opacity:.8;margin:0;margin-top:2px;}
+  .coach-drawer-avatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border:2px solid rgba(255,255,255,.35);}
+  .coach-head-actions{display:flex;gap:6px;align-items:center;}
+  .coach-head-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:.3rem .75rem;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .coach-head-btn:hover{background:rgba(255,255,255,.32);}
+  .coach-head-close{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.18);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;}
+  .coach-head-close:hover{background:rgba(220,53,69,.7);}
+
+  /* ── Page awareness badge ── */
+
+
+  /* ── Messages ── */
+  .coach-messages{flex:1;overflow-y:auto;padding:1rem;background:#f8f7ff;display:flex;flex-direction:column;gap:.75rem;}
+  .coach-messages::-webkit-scrollbar{width:4px;}
+  .coach-messages::-webkit-scrollbar-thumb{background:#7209b7;border-radius:4px;}
+  .coach-msg{display:flex;gap:8px;align-items:flex-start;}
+  .coach-msg.user{flex-direction:row-reverse;}
+  .coach-msg-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;margin-top:2px;}
+  .coach-msg.bot .coach-msg-avatar{background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;}
+  .coach-msg.user .coach-msg-avatar{background:linear-gradient(135deg,#f4623a,#ffc107);color:#fff;}
+  .coach-msg-bubble{max-width:82%;padding:.65rem .9rem;border-radius:4px 16px 16px 16px;font-size:.83rem;line-height:1.65;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .coach-msg.bot .coach-msg-bubble{background:#fff;color:#333;border:1px solid rgba(58,12,163,.1);}
+  .coach-msg.user .coach-msg-bubble{background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;border-radius:16px 4px 16px 16px;}
+  .coach-msg-bubble strong{color:inherit;}
+
+  /* ── Quote display inside bubble ── */
+  .coach-quote-card{background:linear-gradient(135deg,#3a0ca3,#7209b7);border-radius:12px;padding:.8rem 1rem;margin-top:.5rem;color:#fff;}
+  .coach-quote-text{font-style:italic;font-size:.85rem;line-height:1.6;margin-bottom:.4rem;}
+  .coach-quote-author{font-size:.72rem;opacity:.8;font-weight:600;}
+  .coach-save-btn{margin-top:.6rem;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:.3rem .8rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+  .coach-save-btn:hover{background:rgba(255,255,255,.35);}
+
+  /* ── Loading dots ── */
+  .coach-loading-dots{display:inline-flex;gap:4px;align-items:center;padding:.2rem 0;}
+  .coach-loading-dots span{width:7px;height:7px;border-radius:50%;background:#7209b7;animation:coachBounce .8s ease-in-out infinite;}
+  .coach-loading-dots span:nth-child(2){animation-delay:.15s;}
+  .coach-loading-dots span:nth-child(3){animation-delay:.3s;}
+  @keyframes coachBounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+
+  /* ── Quick chips ── */
+  .coach-chips{padding:.7rem 1rem;border-top:1px solid #f0eeff;background:#fff;display:flex;flex-wrap:wrap;gap:.35rem;}
+  .coach-chip{background:#f0eeff;border:1px solid rgba(114,9,183,.2);color:#3a0ca3;border-radius:20px;padding:.28rem .75rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .coach-chip:hover{background:#7209b7;color:#fff;border-color:#7209b7;}
+
+  /* ── Input ── */
+  .coach-input-row{display:flex;gap:8px;padding:.8rem 1rem;border-top:2px solid #f0eeff;background:#fff;flex-shrink:0;}
+  .coach-input{flex:1;border:2px solid #e9ecef;border-radius:12px;padding:.55rem .9rem;font-size:.85rem;font-family:"Merriweather Sans",sans-serif;transition:all .2s;}
+  .coach-input:focus{border-color:#7209b7;box-shadow:0 0 0 3px rgba(114,9,183,.12);outline:none;}
+  .coach-send{background:linear-gradient(135deg,#3a0ca3,#7209b7);border:none;color:#fff;border-radius:12px;padding:.55rem 1.1rem;font-weight:700;cursor:pointer;transition:all .2s;font-size:.82rem;white-space:nowrap;}
+  .coach-send:hover{opacity:.9;transform:translateY(-1px);}
+  .coach-send:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+
+  @media(max-width:576px){
+    #coach-fab{right:1rem;bottom:1rem;height:50px;padding:0 1rem 0 .9rem;font-size:1.1rem;}
+    #coach-fab .coach-fab-label{font-size:.8rem;}
+    #coach-drawer{width:100%;max-width:100%;}
+  }
+</style>
+
+<button id="coach-fab" onclick="toggleCoachDrawer()" title="CoachAlchemy">
+  <i class="bi bi-robot"></i>
+  <span class="coach-fab-label">CoachAlchemy</span>
+  <span id="coach-fab-badge"></span>
+</button>
+
+<div id="coach-overlay" onclick="toggleCoachDrawer()"></div>
+
+<div id="coach-drawer">
+  <!-- Head -->
+  <div class="coach-drawer-head">
+    <div class="coach-drawer-avatar">🤖</div>
+    <div class="coach-drawer-head-info">
+      <h2>CoachAlchemy</h2>
+      <p>Your personal AI wellness coach</p>
+    </div>
+    <div class="coach-head-actions">
+
+      <button class="coach-head-btn" onclick="coachNewChat()" title="Start fresh conversation">🔄 New Chat</button>
+      <button class="coach-head-close" onclick="toggleCoachDrawer()"><i class="bi bi-x-lg"></i></button>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="coach-messages" id="coach-messages"></div>
+
+  <!-- Quick chips -->
+  <div class="coach-chips" id="coach-chips">
+    <span class="coach-chip" onclick="coachQuickSend('Give me a workout tip')">💪 Workout Tip</span>
+    <span class="coach-chip" onclick="coachQuickSend('Suggest a healthy meal')">🍽️ Meal Idea</span>
+    <span class="coach-chip" onclick="coachQuickSend('Motivate me to keep going')">✨ Motivate Me</span>
+    <span class="coach-chip" onclick="coachQuickSend('How am I doing overall?')">📊 My Overview</span>
+    <span class="coach-chip" onclick="coachQuickSend('I am feeling stressed')">😤 Stressed</span>
+    <span class="coach-chip" onclick="coachQuickSend('How can I sleep better?')">😴 Sleep Tips</span>
+    <span class="coach-chip" onclick="coachQuickSend('Suggest something based on my condition')">🎯 Suggest For Me</span>
+    <span class="coach-chip" onclick="coachQuickSend('Hello, what can you do?')">👋 What can you do</span>
+  </div>
+
+  <!-- Input -->
+  <div class="coach-input-row">
+    <input type="text" class="coach-input" id="coach-input" placeholder="Ask CoachAlchemy anything..." onkeypress="coachHandleKey(event)"/>
+    <button class="coach-send" id="coach-send-btn" onclick="coachSend()"><i class="bi bi-send-fill me-1"></i>Send</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'coachalchemy_history_' + (localStorage.getItem('userId') || 'guest');
+  const MAX_HISTORY = 50;
+
+  const WELCOME = `Hey! 👋 I'm <strong>CoachAlchemy</strong>, your personal wellness coach!<br><br>
+Here's what I can help you with:<br>
+💪 <strong>Workout</strong> — exercise tips, routines, form guidance<br>
+🍽️ <strong>Meal</strong> — meal ideas, macros, nutrition advice<br>
+✨ <strong>Quotes</strong> — motivation and inspiration<br>
+💙 <strong>Wellness</strong> — stress, sleep, hydration, mental health<br>
+📊 <strong>Your Status</strong> — personalised health overview<br><br>
+What would you like today? 🚀`;
+
+  // ── History ──
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+    catch(e) { return []; }
+  }
+  function saveHistory(msgs) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs.slice(-MAX_HISTORY))); } catch(e) {}
+  }
+
+  // ── Render ──
+  function renderMessages(msgs) {
+    const container = document.getElementById('coach-messages');
+    container.innerHTML = '';
+    msgs.forEach(m => appendBubble(m.role, m.html, false));
+    scrollCoach();
+  }
+
+  function appendBubble(role, html, scroll) {
+    if (scroll === undefined) scroll = true;
+    const container = document.getElementById('coach-messages');
+    const wrap = document.createElement('div');
+    wrap.className = 'coach-msg ' + role;
+    const icon = role === 'bot' ? '🤖' : '🧑';
+    wrap.innerHTML = '<div class="coach-msg-avatar">' + icon + '</div><div class="coach-msg-bubble">' + html + '</div>';
+    container.appendChild(wrap);
+    if (scroll) scrollCoach();
+  }
+
+  function scrollCoach() {
+    const c = document.getElementById('coach-messages');
+    c.scrollTop = c.scrollHeight;
+  }
+
+  // ── Loading ──
+  let loadingEl = null;
+  function showLoading() {
+    const container = document.getElementById('coach-messages');
+    loadingEl = document.createElement('div');
+    loadingEl.className = 'coach-msg bot';
+    loadingEl.innerHTML = '<div class="coach-msg-avatar">🤖</div><div class="coach-msg-bubble"><div class="coach-loading-dots"><span></span><span></span><span></span></div></div>';
+    container.appendChild(loadingEl);
+    scrollCoach();
+  }
+  function removeLoading() { if (loadingEl) { loadingEl.remove(); loadingEl = null; } }
+
+  // ── Toggle drawer ──
+  window.toggleCoachDrawer = function() {
+    const drawer  = document.getElementById('coach-drawer');
+    const overlay = document.getElementById('coach-overlay');
+    const isOpen  = drawer.classList.toggle('open');
+    overlay.classList.toggle('open');
+    if (isOpen) {
+      const msgs = loadHistory();
+      if (msgs.length === 0) {
+        appendBubble('bot', WELCOME);
+        saveHistory([{ role:'bot', html: WELCOME }]);
+      } else {
+        renderMessages(msgs);
+      }
+      setTimeout(function(){ document.getElementById('coach-input').focus(); }, 350);
+    }
+  };
+
+  // ── New Chat ──
+  window.coachNewChat = function() {
+    localStorage.removeItem(STORAGE_KEY);
+    document.getElementById('coach-messages').innerHTML = '';
+    appendBubble('bot', WELCOME);
+    saveHistory([{ role:'bot', html: WELCOME }]);
+    document.getElementById('coach-input').focus();
+  };
+
+  // ── Send ──
+  window.coachSend = async function() {
+    const input   = document.getElementById('coach-input');
+    const sendBtn = document.getElementById('coach-send-btn');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const userId = localStorage.getItem('userId');
+    input.value = ''; input.disabled = true; sendBtn.disabled = true;
+
+    appendBubble('user', message);
+    const msgs = loadHistory();
+    msgs.push({ role:'user', html: message });
+    showLoading();
+
+    try {
+      const res  = await fetch('/api/coach', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ message, userId })
+      });
+      const data = await res.json();
+      removeLoading();
+
+      let botHtml = data.text || "Sorry, I couldn't process that. Please try again!";
+
+      if (data.intent === 'quote' && data.quote) {
+        const q = data.quote;
+        botHtml += '<div class="coach-quote-card">' +
+          '<div class="coach-quote-text">\u201C' + q.quote + '\u201D</div>' +
+          '<div class="coach-quote-author">\u2014 ' + (q.author || 'Unknown') + '</div>' +
+          '<button class="coach-save-btn" onclick="coachSaveQuote(\'' + encodeURIComponent(q.quote) + '\',\'' + encodeURIComponent(q.author || '') + '\',\'' + encodeURIComponent(q.category || '') + '\')">' +
+          '<i class="bi bi-heart-fill"></i> Save to Favorites</button></div>';
+      }
+
+      appendBubble('bot', botHtml);
+      msgs.push({ role:'bot', html: botHtml });
+      saveHistory(msgs);
+
+      try {
+        await fetch('/api/chatlog/save', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ userId, userMessage: message, botResponse: data.text || '' })
+        });
+      } catch(e) {}
+
+    } catch(err) {
+      removeLoading();
+      appendBubble('bot', "Something went wrong 😓. Please try again!");
+    }
+
+    input.disabled = false; sendBtn.disabled = false; input.focus();
+  };
+
+  window.coachQuickSend = function(prompt) {
+    document.getElementById('coach-input').value = prompt;
+    coachSend();
+  };
+
+  window.coachHandleKey = function(e) { if (e.key === 'Enter') coachSend(); };
+
+  window.coachSaveQuote = async function(encodedQuote, encodedAuthor, encodedCat) {
+    const userId = localStorage.getItem('userId');
+    const quote  = decodeURIComponent(encodedQuote);
+    const author = decodeURIComponent(encodedAuthor);
+    const cat    = decodeURIComponent(encodedCat);
+    try {
+      let res  = await fetch('/api/favorites?userId=' + userId);
+      let favs = await res.json();
+      if (!favs.quote) favs.quote = [];
+      const already = favs.quote.some(function(q){ return (q.content || q.quote) === quote && q.author === author; });
+      if (already) { coachShowToast('Already in favorites! 💙'); return; }
+      favs.quote.push({ content: quote, author: author, category: cat, _saved_at: new Date().toISOString() });
+      res = await fetch('/api/favorites', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ userId, favorites: favs }) });
+      if (res.ok) {
+        coachShowToast('Quote saved to favorites! ❤️');
+        const badge = document.getElementById('fav-fab-badge');
+        if (badge) { badge.textContent = favs.quote.length; badge.style.display = 'flex'; }
+      } else {
+        coachShowToast('Failed to save. Try again.');
+      }
+    } catch(e) { coachShowToast('Error saving quote.'); }
+  };
+
+  window.coachShowToast = function(msg) {
+    if (typeof showPopup === 'function') { showPopup('success', 'CoachAlchemy', msg); return; }
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:80px;right:1.5rem;background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;padding:.7rem 1.3rem;border-radius:12px;font-weight:700;font-size:.85rem;z-index:9999;box-shadow:0 6px 20px rgba(58,12,163,.35);';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 3000);
+  };
+})();
+</script>
+
+
+</body>

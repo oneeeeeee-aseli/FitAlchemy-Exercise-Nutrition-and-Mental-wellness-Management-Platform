@@ -1,0 +1,16 @@
+# Environment variables - NEVER push this
+.env
+
+# Node modules - Railway installs these automatically
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local dev only
+*.local

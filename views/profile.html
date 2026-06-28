@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile — FitAlchemy</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Merriweather+Sans:wght@400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--fa-green:#0b6e4f;--fa-teal:#14a97c;--fa-accent:#f4623a;--fa-blue:#1565c0;--fa-light:#f0f7f4;}
+    *{box-sizing:border-box;}
+    body{font-family:"Merriweather Sans",sans-serif;background:var(--fa-light);min-height:100vh;display:flex;flex-direction:column;}
+
+    /* ── NAV ── */
+    .fa-nav{background:linear-gradient(135deg,var(--fa-green) 0%,var(--fa-teal) 100%);box-shadow:0 4px 20px rgba(11,110,79,.3);padding:.6rem 1.5rem;position:sticky;top:0;z-index:1000;}
+    .fa-nav .navbar-brand{font-family:"Merriweather",serif;font-weight:700;font-size:1.4rem;color:#fff !important;display:flex;align-items:center;gap:10px;}
+    .fa-nav .navbar-brand img{width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,.5);object-fit:contain;background:#fff;}
+    .fa-nav .nav-link{color:rgba(255,255,255,.85) !important;font-weight:600;padding:.45rem 1rem !important;border-radius:8px;transition:all .2s;}
+    .fa-nav .nav-link:hover,.fa-nav .nav-link.active{background:rgba(255,255,255,.2);color:#fff !important;}
+    .fa-nav .btn-logout{background:rgba(220,53,69,.9);border:none;color:#fff;font-weight:700;border-radius:8px;padding:.45rem 1.2rem;transition:all .2s;}
+    .fa-nav .btn-logout:hover{background:#dc3545;transform:translateY(-1px);}
+
+    /* ── HERO ── */
+    .page-hero{background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));color:#fff;padding:2.5rem 0 2rem;position:relative;overflow:hidden;}
+    .page-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
+    .page-hero h1{font-family:"Merriweather",serif;font-size:1.8rem;font-weight:700;margin-bottom:.25rem;}
+    .page-hero p{opacity:.85;font-size:.95rem;}
+
+    /* ── AVATAR ── */
+    .profile-avatar-wrap{display:flex;justify-content:center;margin-top:-60px;margin-bottom:1.2rem;position:relative;z-index:10;}
+    .profile-avatar-container{position:relative;display:inline-block;cursor:pointer;}
+    .profile-avatar{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));border:5px solid #fff;box-shadow:0 8px 28px rgba(11,110,79,.3);display:flex;align-items:center;justify-content:center;font-size:2.8rem;color:#fff;font-family:"Merriweather",serif;font-weight:800;flex-shrink:0;overflow:hidden;object-fit:cover;}
+    .profile-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+    .avatar-upload-overlay{
+      position:absolute;bottom:4px;right:4px;
+      width:32px;height:32px;border-radius:50%;
+      background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));
+      border:3px solid #fff;
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-size:.85rem;cursor:pointer;
+      box-shadow:0 2px 8px rgba(0,0,0,.2);
+      transition:all .2s;
+    }
+    .avatar-upload-overlay:hover{transform:scale(1.1);box-shadow:0 4px 12px rgba(11,110,79,.4);}
+    #avatarFileInput{display:none;}
+
+    /* ── CARD ── */
+    .profile-card{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(11,110,79,.1);padding:1.8rem 2rem;margin-bottom:1.5rem;}
+    .profile-card-title{font-family:"Merriweather",serif;font-size:.9rem;font-weight:700;color:var(--fa-green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:1.2rem;display:flex;align-items:center;gap:8px;padding-bottom:.6rem;border-bottom:2px solid var(--fa-light);}
+
+    /* ── FORM ── */
+    .pf-group{margin-bottom:1.1rem;}
+    .pf-label{font-size:.75rem;font-weight:800;color:var(--fa-green);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:.35rem;}
+    .pf-input,.pf-select{
+      width:100%;border:2px solid #c8e6d4;border-radius:10px;
+      padding:.52rem .9rem;font-size:.88rem;
+      font-family:"Merriweather Sans",sans-serif;outline:none;
+      transition:all .2s;background:#fff;color:#333;
+    }
+    .pf-input:focus,.pf-select:focus{border-color:var(--fa-teal);box-shadow:0 0 0 3px rgba(20,169,124,.15);}
+    .pf-select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%230b6e4f' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:2.2rem;}
+    .pf-input:disabled{background:#f8f9fa;color:#888;border-color:#e0e0e0;}
+    .multi-check-group{display:flex;flex-direction:column;gap:.35rem;background:#fff;border:2px solid rgba(11,110,79,.15);border-radius:12px;padding:.65rem .9rem;max-height:180px;overflow-y:auto;}
+    .multi-check-group::-webkit-scrollbar{width:4px;}
+    .multi-check-group::-webkit-scrollbar-thumb{background:var(--fa-teal);border-radius:4px;}
+    .multi-check-item{display:flex;align-items:center;gap:.6rem;font-size:.85rem;font-weight:600;color:#333;cursor:pointer;padding:.2rem .3rem;border-radius:6px;transition:background .15s;}
+    .multi-check-item:hover{background:var(--fa-light);}
+    .multi-check-item input[type="checkbox"]{width:16px;height:16px;accent-color:var(--fa-green);cursor:pointer;flex-shrink:0;}
+    .pf-unit{position:relative;}
+    .pf-unit .pf-input{padding-right:3rem;}
+    .pf-unit-label{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.75rem;font-weight:700;color:#888;}
+
+    /* ── SAVE BUTTON ── */
+    .btn-save{
+      width:100%;background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));
+      color:#fff;border:none;border-radius:12px;padding:.7rem;
+      font-weight:800;font-size:.92rem;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      transition:all .3s;box-shadow:0 4px 14px rgba(11,110,79,.3);
+      position:relative;overflow:hidden;
+    }
+    .btn-save::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:left .5s;}
+    .btn-save:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(11,110,79,.4);}
+    .btn-save:hover::after{left:150%;}
+
+    /* ── INFO CHIPS ── */
+    .profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem;}
+    /* ── STAT BOXES ── */
+    .profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem;}
+    .pstat-box{
+      border-radius:14px;padding:.85rem .6rem .7rem;text-align:center;
+      position:relative;overflow:hidden;border:1.5px solid transparent;
+      transition:transform .2s,box-shadow .2s;
+    }
+    .pstat-box:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.1);}
+    .pstat-box.age-box  {background:linear-gradient(135deg,#e8f5e9,#f0fdf4);border-color:rgba(11,110,79,.18);}
+    .pstat-box.ht-box   {background:linear-gradient(135deg,#e3f2fd,#ebf5ff);border-color:rgba(21,101,192,.18);}
+    .pstat-box.wt-box   {background:linear-gradient(135deg,#fff3e0,#fff8f0);border-color:rgba(230,81,0,.18);}
+    .pstat-icon{font-size:1.3rem;margin-bottom:.25rem;display:block;}
+    .pstat-num{font-family:"Bebas Neue",sans-serif;font-size:1.7rem;font-weight:400;line-height:1;margin-bottom:.18rem;letter-spacing:1px;}
+    .age-box  .pstat-num{color:var(--fa-green);}
+    .ht-box   .pstat-num{color:#1565c0;font-size:1.35rem;}
+    .wt-box   .pstat-num{color:#e65100;font-size:1.35rem;}
+    .pstat-lbl{font-size:.6rem;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
+
+    /* ── BMI GAUGE ── */
+    .bmi-gauge-wrap{
+      border-radius:16px;padding:1.1rem 1.2rem 1rem;
+      background:#fff;border:1.5px solid rgba(11,110,79,.12);
+      box-shadow:0 2px 10px rgba(0,0,0,.05);
+    }
+    .bmi-gauge-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:#888;margin-bottom:.7rem;display:flex;align-items:center;gap:5px;}
+    /* SVG gauge */
+    .bmi-gauge-svg{display:block;margin:0 auto .5rem;}
+    .bmi-gauge-num{text-align:center;}
+    .bmi-num-val{font-family:"Bebas Neue",sans-serif;font-size:2.8rem;font-weight:400;line-height:1;transition:color .5s;letter-spacing:2px;}
+    .bmi-num-lbl{font-size:.78rem;font-weight:700;margin-top:.15rem;transition:color .5s;}
+    /* BMI range bar */
+    .bmi-range-bar{display:flex;border-radius:8px;overflow:hidden;height:6px;margin:.7rem 0 .4rem;}
+    .bmi-range-bar div{flex:1;}
+    .bmi-range-labels{display:flex;justify-content:space-between;font-size:.58rem;color:#aaa;font-weight:600;}
+    .bmi-needle{display:flex;justify-content:center;margin-top:.6rem;}
+    .bmi-note{font-size:.7rem;color:#aaa;font-style:italic;text-align:center;padding:.4rem 0;}
+
+    /* ── POPUP ── */
+    #popupContainer{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:340px;}
+    .popup-notification{background:#fff;border-radius:14px;padding:1rem 1.25rem;box-shadow:0 8px 30px rgba(0,0,0,.15);display:flex;align-items:flex-start;gap:12px;transform:translateX(120%);transition:transform .4s ease;border-left:4px solid #ccc;position:relative;overflow:hidden;}
+    .popup-notification.show{transform:translateX(0);}
+    .popup-notification.success{border-left-color:var(--fa-green);}
+    .popup-notification.error{border-left-color:#dc3545;}
+    .popup-notification.info{border-left-color:#0d6efd;}
+    .popup-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;}
+    .success .popup-icon{background:#e8f5e9;color:var(--fa-green);}
+    .error   .popup-icon{background:#fdecea;color:#dc3545;}
+    .info    .popup-icon{background:#e3f2fd;color:#0d6efd;}
+    .popup-title{font-weight:700;font-size:.9rem;margin-bottom:2px;color:#222;}
+    .popup-message{font-size:.82rem;color:#555;}
+    .popup-close{position:absolute;top:8px;right:10px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:#aaa;}
+    .popup-progress{position:absolute;bottom:0;left:0;height:3px;background:var(--fa-teal);width:100%;animation:shrinkBar 3.5s linear forwards;}
+    @keyframes shrinkBar{from{width:100%}to{width:0%}}
+
+    /* ── FOOTER ── */
+    .fa-footer{background:linear-gradient(135deg,#0b3d2e,#0b6e4f);color:rgba(255,255,255,.75);padding:1.5rem 0;margin-top:auto;font-size:.82rem;text-align:center;}
+    /* Hide browser native password reveal button */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear,
+    input[type="password"]::-webkit-contacts-auto-fill-button,
+    input[type="password"]::-webkit-credentials-auto-fill-button { display:none !important; }
+  </style>
+</head>
+<body>
+<div id="popupContainer"></div>
+
+<nav class="fa-nav navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/dashboard.html">
+      <img src="/img/logo fitt.png" alt="FA" onerror="this.style.display='none'">
+      FitAlchemy
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <i class="bi bi-list text-white fs-4"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav mx-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="/dashboard.html"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/wger.html"><i class="bi bi-lightning-fill me-1"></i>Workout</a></li>
+        <li class="nav-item"><a class="nav-link" href="/spoonacular.html"><i class="bi bi-egg-fried me-1"></i>Meal Planning</a></li>
+        <li class="nav-item"><a class="nav-link" href="/quote.html"><i class="bi bi-chat-quote-fill me-1"></i>Quotes</a></li>
+        <li class="nav-item"><a class="nav-link" href="/report.html"><i class="bi bi-bar-chart-fill me-1"></i>Reports</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/profile.html"><i class="bi bi-person-fill me-1"></i>Profile</a></li>
+      </ul>
+      <button class="btn-logout btn" onclick="logout()"><i class="bi bi-box-arrow-right me-1"></i>Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="container text-center">
+    <h1><i class="bi bi-person-circle me-2"></i>My Profile</h1>
+    <p>Manage your personal information and fitness preferences</p>
+  </div>
+</div>
+
+<div class="container py-4 flex-grow-1">
+  <!-- Avatar + name -->
+  <div class="profile-avatar-wrap">
+    <div class="profile-avatar-container" onclick="document.getElementById('avatarFileInput').click()">
+      <div class="profile-avatar" id="avatarInitial">
+        <img id="avatarImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;">
+        <span id="avatarText">?</span>
+      </div>
+      <div class="avatar-upload-overlay" title="Change profile photo">
+        <i class="bi bi-camera-fill"></i>
+      </div>
+    </div>
+    <input type="file" id="avatarFileInput" accept="image/*" onchange="handleAvatarUpload(event)">
+  </div>
+  <div class="text-center mb-4">
+    <div style="font-family:'Merriweather',serif;font-size:1.3rem;font-weight:800;color:var(--fa-green);" id="profileName">Loading...</div>
+    <div style="color:#888;font-size:.82rem;" id="profileEmail"></div>
+    <div style="color:#aaa;font-size:.75rem;margin-top:2px;" id="profileJoined"></div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left column — stats + BMI -->
+    <div class="col-lg-4">
+
+      <!-- Goals & Preferences -->
+      <div class="profile-card">
+        <div class="profile-card-title"><i class="bi bi-trophy-fill"></i> Goals & Diet</div>
+        <div style="display:flex;flex-direction:column;gap:.6rem;">
+          <div style="background:var(--fa-light);border-radius:10px;padding:.65rem .9rem;">
+            <div style="font-size:.68rem;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:.5px;">Fitness Goal</div>
+            <div style="font-size:.88rem;font-weight:700;color:var(--fa-green);margin-top:2px;" id="displayGoal">Not set</div>
+          </div>
+
+      <!-- Weekly Report Card -->
+      <div class="profile-card" style="margin-top:1.2rem;">
+        <div class="profile-card-title"><i class="bi bi-calendar-week-fill"></i> Weekly Report</div>
+        <!-- Week nav -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;">
+          <button onclick="wrNavigate(-1)" style="background:var(--fa-light);border:1.5px solid rgba(11,110,79,.2);border-radius:8px;padding:.25rem .65rem;cursor:pointer;font-size:.8rem;color:var(--fa-green);font-weight:700;">◀</button>
+          <div id="wrWeekLabel" style="font-size:.72rem;font-weight:700;color:#555;text-align:center;"></div>
+          <button onclick="wrNavigate(1)" style="background:var(--fa-light);border:1.5px solid rgba(11,110,79,.2);border-radius:8px;padding:.25rem .65rem;cursor:pointer;font-size:.8rem;color:var(--fa-green);font-weight:700;">▶</button>
+        </div>
+        <!-- Consistency score -->
+        <div id="wrScore" style="text-align:center;margin-bottom:.8rem;"></div>
+        <!-- 7-day activity grid -->
+        <div id="wrDayGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:.8rem;"></div>
+        <!-- Stats -->
+        <div id="wrStats" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:.72rem;"></div>
+        <!-- WHO bar -->
+        <div id="wrWhoBar" style="margin-top:.7rem;"></div>
+        <a href="/report.html" style="display:block;text-align:center;margin-top:.7rem;font-size:.75rem;color:var(--fa-teal);font-weight:700;text-decoration:none;"><i class="bi bi-arrow-right-circle me-1"></i>Full Report</a>
+      </div>
+          <div style="background:var(--fa-light);border-radius:10px;padding:.65rem .9rem;">
+            <div style="font-size:.68rem;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:.5px;">Dietary Preference</div>
+            <div style="font-size:.88rem;font-weight:700;color:var(--fa-green);margin-top:2px;" id="displayDiet">Not set</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right column — edit form -->
+    <div class="col-lg-8">
+      <div class="profile-card">
+        <div class="profile-card-title"><i class="bi bi-pencil-fill"></i> Edit Profile</div>
+
+        <!-- Account info (read-only) -->
+        <div class="row g-3 mb-3">
+          <div class="col-12">
+            <div class="pf-group">
+              <label class="pf-label"><i class="bi bi-envelope-fill me-1"></i>Email Address</label>
+              <input type="text" class="pf-input" id="fieldEmail" disabled/>
+            </div>
+          </div>
+        </div>
+
+        <hr style="border-color:var(--fa-light);margin:.5rem 0 1.2rem;">
+
+        <!-- Personal info -->
+        <div class="row g-3">
+          <div class="col-md-12">
+            <div class="pf-group">
+              <label class="pf-label"><i class="bi bi-person-fill me-1"></i>Full Name</label>
+              <input type="text" class="pf-input" id="fieldName" placeholder="e.g. Ahmad Firdaus"/>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="pf-group">
+              <label class="pf-label"><i class="bi bi-calendar3 me-1"></i>Age</label>
+              <div class="pf-unit">
+                <input type="number" class="pf-input" id="fieldAge" placeholder="e.g. 22" min="10" max="100" oninput="recalcBMI()"/>
+                <span class="pf-unit-label">yrs</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="pf-group">
+              <label class="pf-label"><i class="bi bi-arrows-vertical me-1"></i>Height</label>
+              <div class="pf-unit">
+                <input type="number" class="pf-input" id="fieldHeight" placeholder="e.g. 170" min="100" max="250" step="0.01" oninput="recalcBMI()"/>
+                <span class="pf-unit-label">cm</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="pf-group">
+              <label class="pf-label"><i class="bi bi-scales me-1"></i>Weight</label>
+              <div class="pf-unit">
+                <input type="number" class="pf-input" id="fieldWeight" placeholder="e.g. 65" min="20" max="300" step="0.01" oninput="recalcBMI()"/>
+                <span class="pf-unit-label">kg</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="pf-group">
+              <label class="pf-label"><i class="bi bi-trophy-fill me-1"></i>Fitness Goal <span style="font-size:.68rem;color:#aaa;">(select multiple)</span></label>
+              <div class="multi-check-group" id="fieldGoal">
+                <label class="multi-check-item"><input type="checkbox" value="Weight Loss"> ⚖️ Weight Loss</label>
+                <label class="multi-check-item"><input type="checkbox" value="Muscle Gain"> 💪 Muscle Gain</label>
+                <label class="multi-check-item"><input type="checkbox" value="Endurance"> 🏃 Endurance</label>
+                <label class="multi-check-item"><input type="checkbox" value="Flexibility"> 🧘 Flexibility</label>
+                <label class="multi-check-item"><input type="checkbox" value="General Fitness"> 🌟 General Fitness</label>
+                <label class="multi-check-item"><input type="checkbox" value="Maintain Weight"> ✅ Maintain Weight</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="pf-group">
+              <label class="pf-label"><i class="bi bi-egg-fried me-1"></i>Dietary Preference <span style="font-size:.68rem;color:#aaa;">(select multiple)</span></label>
+              <div class="multi-check-group" id="fieldDiet">
+                <label class="multi-check-item"><input type="checkbox" value="No Preference"> 🍽️ No Preference</label>
+                <label class="multi-check-item"><input type="checkbox" value="Vegetarian"> 🥦 Vegetarian</label>
+                <label class="multi-check-item"><input type="checkbox" value="Vegan"> 🌱 Vegan</label>
+                <label class="multi-check-item"><input type="checkbox" value="Keto"> ⚡ Keto</label>
+                <label class="multi-check-item"><input type="checkbox" value="Halal"> ☪️ Halal</label>
+                <label class="multi-check-item"><input type="checkbox" value="Gluten-Free"> 🌾 Gluten-Free</label>
+                <label class="multi-check-item"><input type="checkbox" value="Dairy-Free"> 🥛 Dairy-Free</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <button class="btn-save" onclick="saveProfile()">
+            <i class="bi bi-check-circle-fill"></i> Save Profile
+          </button>
+        </div>
+      </div>
+
+      <!-- Change password — subtle link, opens modal -->
+      <div style="text-align:center;padding:.5rem 0 .2rem;">
+        <button onclick="openPasswordModal()" style="background:none;border:none;color:#888;font-size:.8rem;cursor:pointer;text-decoration:underline;font-family:inherit;transition:color .2s;" onmouseover="this.style.color='var(--fa-green)'" onmouseout="this.style.color='#888'">
+          <i class="bi bi-shield-lock me-1"></i>Change Password
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CHANGE PASSWORD MODAL ── -->
+<div id="pwModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:20px;width:92vw;max-width:420px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#1565c0,#0d6efd);padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <i class="bi bi-shield-lock-fill" style="color:#fff;font-size:1.2rem;"></i>
+        <div>
+          <div style="color:rgba(255,255,255,.75);font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Account Security</div>
+          <div style="color:#fff;font-weight:800;font-size:.95rem;">Change Password</div>
+        </div>
+      </div>
+      <button onclick="closePasswordModal()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:30px;height:30px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.background='rgba(255,255,255,.35)'" onmouseout="this.style.background='rgba(255,255,255,.2)'">✕</button>
+    </div>
+    <!-- Body -->
+    <div style="padding:1.4rem;">
+      <!-- Current password -->
+      <div class="pf-group" style="margin-bottom:.9rem;">
+        <label class="pf-label"><i class="bi bi-lock me-1"></i>Current Password</label>
+        <div style="position:relative;">
+          <input type="password" class="pf-input" style="padding-right:2.5rem;" id="fieldCurrentPass" placeholder="Enter your current password"/>
+          <button type="button" onclick="togglePw('fieldCurrentPass',this)" style="position:absolute;right:0;top:0;bottom:0;width:38px;background:none;border:none;border-left:1px solid #c8e6d4;color:#aaa;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;border-radius:0 10px 10px 0;">👁</button>
+        </div>
+      </div>
+      <hr style="border-color:#f0f0f0;margin:.8rem 0;">
+      <!-- New password -->
+      <div class="pf-group" style="margin-bottom:.9rem;">
+        <label class="pf-label"><i class="bi bi-lock-fill me-1"></i>New Password</label>
+        <div style="position:relative;">
+          <input type="password" class="pf-input" style="padding-right:2.5rem;" id="fieldNewPass" placeholder="Min. 6 characters" oninput="checkStrength(this.value)"/>
+          <button type="button" onclick="togglePw('fieldNewPass',this)" style="position:absolute;right:0;top:0;bottom:0;width:38px;background:none;border:none;border-left:1px solid #c8e6d4;color:#aaa;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;border-radius:0 10px 10px 0;">👁</button>
+        </div>
+        <!-- Strength bar -->
+        <div style="margin-top:.4rem;height:4px;border-radius:4px;background:#eee;overflow:hidden;">
+          <div id="pwStrengthBar" style="height:100%;width:0%;transition:all .3s;border-radius:4px;"></div>
+        </div>
+        <div id="pwStrengthLabel" style="font-size:.68rem;color:#aaa;margin-top:.2rem;"></div>
+      </div>
+      <!-- Confirm password -->
+      <div class="pf-group" style="margin-bottom:1.1rem;">
+        <label class="pf-label"><i class="bi bi-check-circle me-1"></i>Confirm New Password</label>
+        <div style="position:relative;">
+          <input type="password" class="pf-input" style="padding-right:2.5rem;" id="fieldConfirmPass" placeholder="Re-enter new password"/>
+          <button type="button" onclick="togglePw('fieldConfirmPass',this)" style="position:absolute;right:0;top:0;bottom:0;width:38px;background:none;border:none;border-left:1px solid #c8e6d4;color:#aaa;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;border-radius:0 10px 10px 0;">👁</button>
+        </div>
+      </div>
+      <button class="btn-save" style="background:linear-gradient(135deg,#1565c0,#0d6efd);" onclick="changePassword()">
+        <i class="bi bi-lock-fill"></i> Update Password
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer class="fa-footer">
+  <div class="container">© 2025 FitAlchemy — Transform your fitness journey</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+if (localStorage.getItem('loggedIn') !== 'true') window.location.href = 'login.html';
+
+const userId = localStorage.getItem('userId');
+
+// ── POPUP ──
+function showPopup(type, title, message, duration) {
+  duration = duration || 3500;
+  const popup = document.createElement('div');
+  popup.className = 'popup-notification ' + type;
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  popup.innerHTML =
+    '<div class="popup-icon">' + (icons[type] || '!') + '</div>' +
+    '<div class="popup-content"><div class="popup-title">' + title + '</div><div class="popup-message">' + message + '</div></div>' +
+    '<button class="popup-close" onclick="this.parentElement.classList.remove(\'show\');setTimeout(function(){if(this.parentElement)this.parentElement.remove();}.bind(this),500)">×</button>' +
+    '<div class="popup-progress"></div>';
+  document.getElementById('popupContainer').appendChild(popup);
+  setTimeout(() => popup.classList.add('show'), 10);
+  setTimeout(() => { popup.classList.remove('show'); setTimeout(() => { if (popup.parentNode) popup.remove(); }, 500); }, duration);
+}
+
+// ── LOAD PROFILE ──
+async function loadProfile() {
+  try {
+    const res  = await fetch(`/api/profile?userId=${userId}`);
+    const data = await res.json();
+
+    // Avatar — show saved image or initials
+    const initials = data.full_name
+      ? data.full_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+      : (data.email ? data.email[0].toUpperCase() : '?');
+    document.getElementById('avatarText').textContent = initials;
+
+    // Load saved avatar from DB
+    if (data.profile_image) {
+      document.getElementById('avatarImg').src = data.profile_image;
+      document.getElementById('avatarImg').style.display = 'block';
+      document.getElementById('avatarText').style.display = 'none';
+    } else {
+      document.getElementById('avatarImg').style.display = 'none';
+      document.getElementById('avatarText').style.display = 'block';
+    }
+
+    // Header info
+    document.getElementById('profileName').textContent  = data.full_name || 'No name set';
+    document.getElementById('profileEmail').textContent = data.email || '';
+    if (data.created_at) {
+      const d = new Date(data.created_at);
+      document.getElementById('profileJoined').textContent = 'Member since ' + d.toLocaleDateString('en-MY', { year:'numeric', month:'long' });
+    }
+
+    // Stats shown on Dashboard instead
+
+    // Goals display
+    document.getElementById('displayGoal').textContent = data.fitness_goal       || 'Not set';
+    document.getElementById('displayDiet').textContent = data.dietary_preference || 'Not set';
+
+    // Form fields
+    document.getElementById('fieldEmail').value  = data.email        || '';
+    document.getElementById('fieldName').value   = data.full_name    || '';
+    document.getElementById('fieldAge').value    = data.age          || '';
+    document.getElementById('fieldHeight').value = data.height       || '';
+    document.getElementById('fieldWeight').value = data.weight       || '';
+
+    // Selects
+    function setChecks(groupId, savedValue) {
+      const vals = savedValue ? savedValue.split(',').map(v => v.trim()) : [];
+      document.querySelectorAll('#' + groupId + ' input[type="checkbox"]').forEach(cb => {
+        cb.checked = vals.includes(cb.value);
+      });
+    }
+    setChecks('fieldGoal', data.fitness_goal);
+    setChecks('fieldDiet', data.dietary_preference);
+
+
+  } catch (err) {
+    console.error('Profile load error:', err);
+    showPopup('error', 'Load Failed ❌', 'Could not load profile. Please refresh.');
+  }
+}
+
+// ── BMI CALCULATOR ──
+function recalcBMI() {
+  const h = parseFloat(document.getElementById('fieldHeight').value);
+  const w = parseFloat(document.getElementById('fieldWeight').value);
+  const card = document.getElementById('bmiCard');
+  const note = document.getElementById('bmiNote');
+
+  if (!h || !w || h < 50 || w < 5) {
+    card.style.display = 'none';
+    note.style.display = 'block';
+    return;
+  }
+
+  const bmi = (w / ((h / 100) ** 2)).toFixed(1);
+  document.getElementById('bmiValue').textContent = bmi;
+
+  let status, color, needleDeg;
+  if (bmi < 18.5) {
+    status = 'Underweight'; color = '#42a5f5';
+    needleDeg = -80 + (bmi / 18.5) * 40; // -80 to -40
+  } else if (bmi < 25) {
+    status = '✅ Normal Weight'; color = '#2e7d32';
+    needleDeg = -40 + ((bmi - 18.5) / 6.5) * 50; // -40 to +10
+  } else if (bmi < 30) {
+    status = '⚠️ Overweight'; color = '#e65100';
+    needleDeg = 10 + ((bmi - 25) / 5) * 40; // +10 to +50
+  } else {
+    status = '🔴 Obese'; color = '#c62828';
+    needleDeg = Math.min(50 + ((bmi - 30) / 10) * 30, 80); // +50 to +80
+  }
+
+  document.getElementById('bmiStatus').textContent = status;
+  document.getElementById('bmiValue').style.color  = color;
+  document.getElementById('bmiStatus').style.color = color;
+  document.getElementById('bmiNeedle').style.transform = `rotate(${needleDeg}deg)`;
+
+  card.style.display = 'block';
+  note.style.display = 'none';
+}
+
+// ── SAVE PROFILE ──
+async function saveProfile() {
+  const btn = document.querySelector('.btn-save');
+  btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving...';
+  btn.disabled  = true;
+
+  try {
+    const body = {
+      userId,
+      full_name:           document.getElementById('fieldName').value.trim(),
+      age:                 document.getElementById('fieldAge').value   || null,
+      height:              document.getElementById('fieldHeight').value || null,
+      weight:              document.getElementById('fieldWeight').value || null,
+      fitness_goal:        [...document.querySelectorAll('#fieldGoal input:checked')].map(c=>c.value).join(', ') || null,
+      dietary_preference:  [...document.querySelectorAll('#fieldDiet input:checked')].map(c=>c.value).join(', ') || null,
+    };
+
+    const res  = await fetch('/api/profile', {
+      method:  'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body)
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      showPopup('success', 'Profile Saved! ✅', 'Your profile has been updated successfully.');
+      // Update display fields directly — don't call loadProfile() as it would reset the avatar
+      const name = document.getElementById('fieldName').value.trim();
+      if (name) {
+        document.getElementById('profileName').textContent = name;
+        const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+        document.getElementById('avatarText').textContent  = initials;
+      }
+      document.getElementById('displayGoal').textContent = [...document.querySelectorAll('#fieldGoal input:checked')].map(c=>c.value).join(', ') || 'Not set';
+      document.getElementById('displayDiet').textContent = [...document.querySelectorAll('#fieldDiet input:checked')].map(c=>c.value).join(', ') || 'Not set';
+    } else {
+      showPopup('error', 'Save Failed ❌', data.message || 'Could not save profile.');
+    }
+  } catch (err) {
+    showPopup('error', 'Error ❌', 'Something went wrong. Please try again.');
+  } finally {
+    btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Save Profile';
+    btn.disabled  = false;
+  }
+}
+
+// ── CHANGE PASSWORD ──
+// ── CHANGE PASSWORD MODAL ──
+function openPasswordModal() {
+  document.getElementById('pwModal').style.display = 'flex';
+  document.getElementById('fieldCurrentPass').value = '';
+  document.getElementById('fieldNewPass').value     = '';
+  document.getElementById('fieldConfirmPass').value = '';
+  document.getElementById('pwStrengthBar').style.width = '0%';
+  document.getElementById('pwStrengthLabel').textContent = '';
+  setTimeout(() => document.getElementById('fieldCurrentPass').focus(), 100);
+}
+function closePasswordModal() {
+  document.getElementById('pwModal').style.display = 'none';
+}
+// Close on backdrop click
+document.getElementById('pwModal').addEventListener('click', function(e) {
+  if (e.target === this) closePasswordModal();
+});
+
+function togglePw(fieldId, btn) {
+  const input = document.getElementById(fieldId);
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+function checkStrength(pw) {
+  const bar   = document.getElementById('pwStrengthBar');
+  const label = document.getElementById('pwStrengthLabel');
+  if (!pw) { bar.style.width = '0%'; label.textContent = ''; return; }
+  let score = 0;
+  if (pw.length >= 6)                      score++;
+  if (pw.length >= 10)                     score++;
+  if (/[A-Z]/.test(pw))                   score++;
+  if (/[0-9]/.test(pw))                   score++;
+  if (/[^A-Za-z0-9]/.test(pw))            score++;
+
+  const levels = [
+    { w:'20%', color:'#ef5350', text:'Weak' },
+    { w:'40%', color:'#ffa726', text:'Fair' },
+    { w:'60%', color:'#ffee58', text:'Moderate' },
+    { w:'80%', color:'#66bb6a', text:'Strong' },
+    { w:'100%',color:'#2e7d32', text:'Very Strong' }
+  ];
+  const lvl = levels[Math.min(score - 1, 4)] || levels[0];
+  bar.style.width       = lvl.w;
+  bar.style.background  = lvl.color;
+  label.textContent     = lvl.text;
+  label.style.color     = lvl.color;
+}
+
+async function changePassword() {
+  const currentPass = document.getElementById('fieldCurrentPass').value;
+  const newPass     = document.getElementById('fieldNewPass').value;
+  const confirmPass = document.getElementById('fieldConfirmPass').value;
+
+  if (!currentPass) {
+    showPopup('error', 'Missing Field ❌', 'Please enter your current password.');
+    return;
+  }
+  if (!newPass || !confirmPass) {
+    showPopup('error', 'Missing Fields ❌', 'Please fill in the new password fields.');
+    return;
+  }
+  if (newPass.length < 6) {
+    showPopup('error', 'Too Short ❌', 'New password must be at least 6 characters.');
+    return;
+  }
+  if (newPass !== confirmPass) {
+    showPopup('error', 'Mismatch ❌', 'New passwords do not match. Please try again.');
+    return;
+  }
+  if (currentPass === newPass) {
+    showPopup('error', 'Same Password ❌', 'New password must be different from current password.');
+    return;
+  }
+
+  const btn = document.querySelector('#pwModal .btn-save');
+  btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Updating...';
+  btn.disabled  = true;
+
+  try {
+    const res  = await fetch('/api/reset-password-direct', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ userId, currentPassword: currentPass, newPassword: newPass })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      closePasswordModal();
+      showPopup('success', 'Password Updated! 🔒', 'Your password has been changed successfully.');
+    } else {
+      showPopup('error', 'Failed ❌', data.message || 'Could not update password.');
+    }
+  } catch (err) {
+    showPopup('error', 'Error ❌', 'Something went wrong. Please try again.');
+  } finally {
+    btn.innerHTML = '<i class="bi bi-lock-fill"></i> Update Password';
+    btn.disabled  = false;
+  }
+}
+
+function logout() {
+  localStorage.removeItem('loggedIn');
+  localStorage.removeItem('userId');
+  window.location.href = 'login.html';
+}
+
+// ── AVATAR UPLOAD ──
+function handleAvatarUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    showPopup('error', 'File Too Large ❌', 'Please choose an image under 2MB.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const dataUrl = e.target.result;
+    // Show immediately
+    document.getElementById('avatarImg').src = dataUrl;
+    document.getElementById('avatarImg').style.display = 'block';
+    document.getElementById('avatarText').style.display = 'none';
+    // Save to DB
+    try {
+      const res = await fetch('/api/profile/image', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ userId, imageBase64: dataUrl })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showPopup('success', 'Photo Saved! 📸', 'Your profile photo has been saved to your account.');
+      } else {
+        showPopup('error', 'Save Failed ❌', data.message || 'Could not save photo.');
+      }
+    } catch (err) {
+      showPopup('error', 'Error ❌', 'Could not connect to server.');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+loadProfile();
+
+// ── WEEKLY REPORT (profile page) ──────────────────────────────────────────────
+let wrMonday = (() => {
+  const d = new Date(); const day = d.getDay();
+  d.setDate(d.getDate() - (day === 0 ? 6 : day - 1)); return d;
+})();
+
+function wrFormatDate(d) { return d.toISOString().split('T')[0]; }
+function wrNavigate(dir) { wrMonday.setDate(wrMonday.getDate() + dir * 7); loadWeeklyReport(); }
+
+async function loadWeeklyReport() {
+  const userId = localStorage.getItem('userId');
+  if (!userId) return;
+  const weekStart = wrFormatDate(wrMonday);
+  const weekEnd   = new Date(wrMonday); weekEnd.setDate(weekEnd.getDate() + 6);
+  document.getElementById('wrWeekLabel').textContent =
+    wrMonday.toLocaleDateString('en-MY',{day:'numeric',month:'short'}) + ' – ' +
+    weekEnd.toLocaleDateString('en-MY',{day:'numeric',month:'short',year:'numeric'});
+  try {
+    const res  = await fetch(`/api/report/weekly?userId=${userId}&weekStart=${weekStart}`);
+    const data = await res.json();
+    const s = data.summary, w = s.workouts, m = s.meals, c = s.consistency;
+
+    // Score
+    const sc = c.score || 0;
+    const scColor = sc >= 80 ? '#2e7d32' : sc >= 60 ? '#f39c12' : sc >= 40 ? '#e65100' : '#e74c3c';
+    document.getElementById('wrScore').innerHTML =
+      `<div style="display:inline-flex;align-items:center;gap:8px;background:${scColor}15;border:2px solid ${scColor}33;border-radius:12px;padding:.4rem .9rem;">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:${scColor};">${sc}</span>
+        <div style="text-align:left;"><div style="font-size:.6rem;color:#888;font-weight:700;">CONSISTENCY</div><div style="font-size:.72rem;font-weight:800;color:${scColor};">${c.label}</div></div>
+      </div>`;
+
+    // 7-day grid
+    const todayStr = wrFormatDate(new Date());
+    let gridHtml = '';
+    data.dailyBreakdown.forEach(day => {
+      const isToday = day.date === todayStr;
+      const hasW = day.workouts > 0, hasM = day.meals > 0;
+      gridHtml += `<div style="text-align:center;background:${isToday?'#e8f5e9':hasW||hasM?'#f0fdf4':'#f9f9f9'};border-radius:8px;padding:3px 1px;border:1.5px solid ${isToday?'var(--fa-green)':hasW||hasM?'rgba(11,110,79,.2)':'#f0f0f0'};">
+        <div style="font-size:.52rem;font-weight:700;color:#888;">${day.dayName}</div>
+        <div style="font-size:.6rem;font-weight:800;color:#333;">${new Date(day.date+'T00:00:00').getDate()}</div>
+        ${hasW ? '<div style="width:6px;height:6px;border-radius:50%;background:var(--fa-teal);margin:1px auto;"></div>' : '<div style="width:6px;height:6px;margin:1px auto;"></div>'}
+        ${hasM ? '<div style="width:6px;height:6px;border-radius:50%;background:#f4623a;margin:1px auto;"></div>' : ''}
+      </div>`;
+    });
+    document.getElementById('wrDayGrid').innerHTML = gridHtml;
+
+    // Stats
+    document.getElementById('wrStats').innerHTML =
+      `<div style="background:#f0fdf4;border-radius:8px;padding:.5rem;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--fa-green);">${w.totalMinutes}</div>
+        <div style="font-size:.58rem;color:#888;font-weight:700;">MIN WORKOUT</div>
+       </div>
+       <div style="background:#fff5f5;border-radius:8px;padding:.5rem;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#e74c3c;">${w.caloriesBurnt}</div>
+        <div style="font-size:.58rem;color:#888;font-weight:700;">KCAL BURNT</div>
+       </div>
+       <div style="background:#f0f4ff;border-radius:8px;padding:.5rem;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#1565c0;">${m.caloriesIn}</div>
+        <div style="font-size:.58rem;color:#888;font-weight:700;">KCAL IN</div>
+       </div>
+       <div style="background:#f9f0ff;border-radius:8px;padding:.5rem;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:#6f42c1;">${w.activeDays}/7</div>
+        <div style="font-size:.58rem;color:#888;font-weight:700;">ACTIVE DAYS</div>
+       </div>`;
+
+    // WHO bar
+    const whoP = Math.min(100, (w.totalMinutes / 150) * 100);
+    const whoColor = w.whoMet ? '#2e7d32' : '#e65100';
+    document.getElementById('wrWhoBar').innerHTML =
+      `<div style="font-size:.65rem;font-weight:700;color:${whoColor};margin-bottom:3px;">WHO Target: ${w.totalMinutes}/150 min ${w.whoMet?'✅':'⚠️'}</div>
+       <div style="height:7px;background:#f0f0f0;border-radius:4px;overflow:hidden;">
+         <div style="height:100%;width:${whoP}%;background:linear-gradient(90deg,var(--fa-green),var(--fa-teal));border-radius:4px;transition:width .7s;"></div>
+       </div>`;
+  } catch(err) { console.error('Weekly report error:', err); }
+}
+loadWeeklyReport();
+</script>
+</body>
+</html>

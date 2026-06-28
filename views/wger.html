@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <title>FitAlchemy — Workout Planning</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css?family=Merriweather+Sans:400,600,700" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+
+    :root{--fa-green:#0b6e4f;--fa-teal:#14a97c;--fa-accent:#f4623a;--fa-blue:#1565c0;--fa-light:#f0f7f4;}
+    body{font-family:"Merriweather Sans",sans-serif;background:var(--fa-light);min-height:100vh;display:flex;flex-direction:column;}
+    .fa-nav{background:linear-gradient(135deg,var(--fa-green) 0%,var(--fa-teal) 100%);box-shadow:0 4px 20px rgba(11,110,79,.3);padding:.6rem 1.5rem;position:sticky;top:0;z-index:1000;}
+    .fa-nav .navbar-brand{font-family:"Merriweather",serif;font-weight:700;font-size:1.4rem;color:#fff !important;display:flex;align-items:center;gap:10px;}
+    .fa-nav .navbar-brand img{width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,.5);object-fit:contain;background:#fff;}
+    .fa-nav .nav-link{color:rgba(255,255,255,.85) !important;font-weight:600;padding:.45rem 1rem !important;border-radius:8px;transition:all .2s;}
+    .fa-nav .nav-link:hover,.fa-nav .nav-link.active{background:rgba(255,255,255,.2);color:#fff !important;}
+    .fa-nav .btn-logout{background:rgba(220,53,69,.9);border:none;color:#fff;font-weight:700;border-radius:8px;padding:.45rem 1.2rem;transition:all .2s;}
+    .fa-nav .btn-logout:hover{background:#dc3545;transform:translateY(-1px);}
+    .page-hero{color:#fff;padding:2.5rem 0 2rem;text-align:center;}
+    .page-hero h1{font-family:"Merriweather",serif;font-size:2.2rem;font-weight:700;margin-bottom:.25rem;}
+    .page-hero p{opacity:.85;font-size:1rem;margin:0;}
+    .section-card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(11,110,79,.1);border:1px solid rgba(11,110,79,.08);margin-bottom:1.5rem;overflow:hidden;}
+    .section-card .s-head{padding:.9rem 1.4rem;display:flex;align-items:center;gap:10px;color:#fff;}
+    .section-card .s-head h2{font-size:1rem;font-weight:700;margin:0;text-transform:uppercase;letter-spacing:.5px;}
+    .section-card .s-head i{font-size:1.2rem;}
+    .section-card .s-body{padding:1.2rem 1.4rem;}
+    .btn-fa-primary{background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));color:#fff;border:none;border-radius:10px;font-weight:700;padding:.55rem 1.4rem;cursor:pointer;transition:all .2s;font-size:.9rem;}
+    .btn-fa-primary:hover{opacity:.9;transform:translateY(-1px);color:#fff;}
+    .btn-fa-blue{background:linear-gradient(135deg,#1565c0,#0d6efd);color:#fff;border:none;border-radius:10px;font-weight:700;padding:.55rem 1.4rem;cursor:pointer;transition:all .2s;font-size:.9rem;}
+    .btn-fa-blue:hover{opacity:.9;transform:translateY(-1px);color:#fff;}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;}
+    .modal-content{background:#fff;border-radius:20px;max-width:580px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);position:relative;padding:2rem;}
+    .modal-content .close-btn{position:absolute;top:14px;right:16px;background:#dc3545;border:none;color:#fff;border-radius:8px;padding:5px 14px;font-weight:700;cursor:pointer;font-size:.88rem;}
+    .modal-content h2{color:var(--fa-green);font-size:1.3rem;font-weight:800;margin-bottom:1rem;padding-right:80px;}
+    .modal-content img{width:100%;border-radius:14px;margin-bottom:1rem;}
+    .modal-content h3{color:var(--fa-green);font-size:.95rem;font-weight:700;margin-top:1.2rem;border-bottom:2px solid var(--fa-light);padding-bottom:.4rem;}
+    .nutrition-table{width:100%;border-collapse:collapse;}
+    .nutrition-table th{background:var(--fa-light);color:var(--fa-green);font-weight:700;padding:8px 12px;font-size:.8rem;text-transform:uppercase;}
+    .nutrition-table td{padding:8px 12px;border-bottom:1px solid #f0f0f0;font-size:.88rem;}
+    .loading-text{color:#6c757d;font-style:italic;padding:.5rem 0;font-size:.9rem;}
+    .fa-input{border:2px solid #e9ecef;border-radius:10px;padding:.6rem 1rem;font-size:.92rem;font-family:"Merriweather Sans",sans-serif;transition:all .2s;width:100%;}
+    .fa-input:focus{border-color:var(--fa-teal);box-shadow:0 0 0 3px rgba(20,169,124,.15);outline:none;}
+    .fa-select{border:2px solid #e9ecef;border-radius:10px;padding:.5rem 1rem;font-size:.88rem;font-family:"Merriweather Sans",sans-serif;background:#fff;cursor:pointer;}
+    .fa-select:focus{border-color:var(--fa-teal);outline:none;}
+    .spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(11,110,79,.2);border-top-color:var(--fa-teal);border-radius:50%;animation:spin .8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .fa-footer{background:linear-gradient(135deg,#0b6e4f 0%,#0d7a58 40%,#14a97c 100%);color:rgba(255,255,255,.9);padding:3rem 0 0;margin-top:auto;}
+    .f-logo{font-family:"Merriweather",serif;font-size:1.6rem;font-weight:700;color:#fff;letter-spacing:.5px;}
+    .f-tagline{font-size:.88rem;opacity:.78;line-height:1.65;margin:.5rem 0 1.25rem;max-width:300px;}
+    .f-social-row{display:flex;flex-direction:row;flex-wrap:wrap;gap:10px;}
+    .f-sico{width:42px;height:42px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;text-decoration:none;transition:all .25s;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);}
+    .f-sico:hover{transform:translateY(-3px) scale(1.1);color:#fff;border-color:#fff;}
+    .f-sico-fb:hover{background:#1877f2;border-color:#1877f2;}
+    .f-sico-tw:hover{background:#000;border-color:#000;}
+    .f-sico-ig:hover{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%);border-color:#d6249f;}
+    .f-sico-yt:hover{background:#ff0000;border-color:#ff0000;}
+    .f-sico-li:hover{background:#0077b5;border-color:#0077b5;}
+    .f-col-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.55);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,.15);}
+    .f-link{display:flex;align-items:center;color:rgba(255,255,255,.8);text-decoration:none;font-size:.88rem;font-weight:500;padding:.32rem 0;transition:all .2s;}
+    .f-link:hover{color:#fff;padding-left:4px;}
+    .f-link i{opacity:.6;font-size:.82rem;}
+    .f-disclaimer{background:rgba(0,0,0,.12);border-radius:12px;padding:1rem 1.1rem;font-size:.82rem;line-height:1.7;color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.1);display:flex;align-items:flex-start;gap:4px;}
+    .f-divider{border:none;border-top:1px solid rgba(255,255,255,.15);margin:2.5rem 0 0;}
+    .f-bottom{padding:1rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:.8rem;color:rgba(255,255,255,.55);}
+    @media(max-width:768px){.f-tagline{max-width:100%;}.f-bottom{justify-content:center;text-align:center;}}
+    #toast-notification{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:99999;border-radius:12px;font-weight:700;font-size:.9rem;padding:11px 26px;box-shadow:0 8px 30px rgba(0,0,0,.15);opacity:0;transition:all .4s ease;white-space:nowrap;}
+    .recipe-view-btn{font-size:.75rem;font-weight:700;padding:4px 12px;border-radius:8px;border:none;cursor:pointer;background:linear-gradient(135deg,#0b6e4f,#14a97c);color:#fff;transition:all .2s;display:inline-block;}
+    .recipe-view-btn:hover{opacity:.88;transform:translateY(-1px);}
+    .fav-table{width:100%;border-collapse:collapse;}
+    .fav-table th{background:var(--fa-light);color:var(--fa-green);font-weight:700;font-size:.76rem;text-transform:uppercase;padding:8px 10px;border-bottom:2px solid rgba(11,110,79,.15);}
+    .fav-table td{padding:8px 10px;border-bottom:1px solid #f0f0f0;font-size:.84rem;}
+    .fav-table tbody tr:hover{background:var(--fa-light);}
+
+    .page-hero{background:linear-gradient(135deg,var(--fa-green) 0%,var(--fa-teal) 60%,#20c997 100%);}
+    .tip-banner{background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));border-radius:16px;padding:1.5rem 1.8rem;color:#fff;position:relative;overflow:hidden;margin-bottom:1.5rem;}
+    .tip-banner::before{content:"💡";position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:5rem;opacity:.12;}
+    .tip-banner .tip-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:.8;margin-bottom:.5rem;}
+    .tip-banner #motivation-quote{font-size:1rem;font-style:italic;line-height:1.7;margin-bottom:.75rem;}
+    .tip-banner #quote-author{font-size:.8rem;opacity:.7;margin-bottom:.75rem;}
+    .tip-banner .btn-tip{background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);color:#fff;font-weight:700;border-radius:8px;padding:.35rem 1rem;font-size:.82rem;cursor:pointer;transition:all .2s;}
+    .tip-banner .btn-tip:hover{background:rgba(255,255,255,.35);}
+    .filter-bar{background:#fff;border-radius:14px;padding:1rem 1.4rem;box-shadow:0 2px 12px rgba(11,110,79,.07);border:1px solid rgba(11,110,79,.08);margin-bottom:1.2rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+    .filter-bar label{font-weight:700;color:var(--fa-green);font-size:.85rem;margin:0;}
+    #exercise-list{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+    .exercise{
+      background:#fff;border-radius:16px;overflow:hidden;
+      box-shadow:0 3px 14px rgba(11,110,79,.1);
+      border:2px solid transparent;
+      background-clip:padding-box;
+      position:relative;
+      transition:all .3s ease;
+      display:flex;flex-direction:column;
+    }
+    /* Gradient border — same treatment as recommendation cards */
+    .exercise::before{
+      content:'';position:absolute;inset:-2px;border-radius:18px;
+      background:linear-gradient(135deg,rgba(11,110,79,.22),rgba(20,169,124,.13),rgba(32,201,151,.08));
+      z-index:0;transition:background .3s ease;
+    }
+    .exercise::after{
+      content:'';position:absolute;inset:0;background:#fff;border-radius:15px;z-index:1;
+    }
+    .exercise:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(11,110,79,.2);}
+    .exercise:hover::before{background:linear-gradient(135deg,var(--fa-green),var(--fa-teal),var(--fa-mint));}
+    /* All children above pseudo layers */
+    .ex-img-wrap,.ex-body,.custom-fields,.add-to-routine-btn{position:relative;z-index:2;}
+    /* Fixed image box */
+    .ex-img-wrap{width:100%;height:160px;overflow:hidden;background:#e8f5e9;flex-shrink:0;}
+    .ex-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;}
+    .exercise:hover .ex-img-wrap img{transform:scale(1.05);}
+    /* Body */
+    .exercise .ex-body{padding:.85rem .9rem .6rem;flex:1;display:flex;flex-direction:column;}
+    /* Tag — inside body, above name */
+    .exercise .ex-tag{
+      display:inline-flex;align-items:center;gap:5px;
+      background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));
+      color:#fff;font-size:.63rem;font-weight:800;
+      padding:.18rem .65rem;border-radius:20px;
+      letter-spacing:.6px;text-transform:uppercase;
+      margin-bottom:.45rem;align-self:flex-start;
+    }
+    .exercise .ex-name{font-weight:800;color:var(--fa-green);font-size:.92rem;margin-bottom:.3rem;line-height:1.35;}
+    .exercise .equipment{font-size:.74rem;color:#888;margin-bottom:.4rem;display:flex;align-items:center;gap:4px;}
+    /* Description — hard clamped to 1 line, fixed height */
+    .exercise .desc{
+      font-size:.79rem;color:#555;line-height:1.55;margin-bottom:.55rem;
+      display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;
+    }
+    /* Read More — beautiful pill button matching recommendation's More Details */
+    .exercise .read-more{
+      display:inline-flex;align-items:center;justify-content:center;gap:5px;
+      width:100%;border:none;cursor:pointer;
+      background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));
+      color:#fff;font-weight:700;font-size:.76rem;
+      padding:.42rem .8rem;
+      border-radius:8px;
+      transition:all .25s ease;
+      letter-spacing:.3px;
+      margin-bottom:.55rem;
+      position:relative;overflow:hidden;
+    }
+    .exercise .read-more::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,0),rgba(255,255,255,.15));
+      opacity:0;transition:opacity .25s;
+    }
+    .exercise .read-more:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(11,110,79,.3);}
+    .exercise .read-more:hover::before{opacity:1;}
+    /* Day/reps fields */
+    .custom-fields{background:var(--fa-light);padding:.75rem .9rem;border-top:1px solid rgba(11,110,79,.08);}
+    .custom-fields label{font-size:.78rem;font-weight:700;color:var(--fa-green);display:block;margin-bottom:.3rem;}
+    .custom-fields select,.custom-fields input{border:2px solid #dee2e6;border-radius:8px;padding:.35rem .7rem;font-size:.82rem;width:100%;margin-bottom:.4rem;font-family:"Merriweather Sans",sans-serif;}
+    .custom-fields select:focus,.custom-fields input:focus{border-color:var(--fa-teal);outline:none;}
+    /* Add to routine button */
+    .add-to-routine-btn{
+      width:100%;background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));
+      color:#fff;border:none;padding:.55rem;font-weight:700;font-size:.83rem;
+      cursor:pointer;transition:all .2s;letter-spacing:.2px;
+      border-radius:0 0 14px 14px;
+    }
+    .add-to-routine-btn:hover{opacity:.88;transform:translateY(-1px);}
+
+    /* ── CALORIE BURN ESTIMATOR ── */
+    .cbe-flame-ring{
+      position:relative;width:130px;height:130px;
+      margin:0 auto 1.2rem;display:flex;align-items:center;justify-content:center;
+    }
+    .cbe-ring-svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);}
+    .cbe-ring-bg{fill:none;stroke:#f0f7f4;stroke-width:10;}
+    .cbe-ring-fill{
+      fill:none;stroke:url(#cbeGrad);stroke-width:10;
+      stroke-linecap:round;
+      transition:stroke-dasharray 1s cubic-bezier(.4,0,.2,1);
+    }
+    .cbe-flame-icon{font-size:2.4rem;position:relative;z-index:1;animation:flamePulse 2s ease-in-out infinite;}
+    @keyframes flamePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12);}}
+    .cbe-cal-display{
+      position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);
+      background:linear-gradient(135deg,#e65100,#f4623a);
+      color:#fff;border-radius:20px;padding:.15rem .7rem;
+      text-align:center;white-space:nowrap;
+      box-shadow:0 3px 10px rgba(244,98,58,.4);
+    }
+    .cbe-cal-num{font-size:.95rem;font-weight:900;font-family:"Syne",sans-serif;}
+    .cbe-cal-unit{font-size:.62rem;font-weight:700;opacity:.85;margin-left:2px;}
+
+    .cbe-inputs{display:flex;flex-direction:column;gap:.75rem;}
+    .cbe-field{display:flex;flex-direction:column;gap:.3rem;}
+    .cbe-label{font-size:.72rem;font-weight:800;color:var(--fa-green);text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:5px;}
+    .cbe-input{
+      border:2px solid #c8e6d4;border-radius:10px;
+      padding:.45rem .8rem;font-size:.85rem;
+      font-family:"Merriweather Sans",sans-serif;outline:none;
+      transition:border-color .2s;
+    }
+    .cbe-input:focus{border-color:var(--fa-teal);box-shadow:0 0 0 3px rgba(20,169,124,.15);}
+    .cbe-duration-row{display:flex;align-items:center;gap:8px;}
+    .cbe-duration-row input[type=range]{
+      flex:1;accent-color:var(--fa-teal);cursor:pointer;
+    }
+    .cbe-dur-badge{
+      background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));
+      color:#fff;font-size:.72rem;font-weight:800;
+      padding:.2rem .6rem;border-radius:8px;white-space:nowrap;
+      min-width:52px;text-align:center;
+    }
+    .cbe-btn{
+      width:100%;border:none;border-radius:10px;padding:.6rem;
+      background:linear-gradient(135deg,#e65100,#f4623a,#f59e0b);
+      background-size:200% 200%;background-position:left;
+      color:#fff;font-weight:800;font-size:.85rem;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      transition:all .3s ease;box-shadow:0 3px 12px rgba(244,98,58,.3);
+      position:relative;overflow:hidden;
+    }
+    .cbe-btn::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+      transition:left .5s ease;}
+    .cbe-btn:hover{background-position:right;transform:translateY(-2px);box-shadow:0 7px 20px rgba(244,98,58,.45);}
+    .cbe-btn:hover::after{left:150%;}
+
+    .cbe-result{
+      margin-top:.9rem;background:linear-gradient(135deg,#fff8f0,#fff3e0);
+      border:1.5px solid rgba(244,98,58,.2);border-radius:12px;padding:.75rem .9rem;
+      animation:fadeUp .4s ease;
+    }
+    .cbe-result-row{display:flex;justify-content:space-between;align-items:center;padding:.25rem 0;border-bottom:1px solid rgba(244,98,58,.1);}
+    .cbe-result-row:last-of-type{border-bottom:none;}
+    .cbe-result-label{font-size:.72rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;}
+    .cbe-result-val{font-size:.82rem;font-weight:800;color:#e65100;}
+    .cbe-result-tip{
+      margin-top:.55rem;font-size:.75rem;color:#666;font-style:italic;
+      text-align:center;padding-top:.45rem;border-top:1px solid rgba(244,98,58,.1);
+    }
+    .cbe-error{margin-top:.8rem;background:#fdecea;border:1.5px solid #f5c6cb;border-radius:10px;padding:.6rem .85rem;font-size:.8rem;color:#dc3545;font-weight:600;text-align:center;}
+    .cbe-select{
+      width:100%;border:2px solid #c8e6d4;border-radius:10px;
+      padding:.45rem 2rem .45rem .8rem;font-size:.85rem;
+      font-family:"Merriweather Sans",sans-serif;outline:none;
+      background:linear-gradient(135deg,#f0fff8,#e8f5e9);
+      color:var(--fa-green);font-weight:600;
+      appearance:none;-webkit-appearance:none;cursor:pointer;transition:all .2s;
+    }
+    .cbe-select:focus{border-color:var(--fa-teal);box-shadow:0 0 0 3px rgba(20,169,124,.15);}
+    /* ── RECOMMENDATION CARDS ── */
+    .recommendations-container{display:flex;flex-direction:column;gap:1.3rem;margin-top:.25rem;}
+    .recommendation-card{
+      background:#fff;border-radius:14px;overflow:hidden;
+      box-shadow:0 3px 14px rgba(11,110,79,.1);
+      border:2px solid transparent;
+      background-clip:padding-box;
+      position:relative;
+      transition:all .3s ease;
+    }
+    /* Gradient border via pseudo-element */
+    .recommendation-card::before{
+      content:'';
+      position:absolute;inset:-2px;
+      border-radius:16px;
+      background:linear-gradient(135deg,rgba(11,110,79,.25),rgba(20,169,124,.15),rgba(32,201,151,.1));
+      z-index:0;
+      transition:background .3s ease;
+    }
+    /* Inner white fill to sit above the border */
+    .recommendation-card::after{
+      content:'';
+      position:absolute;inset:0;
+      background:#fff;border-radius:13px;
+      z-index:1;
+    }
+    /* All children must sit above the pseudo bg */
+    .rc-img-wrap, .rc-body, .rc-detail-btn, .rc-add-btn, .rc-btn-row{ position:relative; z-index:2; }
+
+    .recommendation-card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 10px 30px rgba(11,110,79,.2);
+    }
+    .recommendation-card:hover::before{
+      background:linear-gradient(135deg,var(--fa-green),var(--fa-teal),var(--fa-mint));
+    }
+
+    /* Fixed image box */
+    .rc-img-wrap{width:100%;height:130px;overflow:hidden;background:#e8f5e9;flex-shrink:0;border-radius:12px 12px 0 0;}
+    .rc-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;}
+    .recommendation-card:hover .rc-img-wrap img{transform:scale(1.06);}
+
+    /* Tag — sits INSIDE rc-body, above the name */
+    .rc-tag{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));color:#fff;font-size:.65rem;font-weight:800;padding:.18rem .65rem;border-radius:20px;letter-spacing:.6px;text-transform:uppercase;margin-bottom:.45rem;}
+
+    .rc-body{padding:.75rem .85rem .65rem;}
+    .rc-name{font-weight:800;color:var(--fa-green);font-size:.88rem;margin-bottom:.3rem;line-height:1.35;}
+    .rc-equipment{font-size:.72rem;color:#888;margin-bottom:.4rem;display:flex;align-items:center;gap:4px;}
+    .rc-desc{font-size:.76rem;color:#555;line-height:1.55;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+      margin-bottom:.6rem;}
+
+    /* Beautiful More Details button */
+    .rc-detail-btn{
+      flex:1;border:none;cursor:pointer;
+      background:linear-gradient(135deg,#6f42c1,#0dcaf0);
+      color:#fff;font-weight:700;font-size:.78rem;
+      padding:.52rem .8rem;
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      transition:all .25s ease;
+      letter-spacing:.3px;
+      position:relative;overflow:hidden;
+    }
+    .rc-detail-btn::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,.0),rgba(255,255,255,.15));
+      opacity:0;transition:opacity .25s;
+    }
+    .rc-detail-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(111,66,193,.35);}
+    .rc-detail-btn:hover::before{opacity:1;}
+    .rc-detail-btn i{font-size:.82rem;}
+
+    /* Add to Plan button */
+    .rc-add-btn{
+      flex:1;border:none;cursor:pointer;
+      background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));
+      color:#fff;font-weight:700;font-size:.78rem;
+      padding:.52rem .8rem;
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      transition:all .25s ease;
+      letter-spacing:.3px;
+      position:relative;overflow:hidden;
+    }
+    .rc-add-btn::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,.0),rgba(255,255,255,.15));
+      opacity:0;transition:opacity .25s;
+    }
+    .rc-add-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(11,110,79,.35);}
+    .rc-add-btn:hover::before{opacity:1;}
+    .rc-add-btn i{font-size:.82rem;}
+
+    /* Button row wrapper */
+    .rc-btn-row{
+      display:flex;border-radius:0 0 12px 12px;overflow:hidden;
+      gap:1px;background:rgba(0,0,0,.06);
+    }
+    .recommend-footer{display:flex;gap:5px;flex-wrap:wrap;margin-top:.4rem;}
+    #results-counter{
+      display:inline-block;
+      background:var(--fa-light);border:1px solid rgba(11,110,79,.15);
+      border-radius:20px;padding:.3rem .9rem;
+      color:#6c757d;font-size:.78rem;font-weight:600;
+    }
+    #counter-slot{text-align:right;margin-top:.75rem;}
+    #load-more-slot{text-align:center;margin-top:1rem;}
+    #load-more-btn{display:inline-block;}
+    #loading-indicator{text-align:center;padding:1.5rem;color:var(--fa-teal);font-weight:600;}
+    #routine-list{list-style:none;margin:0;padding:.5rem .6rem;}
+    #routine-list li{
+      display:flex;align-items:center;gap:8px;
+      padding:.55rem .75rem;margin-bottom:.45rem;
+      background:#fff;border-radius:12px;
+      border:1.5px solid rgba(11,110,79,.1);
+      box-shadow:0 2px 8px rgba(11,110,79,.06);
+      transition:all .2s ease;
+    }
+    #routine-list li:last-child{margin-bottom:0;}
+    #routine-list li:hover{transform:translateX(3px);border-color:rgba(20,169,124,.3);box-shadow:0 4px 14px rgba(11,110,79,.12);}
+    .rt-day-badge{
+      flex-shrink:0;width:80px;text-align:center;
+      background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));
+      color:#fff;font-size:.6rem;font-weight:800;
+      padding:.22rem .4rem;border-radius:6px;
+      text-transform:uppercase;letter-spacing:.5px;
+    }
+    .rt-cat-badge{
+      flex-shrink:0;width:70px;text-align:center;
+      background:#e8f5e9;color:#2e7d32;
+      font-size:.65rem;font-weight:700;
+      padding:.18rem .4rem;border-radius:6px;
+    }
+    .rt-info{flex:1;min-width:0;}
+    .rt-name{font-size:.84rem;font-weight:700;color:var(--fa-green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .rt-reps{font-size:.72rem;color:#888;margin-top:1px;}
+    .rt-remove-btn{
+      flex-shrink:0;background:rgba(220,53,69,.08);
+      border:1.5px solid rgba(220,53,69,.2);
+      color:#dc3545;border-radius:8px;
+      padding:.25rem .55rem;font-size:.75rem;
+      cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;
+    }
+    .rt-remove-btn:hover{background:#dc3545;color:#fff;border-color:#dc3545;transform:scale(1.05);}
+    @media(max-width:576px){#exercise-list{grid-template-columns:1fr;}.page-hero h1{font-size:1.6rem;}}
+    /* ── POPUP NOTIFICATIONS ── */
+    #popupContainer{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:340px;}
+    .popup-notification{background:#fff;border-radius:14px;padding:1rem 1.25rem;box-shadow:0 8px 30px rgba(0,0,0,.15);display:flex;align-items:flex-start;gap:12px;transform:translateX(120%);transition:transform .4s ease;border-left:4px solid #ccc;position:relative;overflow:hidden;}
+    .popup-notification.show{transform:translateX(0);}
+    .popup-notification.success{border-left-color:var(--fa-green);}
+    .popup-notification.error{border-left-color:#dc3545;}
+    .popup-notification.info{border-left-color:#0d6efd;}
+    .popup-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;flex-shrink:0;}
+    .success .popup-icon{background:#e8f5e9;color:var(--fa-green);}
+    .error   .popup-icon{background:#fdecea;color:#dc3545;}
+    .info    .popup-icon{background:#e3f2fd;color:#0d6efd;}
+    .popup-title{font-weight:700;font-size:.9rem;margin-bottom:2px;color:#222;}
+    .popup-message{font-size:.82rem;color:#555;}
+    .popup-close{position:absolute;top:8px;right:10px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:#aaa;line-height:1;}
+    .popup-close:hover{color:#333;}
+    .popup-progress{position:absolute;bottom:0;left:0;height:3px;background:var(--fa-teal);width:100%;animation:shrinkBar 3.5s linear forwards;}
+    @keyframes shrinkBar{from{width:100%}to{width:0%}}
+  </style>
+</head>
+<body>
+<div id="popupContainer"></div>
+<!-- SVG gradient for calorie ring -->
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <linearGradient id="cbeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e65100"/>
+      <stop offset="50%" style="stop-color:#f4623a"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+  <nav class="fa-nav navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/dashboard.html">
+        <img id="site-logo" src="/img/logo fitt.png" alt="FA"
+             onerror="this.style.display='none';document.getElementById('logo-placeholder').style.display='flex';">
+        <span id="logo-placeholder" style="display:none;width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:50%;align-items:center;justify-content:center;font-weight:900;font-size:.75rem;color:#fff;flex-shrink:0;">FA</span>
+        FitAlchemy
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <i class="bi bi-list text-white fs-4"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav mx-auto gap-1">
+          <li class="nav-item"><a class="nav-link" href="/dashboard.html"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/wger.html"><i class="bi bi-lightning-fill me-1"></i>Workout</a></li>
+          <li class="nav-item"><a class="nav-link" href="/spoonacular.html"><i class="bi bi-egg-fried me-1"></i>Meal Planning</a></li>
+          <li class="nav-item"><a class="nav-link" href="/quote.html"><i class="bi bi-chat-quote-fill me-1"></i>Quotes</a></li>
+          <li class="nav-item"><a class="nav-link" href="/report.html"><i class="bi bi-bar-chart-fill me-1"></i>Reports</a></li>
+          <li class="nav-item"><a class="nav-link" href="/profile.html"><i class="bi bi-person-fill me-1"></i>Profile</a></li>
+          </ul>
+        <button class="btn-logout btn" onclick="logout()"><i class="bi bi-box-arrow-right me-1"></i>Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <h1><i class="bi bi-lightning-fill me-2"></i>Workout Planning</h1>
+      <p>Browse exercises, build your personal routine and crush your goals</p>
+    </div>
+  </div>
+
+  <div class="container py-4 flex-grow-1">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="tip-banner">
+          <div class="tip-label"><i class="bi bi-lightbulb-fill me-1"></i>Workout Tip of the Day</div>
+          <div id="motivation-quote">Loading workout tip...</div>
+          <div id="quote-author"></div>
+          <button class="btn-tip" onclick="refreshTip()"><i class="bi bi-arrow-clockwise me-1"></i>New Tip</button>
+        </div>
+        <div class="filter-bar">
+          <label for="category-filter"><i class="bi bi-funnel-fill me-1"></i>Filter by Category:</label>
+          <select id="category-filter" class="fa-select" onchange="filterByCategory()">
+            <option value="">All Categories</option>
+            <option value="Chest">Chest</option>
+            <option value="Back">Back</option>
+            <option value="Legs">Legs</option>
+            <option value="Shoulders">Shoulders</option>
+            <option value="Arms">Arms</option>
+            <option value="Abs">Abs</option>
+            <option value="Calves">Calves</option>
+            <option value="Cardio">Cardio</option>
+          </select>
+          <span id="results-counter" class="ms-auto" style="display:none;"></span>
+        </div>
+        <div id="exercise-list"></div>
+        <div id="loading-indicator" style="display:none;"><div class="spinner me-2"></div>Loading exercises...</div>
+        <div id="counter-slot"></div>
+        <div id="load-more-slot"></div>
+      </div>
+      <div class="col-lg-4">
+        <div class="section-card mb-3">
+          <div class="s-head" style="background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));"><i class="bi bi-journal-check"></i><h2>Your Routine</h2></div>
+          <div class="s-body p-0"><ul id="routine-list"></ul></div>
+        </div>
+
+        <!-- ── CALORIE BURN ESTIMATOR ── -->
+        <div class="section-card mb-3" id="calorie-estimator-card">
+          <div class="s-head" style="background:linear-gradient(135deg,#e65100,#f4623a,#f59e0b);">
+            <i class="bi bi-fire"></i><h2>Calorie Burn Estimator</h2>
+          </div>
+          <div class="s-body">
+            <!-- Flame animation ring -->
+            <div class="cbe-flame-ring">
+              <div class="cbe-flame-icon">🔥</div>
+              <svg class="cbe-ring-svg" viewBox="0 0 120 120">
+                <circle class="cbe-ring-bg" cx="60" cy="60" r="52"/>
+                <circle class="cbe-ring-fill" id="cbeRingFill" cx="60" cy="60" r="52"
+                        stroke-dasharray="0 327" stroke-dashoffset="82"/>
+              </svg>
+              <div class="cbe-cal-display">
+                <span class="cbe-cal-num" id="cbeCalNum">—</span>
+                <span class="cbe-cal-unit">kcal</span>
+              </div>
+            </div>
+
+            <!-- Inputs -->
+            <div class="cbe-inputs">
+              <div class="cbe-field">
+                <label class="cbe-label"><i class="bi bi-journal-check"></i> From Your Routine</label>
+                <div class="rc-select-wrap">
+                  <select id="cbeActivity" class="cbe-select">
+                    <option value="">— Add exercises to your routine first —</option>
+                  </select>
+                  <i class="bi bi-chevron-down"></i>
+                </div>
+              </div>
+              <div class="cbe-field">
+                <label class="cbe-label"><i class="bi bi-clock"></i> Duration</label>
+                <div class="cbe-duration-row">
+                  <input type="range" id="cbeDuration" min="5" max="120" value="30" step="5"
+                         oninput="document.getElementById('cbeDurationVal').textContent=this.value">
+                  <span class="cbe-dur-badge"><span id="cbeDurationVal">30</span> min</span>
+                </div>
+              </div>
+              <button class="cbe-btn" onclick="estimateCalories()">
+                <i class="bi bi-calculator"></i> Estimate Burn
+              </button>
+            </div>
+
+            <!-- Result detail -->
+            <div class="cbe-result" id="cbeResult" style="display:none;">
+              <div class="cbe-result-row">
+                <span class="cbe-result-label">Activity</span>
+                <span class="cbe-result-val" id="cbeResActivity">—</span>
+              </div>
+              <div class="cbe-result-row">
+                <span class="cbe-result-label">Duration</span>
+                <span class="cbe-result-val" id="cbeResDuration">—</span>
+              </div>
+              <div class="cbe-result-row">
+                <span class="cbe-result-label">Rate</span>
+                <span class="cbe-result-val" id="cbeResRate">—</span>
+              </div>
+              <div class="cbe-result-tip" id="cbeResTip"></div>
+            </div>
+
+            <div class="cbe-error" id="cbeError" style="display:none;"></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="s-head" style="background:linear-gradient(135deg,#6f42c1,#0dcaf0);"><i class="bi bi-stars"></i><h2>Recommended</h2></div>
+          <div class="s-body"><div id="recommendations-container"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="fa-footer">
+    <div class="container">
+      <div class="row g-4 align-items-start">
+        <div class="col-lg-4 col-md-12">
+          <div class="f-logo mb-2">💪 FitAlchemy</div>
+          <p class="f-tagline">Transform your fitness journey with personalized workouts, meal plans, and daily motivation.</p>
+          <div class="f-social-row">
+            <a href="https://www.facebook.com/share/184stgLqiz/?mibextid=wwXIfr" target="_blank" class="f-sico f-sico-fb" title="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://x.com/" target="_blank" class="f-sico f-sico-tw" title="Twitter/X"><i class="bi bi-twitter-x"></i></a>
+            <a href="https://www.instagram.com/wannnkt._" target="_blank" class="f-sico f-sico-ig" title="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.youtube.com/@WANAIMIFIRDAUSBINWANAZARIE" target="_blank" class="f-sico f-sico-yt" title="YouTube"><i class="bi bi-youtube"></i></a>
+            <a href="https://www.linkedin.com/" target="_blank" class="f-sico f-sico-li" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+          <div class="f-col-title">Quick Links</div>
+          <a href="/dashboard.html" class="f-link"><i class="bi bi-house-fill me-2"></i>Dashboard</a>
+          <a href="/wger.html" class="f-link"><i class="bi bi-lightning-fill me-2"></i>Workout</a>
+          <a href="/spoonacular.html" class="f-link"><i class="bi bi-egg-fried me-2"></i>Meal Planning</a>
+          <a href="/quote.html" class="f-link"><i class="bi bi-chat-quote-fill me-2"></i>Quotes</a>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+          <div class="f-col-title">Support</div>
+          <a href="javascript:void(0)" onclick="showFooterModal('help')" class="f-link"><i class="bi bi-question-circle me-2"></i>Help Center</a>
+          <a href="https://mail.google.com/mail/?view=cm&to=wanaimi04@gmail.com&su=FitAlchemy%20Support" target="_blank" class="f-link"><i class="bi bi-envelope me-2"></i>Contact Us</a>
+          <a href="javascript:void(0)" onclick="showFooterModal('privacy')" class="f-link"><i class="bi bi-shield-check me-2"></i>Privacy Policy</a>
+          <a href="javascript:void(0)" onclick="showFooterModal('terms')" class="f-link"><i class="bi bi-file-text me-2"></i>Terms of Service</a>
+        </div>
+        <div class="col-lg-4 col-md-4">
+          <div class="f-col-title">Disclaimer</div>
+          <div class="f-disclaimer">
+            <i class="bi bi-info-circle-fill me-2" style="font-size:1.1rem;opacity:.7;flex-shrink:0;"></i>
+            FitAlchemy content is for general informational purposes only. Always consult a qualified healthcare provider before starting any new exercise or diet plan. Individual results may vary.
+          </div>
+        </div>
+      </div>
+      <div class="f-divider"></div>
+      <div class="f-bottom">
+        <span>&copy; 2025 FitAlchemy &mdash; All Rights Reserved</span>
+        <span>Empowering Your Fitness Transformation 💪</span>
+      </div>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Redirect to login if not logged in
+if (localStorage.getItem('loggedIn') !== 'true') {
+  window.location.href = 'login.html';
+}
+
+// ── POPUP NOTIFICATIONS ────────────────────────────────────────────────────────
+function showPopup(type, title, message, duration = 3500) {
+  const popup = document.createElement('div');
+  popup.className = `popup-notification ${type}`;
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  popup.innerHTML = `
+    <div class="popup-icon">${icons[type] || '!'}</div>
+    <div class="popup-content">
+      <div class="popup-title">${title}</div>
+      <div class="popup-message">${message}</div>
+    </div>
+    <button class="popup-close" onclick="this.parentElement.classList.remove('show');setTimeout(()=>this.parentElement.remove(),500)">×</button>
+    <div class="popup-progress"></div>
+  `;
+  document.getElementById('popupContainer').appendChild(popup);
+  setTimeout(() => popup.classList.add('show'), 10);
+  setTimeout(() => {
+    popup.classList.remove('show');
+    setTimeout(() => popup.remove(), 500);
+  }, duration);
+}
+
+const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+// Pagination state
+let currentCategory = '';
+let currentOffset = 0;
+let totalResults = 0;
+let loadedExercises = [];
+
+async function loadExercises(isLoadMore = false) {
+  const category = document.getElementById('category-filter')?.value || '';
+  const container = document.getElementById('exercise-list');
+  
+  // If category changed (not load more), reset pagination
+  if (!isLoadMore || category !== currentCategory) {
+    currentCategory = category;
+    currentOffset = 0;
+    loadedExercises = [];
+    container.innerHTML = '';
+  }
+  
+  // Build URL with pagination
+  let url = `/api/exercises?offset=${currentOffset}&limit=15`;
+  if (category) {
+    url += `&category=${encodeURIComponent(category)}`;
+  }
+
+  try {
+    // Show loading indicator
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'loading-indicator';
+    loadingDiv.style.cssText = 'color:#1976d2;font-weight:700;margin:12px;text-align:center;';
+    loadingDiv.textContent = isLoadMore ? 'Loading more exercises...' : 'Loading exercises...';
+    container.appendChild(loadingDiv);
+    
+    const res = await fetch(url);
+    const rawText = await res.text();
+
+    // Handle HTML error pages (e.g. Express error page returned instead of JSON)
+    if (rawText.trim().startsWith('<')) {
+      throw new Error(`Server returned HTML instead of JSON (status ${res.status}). Check server logs.`);
+    }
+
+    if (!res.ok) {
+      let errMsg = `Request failed: ${res.status} ${res.statusText}`;
+      try { const errData = JSON.parse(rawText); errMsg = errData.error || errMsg; } catch(e) {}
+      throw new Error(errMsg);
+    }
+
+    const data = JSON.parse(rawText);
+    
+    // Remove loading indicator
+    const loading = document.getElementById('loading-indicator');
+    if (loading) loading.remove();
+    
+    // Check response format (backend now returns {results, totalResults})
+    const exercises = data.results || data;
+    totalResults = data.totalResults || (Array.isArray(data) ? data.length : 0);
+    
+    if (!Array.isArray(exercises)) throw new Error('API did not return an array');
+
+    // Add to loaded exercises (already sorted A-Z by backend)
+    loadedExercises = [...loadedExercises, ...exercises];
+
+    // Remove old load more button and counter if exists
+    if (isLoadMore) {
+      const oldBtn = document.getElementById('load-more-btn');
+      if (oldBtn) oldBtn.remove();
+      const counterSlot = document.getElementById('counter-slot');
+      if (counterSlot) counterSlot.innerHTML = '';
+    }
+
+    if (loadedExercises.length === 0 && !isLoadMore) {
+      container.innerHTML = '<div style="color:#e53935;font-weight:700;margin:12px;">No exercises found for this category.</div>';
+      return;
+    }
+
+    const maxDescLength = 180;
+
+    exercises.forEach((ex, idx) => {
+      const fullDesc = ex.description ? ex.description.replace(/<[^>]*>/g, '') : 'No description available.';
+      const shortDesc = fullDesc.length > maxDescLength
+        ? fullDesc.slice(0, maxDescLength) + '...'
+        : fullDesc;
+
+      const div = document.createElement('div');
+      div.className = 'exercise';
+      div.innerHTML = `
+        <div class="ex-img-wrap">
+          <img src="${ex.image || `https://placehold.co/300x160/e8f5e9/0b6e4f?text=${encodeURIComponent(ex.category||'Exercise')}`}" alt="${ex.name}"
+               onerror="this.onerror=null;this.src='https://placehold.co/300x160/e8f5e9/0b6e4f?text=Exercise';">
+        </div>
+        <div class="ex-body">
+          <div class="ex-tag"><i class="bi bi-lightning-fill"></i> ${ex.category || 'Exercise'}</div>
+          <div class="ex-name">${ex.name}</div>
+          <div class="equipment"><i class="bi bi-tools"></i> ${ex.equipment && ex.equipment.length ? ex.equipment.join(', ') : 'Bodyweight'}</div>
+          <p class="desc">${shortDesc}</p>
+          <button class="read-more"><i class="bi bi-book me-1"></i>Read More</button>
+        </div>
+        <div class="custom-fields">
+          <label>Reps:
+            <input type="number" name="reps" min="1" max="100" value="10">
+          </label>
+          <label style="grid-column:1/-1;">📅 Plan Date:
+            <input type="date" name="planned_date" value="${(()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})()}" style="width:100%;border:2px solid rgba(11,110,79,.15);border-radius:8px;padding:.35rem .7rem;font-size:.82rem;">
+          </label>
+        </div>
+        <button class="add-to-routine-btn"><i class="bi bi-plus-circle me-1"></i>Add to Workout Routine</button>
+      `;
+
+      div.querySelector('.read-more').addEventListener('click', function(e) {
+        const imgSrc = ex.image || `https://placehold.co/480x220/e8f5e9/0b6e4f?text=${encodeURIComponent(ex.category||'Exercise')}`;
+        const equipment = ex.equipment && ex.equipment.length ? ex.equipment.join(', ') : 'Bodyweight';
+
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.55);display:flex;align-items:flex-start;justify-content:center;z-index:9999;backdrop-filter:blur(3px);overflow-y:auto;padding:2rem 1rem;';
+
+        const popup = document.createElement('div');
+        popup.style.cssText = 'background:#fff;border-radius:18px;padding:0;max-width:520px;width:92vw;box-shadow:0 20px 60px rgba(11,110,79,.25);position:relative;margin:auto;';
+
+        popup.innerHTML = `
+          <div style="background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));border-radius:18px 18px 0 0;padding:1.2rem 1.5rem;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.5rem;">💪</span>
+            <div style="flex:1;min-width:0;">
+              <div style="color:rgba(255,255,255,.78);font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;">${ex.category || 'Exercise'}</div>
+              <div style="color:#fff;font-weight:800;font-size:1.05rem;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ex.name}</div>
+            </div>
+            <button onclick="this.closest('div[style*=fixed]').remove()" style="flex-shrink:0;background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.35)'" onmouseout="this.style.background='rgba(255,255,255,.2)'">✕</button>
+          </div>
+          <div style="padding:1.3rem 1.5rem;">
+            <img src="${imgSrc}" alt="${ex.name}"
+                 onerror="this.onerror=null;this.src='https://placehold.co/480x220/e8f5e9/0b6e4f?text=Exercise';"
+                 style="width:100%;height:210px;object-fit:cover;border-radius:12px;margin-bottom:1rem;box-shadow:0 4px 16px rgba(11,110,79,.15);display:block;">
+            <div style="background:#f0f7f4;border-radius:10px;padding:.8rem 1rem;margin-bottom:.85rem;display:flex;align-items:center;gap:10px;">
+              <i class="bi bi-lightning-fill" style="color:var(--fa-teal);font-size:1.1rem;flex-shrink:0;"></i>
+              <div>
+                <div style="font-size:.68rem;font-weight:800;color:var(--fa-green);text-transform:uppercase;letter-spacing:.6px;">Category</div>
+                <div style="font-size:.88rem;color:#333;font-weight:600;margin-top:2px;">${ex.category || '—'}</div>
+              </div>
+            </div>
+            <div style="background:#f0f7f4;border-radius:10px;padding:.8rem 1rem;margin-bottom:.85rem;display:flex;align-items:center;gap:10px;">
+              <i class="bi bi-tools" style="color:var(--fa-teal);font-size:1.1rem;flex-shrink:0;"></i>
+              <div>
+                <div style="font-size:.68rem;font-weight:800;color:var(--fa-green);text-transform:uppercase;letter-spacing:.6px;">Equipment</div>
+                <div style="font-size:.88rem;color:#333;font-weight:600;margin-top:2px;">${equipment}</div>
+              </div>
+            </div>
+            <div style="background:#f0f7f4;border-radius:10px;padding:.8rem 1rem;">
+              <div style="font-size:.68rem;font-weight:800;color:var(--fa-green);text-transform:uppercase;letter-spacing:.6px;margin-bottom:.5rem;">Full Description</div>
+              <div style="font-size:.85rem;color:#444;line-height:1.7;">${fullDesc}</div>
+            </div>
+          </div>
+        `;
+
+        overlay.appendChild(popup);
+        overlay.addEventListener('click', function(ev) {
+          if (ev.target === overlay) overlay.remove();
+        });
+        document.body.appendChild(overlay);
+      });
+
+      // Add to Workout Routine button logic
+      div.querySelector('.add-to-routine-btn').onclick = async function() {
+        const customFields = div.querySelector('.custom-fields');
+        const reps         = customFields.querySelector('input[name="reps"]').value;
+        const plannedDate  = customFields.querySelector('input[name="planned_date"]').value || null;
+        const dayNames     = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        const day          = plannedDate ? dayNames[new Date(plannedDate + 'T00:00:00').getDay()] : 'Monday';
+
+        // 1. Fetch current routine
+        const userId = localStorage.getItem('userId');
+        const routineRes = await fetch(`/api/routine?userId=${userId}`);
+        const routine = await routineRes.json();
+        if (!Array.isArray(routine)) {
+          showPopup('error', 'Load Failed ❌', 'Failed to load your workout routine. Please try again.');
+          return;
+        }
+
+        // 2. Add new exercise (INCLUDE IMAGE + PLANNED DATE)
+        routine.push({
+          name: ex.name,
+          description: ex.description ? ex.description.replace(/<[^>]*>/g, '') : '',
+          day: day,
+          reps: reps,
+          category: ex.category || '',
+          image: ex.image || null,
+          planned_date: plannedDate,
+          is_completed: 0
+        });
+
+        // 3. Save updated routine
+        const saveRes = await fetch('/api/routine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, routine })
+        });
+
+        if (saveRes.ok) {
+          showPopup('success', 'Exercise Added! 💪', `<strong>${ex.name}</strong> added to your ${day} routine.`);
+        } else {
+          const errData = await saveRes.json().catch(() => ({}));
+          showPopup('error', 'Save Failed ❌', errData.details || 'Could not save to your routine. Please try again.');
+        }
+        loadRoutine();
+      };
+
+      container.appendChild(div);
+    });
+
+    // Counter — outside the grid, right-aligned below exercises
+    const existingCounter = document.getElementById('results-counter');
+    if (existingCounter) existingCounter.remove();
+    const counterDiv = document.createElement('div');
+    counterDiv.id = 'results-counter';
+    counterDiv.innerHTML = `Showing <strong>${loadedExercises.length}</strong> of <strong>${totalResults}</strong> exercises <span style="color:var(--fa-teal);font-weight:700;">(sorted A–Z)</span>`;
+    document.getElementById('counter-slot').appendChild(counterDiv);
+
+    // Load More button
+    currentOffset += 15;
+    const oldLoadMore = document.getElementById('load-more-btn');
+    if (oldLoadMore) oldLoadMore.remove();
+    if (loadedExercises.length < totalResults) {
+      const loadMoreBtn = document.createElement('button');
+      loadMoreBtn.id = 'load-more-btn';
+      loadMoreBtn.className = 'btn-fa-primary';
+      loadMoreBtn.innerHTML = `<i class="bi bi-plus-circle me-1"></i> Load More <span style="opacity:.8;font-weight:600;">(${totalResults - loadedExercises.length} remaining)</span>`;
+      loadMoreBtn.onclick = () => loadExercises(true);
+      document.getElementById('load-more-slot').appendChild(loadMoreBtn);
+    }
+    
+  } catch (err) {
+    console.error('Failed to load exercises:', err);
+    const loading = document.getElementById('loading-indicator');
+    if (loading) loading.remove();
+    
+    if (!isLoadMore) {
+      container.innerHTML = `<div style="color:#e53935;font-weight:700;margin:12px;">Failed to load exercises: ${err.message}</div>`;
+    }
+  }
+}
+
+async function loadRecommendations() {
+  const container = document.getElementById('recommendations-container');
+  container.innerHTML = '<div style="color:#14a97c;font-weight:700;font-size:.82rem;text-align:center;padding:.5rem;">Loading...</div>';
+
+  // 5 fixed body parts to target — one card each
+  const TARGETS = [
+    { category: 'Chest',     icon: 'bi-heart-pulse-fill', emoji: '🫀' },
+    { category: 'Back',      icon: 'bi-arrow-up',         emoji: '🔙' },
+    { category: 'Legs',      icon: 'bi-person-walking',   emoji: '🦵' },
+    { category: 'Shoulders', icon: 'bi-asterisk',         emoji: '💫' },
+    { category: 'Abs',       icon: 'bi-lightning-fill',   emoji: '⚡' },
+  ];
+
+  try {
+    // Fetch one exercise per body part in parallel
+    const results = await Promise.all(
+      TARGETS.map(t =>
+        fetch(`/api/exercises?offset=0&limit=50&category=${encodeURIComponent(t.category)}`)
+          .then(r => r.json())
+          .then(data => {
+            const arr = data.results || data;
+            if (!Array.isArray(arr) || arr.length === 0) return null;
+            // Pick a random exercise from this category
+            return { target: t, ex: arr[Math.floor(Math.random() * arr.length)] };
+          })
+          .catch(() => null)
+      )
+    );
+
+    container.innerHTML = '';
+
+    results.forEach(item => {
+      if (!item) return;
+      const { target, ex } = item;
+      const fullDesc  = ex.description ? ex.description.replace(/<[^>]*>/g, '').trim() : 'No description available.';
+      // Fixed 2-line description — clamp handled by CSS, just clean the text
+      const equipment = ex.equipment && ex.equipment.length ? ex.equipment.join(', ') : 'Bodyweight';
+      const imgSrc    = ex.image || `https://placehold.co/300x130/e8f5e9/0b6e4f?text=${encodeURIComponent(target.category)}`;
+
+      const card = document.createElement('div');
+      card.className = 'recommendation-card';
+      card.innerHTML = `
+        <div class="rc-img-wrap">
+          <img src="${imgSrc}" alt="${ex.name}"
+               onerror="this.onerror=null;this.src='https://placehold.co/300x130/e8f5e9/0b6e4f?text=${encodeURIComponent(target.category)}';">
+        </div>
+        <div class="rc-body">
+          <div class="rc-tag"><i class="bi ${target.icon}"></i> ${target.category}</div>
+          <div class="rc-name">${ex.name}</div>
+          <div class="rc-equipment"><i class="bi bi-tools"></i> ${equipment}</div>
+          <div class="rc-desc">${fullDesc}</div>
+        </div>
+        <div class="rc-btn-row">
+          <button class="rc-detail-btn">
+            <i class="bi bi-search"></i> More Details
+          </button>
+          <button class="rc-add-btn">
+            <i class="bi bi-plus-circle"></i> Add to Plan
+          </button>
+        </div>
+      `;
+
+      // More Details modal
+      card.querySelector('.rc-detail-btn').onclick = function() {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.55);display:flex;align-items:flex-start;justify-content:center;z-index:9999;backdrop-filter:blur(3px);overflow-y:auto;padding:2rem 1rem;';
+
+        const popup = document.createElement('div');
+        popup.style.cssText = 'background:#fff;border-radius:18px;padding:0;max-width:520px;width:92vw;box-shadow:0 20px 60px rgba(11,110,79,.25);position:relative;margin:auto;';
+
+        popup.innerHTML = `
+          <div style="background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));border-radius:18px 18px 0 0;padding:1.2rem 1.5rem;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.5rem;">${target.emoji}</span>
+            <div>
+              <div style="color:rgba(255,255,255,.75);font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;">${target.category}</div>
+              <div style="color:#fff;font-weight:800;font-size:1.05rem;line-height:1.3;">${ex.name}</div>
+            </div>
+            <button onclick="this.closest('[style*=fixed]').remove()" style="margin-left:auto;background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:32px;height:32px;font-size:1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.35)'" onmouseout="this.style.background='rgba(255,255,255,.2)'">✕</button>
+          </div>
+          <div style="padding:1.3rem 1.5rem;">
+            <img src="${imgSrc}" alt="${ex.name}"
+                 onerror="this.onerror=null;this.src='https://placehold.co/480x240/e8f5e9/0b6e4f?text=${encodeURIComponent(target.category)}';"
+                 style="width:100%;height:200px;object-fit:cover;border-radius:12px;margin-bottom:1rem;box-shadow:0 4px 16px rgba(11,110,79,.15);">
+            <div style="background:#f0f7f4;border-radius:10px;padding:.8rem 1rem;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;">
+              <i class="bi bi-tools" style="color:var(--fa-teal);font-size:1rem;"></i>
+              <div>
+                <div style="font-size:.68rem;font-weight:800;color:var(--fa-green);text-transform:uppercase;letter-spacing:.6px;">Equipment</div>
+                <div style="font-size:.85rem;color:#333;font-weight:600;margin-top:2px;">${equipment}</div>
+              </div>
+            </div>
+            <div style="background:#f0f7f4;border-radius:10px;padding:.8rem 1rem;">
+              <div style="font-size:.68rem;font-weight:800;color:var(--fa-green);text-transform:uppercase;letter-spacing:.6px;margin-bottom:.5rem;">Description</div>
+              <div style="font-size:.85rem;color:#444;line-height:1.7;">${fullDesc}</div>
+            </div>
+          </div>
+        `;
+
+        overlay.appendChild(popup);
+        overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        document.body.appendChild(overlay);
+      };
+
+      // Add to Plan button
+      card.querySelector('.rc-add-btn').onclick = function() {
+        const daysArr = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+        // Mini day/reps picker overlay
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(3px);';
+
+        const modal = document.createElement('div');
+        modal.style.cssText = 'background:#fff;border-radius:18px;padding:0;max-width:360px;width:92vw;box-shadow:0 20px 60px rgba(11,110,79,.3);overflow:hidden;';
+        modal.innerHTML = `
+          <div style="background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));padding:1.1rem 1.4rem;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:1.3rem;">💪</span>
+            <div style="flex:1;min-width:0;">
+              <div style="color:rgba(255,255,255,.75);font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;">${target.category}</div>
+              <div style="color:#fff;font-weight:800;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ex.name}</div>
+            </div>
+            <button onclick="this.closest('div[style*=fixed]').remove()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:28px;height:28px;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.background='rgba(255,255,255,.35)'" onmouseout="this.style.background='rgba(255,255,255,.2)'">✕</button>
+          </div>
+          <div style="padding:1.2rem 1.4rem;">
+            <div style="margin-bottom:.9rem;">
+              <label style="font-size:.75rem;font-weight:800;color:var(--fa-green);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:.35rem;">Reps</label>
+              <input id="rc-reps-input" type="number" min="1" max="100" value="10" style="width:100%;border:2px solid #c8e6d4;border-radius:10px;padding:.5rem .8rem;font-size:.88rem;outline:none;font-family:inherit;">
+            </div>
+            <div style="margin-bottom:1.1rem;">
+              <label style="font-size:.75rem;font-weight:800;color:var(--fa-green);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:.35rem;">📅 Plan Date</label>
+              <input id="rc-date-input" type="date" value="${(()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})()}" style="width:100%;border:2px solid #c8e6d4;border-radius:10px;padding:.5rem .8rem;font-size:.88rem;outline:none;font-family:inherit;">
+            </div>
+            <button id="rc-confirm-add" style="width:100%;background:linear-gradient(135deg,var(--fa-green),var(--fa-teal));color:#fff;border:none;border-radius:10px;padding:.65rem;font-weight:700;font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+              <i class="bi bi-plus-circle"></i> Add to Workout Routine
+            </button>
+          </div>
+        `;
+
+        modal.querySelector('#rc-confirm-add').onclick = async function() {
+          const reps        = modal.querySelector('#rc-reps-input').value;
+          const plannedDate = modal.querySelector('#rc-date-input').value || null;
+          const _dayNames   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+          const day         = plannedDate ? _dayNames[new Date(plannedDate + 'T00:00:00').getDay()] : 'Monday';
+          const userId = localStorage.getItem('userId');
+
+          try {
+            const routineRes = await fetch(`/api/routine?userId=${userId}`);
+            const routine    = await routineRes.json();
+            if (!Array.isArray(routine)) {
+              showPopup('error', 'Load Failed ❌', 'Could not load your routine. Please try again.');
+              overlay.remove(); return;
+            }
+            routine.push({
+              name:         ex.name,
+              description:  ex.description ? ex.description.replace(/<[^>]*>/g, '') : '',
+              day,
+              reps,
+              category:     ex.category || '',
+              image:        ex.image || null,
+              planned_date: plannedDate,
+              is_completed: 0
+            });
+            const saveRes = await fetch('/api/routine', {
+              method:  'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body:    JSON.stringify({ userId, routine })
+            });
+            overlay.remove();
+            if (saveRes.ok) {
+              showPopup('success', 'Exercise Added! 💪', `<strong>${ex.name}</strong> added to your ${day} routine.`);
+              loadRoutine();
+            } else {
+              const errData = await saveRes.json().catch(() => ({}));
+              showPopup('error', 'Save Failed ❌', errData.details || 'Could not save to your routine. Please try again.');
+            }
+          } catch (err) {
+            overlay.remove();
+            showPopup('error', 'Error ❌', err.message || 'Something went wrong. Please try again.');
+          }
+        };
+
+        overlay.appendChild(modal);
+        overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+        document.body.appendChild(overlay);
+      };
+
+      container.appendChild(card);
+    });
+
+    if (container.children.length === 0) {
+      container.innerHTML = '<div style="color:#e53935;font-size:.82rem;text-align:center;">No recommendations available.</div>';
+    }
+
+  } catch (err) {
+    console.error('Failed to load recommendations:', err);
+    container.innerHTML = '<div style="color:#e53935;font-size:.82rem;text-align:center;">Failed to load recommendations.</div>';
+  }
+}
+
+async function loadRoutine() {
+  const userId = localStorage.getItem('userId');
+  const res = await fetch(`/api/routine?userId=${userId}`);
+  const routine = await res.json();
+  const list = document.getElementById('routine-list');
+  list.innerHTML = '';
+  routine.forEach((ex, idx) => {
+    const day      = ex.day      && ex.day      !== 'undefined' ? ex.day      : 'Day';
+    const name     = ex.name     && ex.name     !== 'undefined' ? ex.name     : 'Exercise';
+    const category = ex.category && ex.category !== 'undefined' ? ex.category : '';
+    const reps     = ex.reps     && ex.reps     !== 'undefined' ? ex.reps     : '';
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <span class="rt-day-badge">${day}</span>
+      ${category ? `<span class="rt-cat-badge">💪 ${category}</span>` : ''}
+      <div class="rt-info">
+        <div class="rt-name">${name}</div>
+        ${reps ? `<div class="rt-reps">🔁 ${reps} reps</div>` : ''}
+      </div>
+      <button class="rt-remove-btn"><i class="bi bi-trash3"></i></button>
+    `;
+    li.querySelector('.rt-remove-btn').onclick = async function() {
+      const removedName = routine[idx].name || 'Exercise';
+      routine.splice(idx, 1);
+      const removeRes = await fetch('/api/routine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, routine })
+      });
+      if (removeRes.ok) {
+        showPopup('info', 'Exercise Removed 🗑️', `<strong>${removedName}</strong> has been removed from your routine.`);
+      } else {
+        showPopup('error', 'Remove Failed ❌', 'Could not update your routine. Please try again.');
+      }
+      loadRoutine();
+    };
+    list.appendChild(li);
+  });
+
+  // Populate calorie estimator dropdown with saved exercises
+  const cbeSelect = document.getElementById('cbeActivity');
+  if (cbeSelect) {
+    const prevVal = cbeSelect.value;
+    cbeSelect.innerHTML = routine.length === 0
+      ? '<option value="">— Add exercises to your routine first —</option>'
+      : '<option value="">— Select an exercise —</option>';
+    routine.forEach(ex => {
+      if (!ex.name || ex.name === 'undefined') return;
+      const opt = document.createElement('option');
+      opt.value = ex.name;
+      opt.dataset.category = ex.category || '';
+      opt.textContent = `${ex.name}${ex.category ? ' (' + ex.category + ')' : ''}`;
+      if (opt.value === prevVal) opt.selected = true;
+      cbeSelect.appendChild(opt);
+    });
+  }
+}
+
+// Workout Tips & Exercise Wisdom Array
+const workoutTips = [
+  { tip: "Always warm up for 5-10 minutes before starting your workout to prevent injuries and improve performance.", category: "Warm-up" },
+  { tip: "Focus on proper form over heavy weight. Bad form leads to injuries and poor results.", category: "Form & Technique" },
+  { tip: "Rest 48-72 hours between training the same muscle group to allow for proper recovery and growth.", category: "Recovery" },
+  { tip: "Compound exercises (squat, deadlift, bench press) build more muscle than isolation exercises.", category: "Exercise Selection" },
+  { tip: "Progressive overload is key: Gradually increase weight, reps, or sets each week for continuous gains.", category: "Training Principle" },
+  { tip: "Control the negative (lowering) phase of each rep - it's where most muscle damage occurs.", category: "Form & Technique" },
+  { tip: "Train to failure on your last set to maximize muscle growth and strength gains.", category: "Training Intensity" },
+  { tip: "Keep your core tight during all compound lifts to protect your spine and improve stability.", category: "Safety" },
+  { tip: "Breathe properly: Exhale during exertion (lifting), inhale during the easier phase (lowering).", category: "Breathing" },
+  { tip: "Full range of motion builds more muscle and improves flexibility. Don't cut your reps short!", category: "Form & Technique" },
+  { tip: "Mix rep ranges: 4-6 for strength, 8-12 for hypertrophy, 15-20 for endurance.", category: "Programming" },
+  { tip: "Don't skip leg day! Your legs contain the largest muscle groups and boost overall strength.", category: "Training Balance" },
+  { tip: "Rest 2-3 minutes between heavy compound sets, 60-90 seconds for isolation exercises.", category: "Rest Periods" },
+  { tip: "Train each muscle group 2-3 times per week for optimal growth and strength development.", category: "Frequency" },
+  { tip: "Squeeze and contract your muscles at the top of each rep for maximum muscle activation.", category: "Form & Technique" },
+  { tip: "Vary your exercises every 6-8 weeks to prevent plateaus and keep making progress.", category: "Programming" },
+  { tip: "Use the mind-muscle connection: Focus on the muscle you're working during each rep.", category: "Mental Focus" },
+  { tip: "Don't bounce weights or use momentum - keep movements slow and controlled.", category: "Form & Technique" },
+  { tip: "Track your workouts! Write down weights, sets, and reps to ensure progressive overload.", category: "Tracking" },
+  { tip: "Symmetry matters: Train both sides equally to prevent muscle imbalances and injuries.", category: "Balance" }
+];
+
+let currentTipIndex = 0;
+
+function refreshTip() {
+  // Get random tip
+  currentTipIndex = Math.floor(Math.random() * workoutTips.length);
+  const tipData = workoutTips[currentTipIndex];
+  
+  // Update tip with fade animation
+  const tipElement = document.getElementById('motivation-quote');
+  const categoryElement = document.getElementById('quote-author');
+  
+  tipElement.style.opacity = '0';
+  categoryElement.style.opacity = '0';
+  
+  setTimeout(() => {
+    tipElement.textContent = `💡 ${tipData.tip}`;
+    categoryElement.textContent = `Category: ${tipData.category}`;
+    tipElement.style.transition = 'opacity 0.5s ease';
+    categoryElement.style.transition = 'opacity 0.5s ease';
+    tipElement.style.opacity = '1';
+    categoryElement.style.opacity = '1';
+  }, 300);
+}
+
+// Initialize tip on page load
+window.addEventListener('DOMContentLoaded', function() {
+  refreshTip();
+  // Auto-rotate tip every 30 seconds
+  setInterval(refreshTip, 30000);
+});
+
+// ── CALORIE BURN ESTIMATOR ────────────────────────────────────────────────────
+const CALORIE_TIPS = {
+  low:    "💡 Light activity. Great for active recovery days!",
+  medium: "💪 Solid burn! Pair with a protein-rich meal after.",
+  high:   "🔥 Intense session! Hydrate well and rest properly.",
+};
+
+// Map exercise category → reliable API Ninjas activity
+function categoryToActivity(category) {
+  const c = (category || '').toLowerCase();
+  if (c.includes('chest'))     return 'weight lifting';
+  if (c.includes('back'))      return 'weight lifting';
+  if (c.includes('leg'))       return 'squats';
+  if (c.includes('shoulder'))  return 'weight lifting';
+  if (c.includes('arm'))       return 'weight lifting';
+  if (c.includes('abs'))       return 'calisthenics';
+  if (c.includes('calve'))     return 'weight lifting';
+  if (c.includes('cardio'))    return 'running';
+  return 'weight lifting'; // safe default
+}
+
+async function estimateCalories() {
+  const select   = document.getElementById('cbeActivity');
+  const selected = select.options[select.selectedIndex];
+  const duration = parseInt(document.getElementById('cbeDuration').value);
+  const resultEl = document.getElementById('cbeResult');
+  const errorEl  = document.getElementById('cbeError');
+  const ringFill = document.getElementById('cbeRingFill');
+  const calNum   = document.getElementById('cbeCalNum');
+  const btn      = document.querySelector('.cbe-btn');
+
+  if (!selected || !selected.value) {
+    errorEl.textContent = 'Please add exercises to your routine first, then select one here.';
+    errorEl.style.display = 'block';
+    resultEl.style.display = 'none';
+    return;
+  }
+
+  const exerciseName = selected.value;
+  const category     = selected.dataset.category || '';
+  const apiActivity  = categoryToActivity(category);
+
+  errorEl.style.display = 'none';
+  resultEl.style.display = 'none';
+  btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Calculating...';
+  btn.disabled  = true;
+  calNum.textContent = '...';
+
+  try {
+    const res  = await fetch(`/api/calories?activity=${encodeURIComponent(apiActivity)}&duration=${duration}`);
+    const data = await res.json();
+
+    if (!data || data.error || !Array.isArray(data) || data.length === 0) {
+      throw new Error('Could not estimate calories. Please try again.');
+    }
+
+    const result  = data[0];
+    const total   = Math.round(result.total_calories || (result.calories_per_hour / 60 * duration));
+    const perHour = Math.round(result.calories_per_hour || 0);
+
+    // Animate ring — circumference = 327
+    const pct  = Math.min(total / 600, 1);
+    const dash = Math.round(pct * 327);
+    ringFill.style.strokeDasharray = `${dash} 327`;
+    calNum.textContent = total;
+
+    const tip = total < 150 ? CALORIE_TIPS.low : total < 350 ? CALORIE_TIPS.medium : CALORIE_TIPS.high;
+
+    document.getElementById('cbeResActivity').textContent = exerciseName;
+    document.getElementById('cbeResDuration').textContent = `${duration} minutes`;
+    document.getElementById('cbeResRate').textContent     = `${perHour} kcal/hour`;
+    document.getElementById('cbeResTip').textContent      = tip;
+    resultEl.style.display = 'block';
+
+  } catch (err) {
+    calNum.textContent = '—';
+    ringFill.style.strokeDasharray = '0 327';
+    errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errorEl.style.display = 'block';
+  } finally {
+    btn.innerHTML = '<i class="bi bi-calculator"></i> Estimate Burn';
+    btn.disabled  = false;
+  }
+}
+
+window.onload = function() {
+  loadExercises();
+  loadRoutine();
+  loadRecommendations(); // Load workout recommendations
+  document.getElementById('category-filter').addEventListener('change', function() {
+    loadExercises(false); // Explicitly pass false for category change
+  });
+};
+
+// Logout function
+function logout() {
+  localStorage.removeItem('loggedIn');
+  localStorage.removeItem('userId');
+  window.location.href = 'login.html';
+}
+</script>
+
+<!-- ── FOOTER MODALS ── -->
+<div id="footerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:20px;width:92vw;max-width:500px;max-height:80vh;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);display:flex;flex-direction:column;">
+    <div id="footerModalHead" style="padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div style="font-weight:800;font-size:1rem;color:#fff;" id="footerModalTitle"></div>
+      <button onclick="closeFooterModal()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:30px;height:30px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+    <div id="footerModalBody" style="padding:1.4rem;overflow-y:auto;font-size:.88rem;line-height:1.8;color:#444;"></div>
+  </div>
+</div>
+
+<script>
+const FOOTER_CONTENT = {
+  help: {
+    title: '❓ Help Center',
+    color: 'linear-gradient(135deg,var(--fa-green),var(--fa-teal))',
+    body: `<p><strong>Welcome to FitAlchemy Help Center!</strong></p>
+      <p><strong>🏋️ Workout Page</strong><br>Browse exercises by category, read tutorials, and add them to your routine. Use the Calorie Burn Estimator to track your burn.</p>
+      <p><strong>🍽️ Meal Planning</strong><br>Search for recipes or browse daily recommendations. Add meals to your weekly plan and track nutrition.</p>
+      <p><strong>💬 CoachAlchemy</strong><br>Chat with your AI fitness coach. Ask for workout tips, meal ideas, or motivational quotes.</p>
+      <p><strong>👤 Profile</strong><br>Update your personal info, height, weight, fitness goals and dietary preferences. Your health status is auto-evaluated based on your data.</p>
+      <p><strong>📊 Dashboard</strong><br>View your saved workouts, meal plan, favorites, body stats and health status all in one place.</p>
+      <p style="margin-top:1rem;color:#888;font-size:.8rem;">For further assistance, contact us at <a href="https://mail.google.com/mail/?view=cm&to=wanaimi04@gmail.com&su=FitAlchemy%20Support" target="_blank" style="color:var(--fa-teal);">wanaimi04@gmail.com</a></p>`
+  },
+  privacy: {
+    title: '🔒 Privacy Policy',
+    color: 'linear-gradient(135deg,#1565c0,#0d6efd)',
+    body: `<p><strong>FitAlchemy Privacy Policy</strong><br><em>Last updated: April 2026</em></p>
+      <p><strong>Data We Collect</strong><br>We collect your email, password (encrypted), profile information (name, age, height, weight, fitness goals), workout routines, meal plans, and chat interactions with CoachAlchemy.</p>
+      <p><strong>How We Use Your Data</strong><br>Your data is used solely to provide FitAlchemy services including health tracking, personalised recommendations, and fitness coaching. We do not sell or share your data with third parties.</p>
+      <p><strong>Data Storage</strong><br>All data is stored securely in our database. Passwords are encrypted using bcrypt. Profile images are stored as encrypted base64 data.</p>
+      <p><strong>Your Rights</strong><br>You may update or delete your profile data at any time through the Profile page. To request full account deletion, contact us at wanaimi04@gmail.com.</p>
+      <p><strong>Third-Party APIs</strong><br>FitAlchemy uses Spoonacular (meal data), Wger (exercise data), and API Ninjas (calorie estimation). These services have their own privacy policies.</p>
+      <p style="color:#888;font-size:.8rem;">By using FitAlchemy, you agree to this privacy policy.</p>`
+  },
+  terms: {
+    title: '📄 Terms of Service',
+    color: 'linear-gradient(135deg,#6f42c1,#0dcaf0)',
+    body: `<p><strong>FitAlchemy Terms of Service</strong><br><em>Last updated: April 2026</em></p>
+      <p><strong>Acceptance</strong><br>By using FitAlchemy, you agree to these terms. If you do not agree, please do not use this service.</p>
+      <p><strong>Account Responsibility</strong><br>You are responsible for maintaining the confidentiality of your account credentials. You agree to provide accurate information during registration.</p>
+      <p><strong>Health Disclaimer</strong><br>FitAlchemy is a wellness tracking tool and is not a substitute for professional medical advice. Health status evaluations are estimates based on general guidelines (WHO, FAO). Always consult a qualified healthcare provider before making health decisions.</p>
+      <p><strong>Acceptable Use</strong><br>You agree not to misuse FitAlchemy, attempt to hack or disrupt the service, or use it for any unlawful purpose.</p>
+      <p><strong>AI Coach Disclaimer</strong><br>CoachAlchemy is an AI assistant. Responses are for informational purposes only and should not be treated as professional fitness or medical advice.</p>
+      <p><strong>Changes</strong><br>We reserve the right to update these terms at any time. Continued use of FitAlchemy constitutes acceptance of any changes.</p>
+      <p style="color:#888;font-size:.8rem;">Questions? Contact us at wanaimi04@gmail.com</p>`
+  }
+};
+
+function showFooterModal(type) {
+  const c = FOOTER_CONTENT[type];
+  if (!c) return;
+  document.getElementById('footerModalHead').style.background = c.color;
+  document.getElementById('footerModalTitle').textContent = c.title;
+  document.getElementById('footerModalBody').innerHTML = c.body;
+  const modal = document.getElementById('footerModal');
+  modal.style.display = 'flex';
+}
+function closeFooterModal() {
+  document.getElementById('footerModal').style.display = 'none';
+}
+document.getElementById('footerModal').addEventListener('click', function(e) {
+  if (e.target === this) closeFooterModal();
+});
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     COACHALCHEMY FLOATING DRAWER — inject before </body>
+     Works on: dashboard, wger, spoonacular, quote, report
+════════════════════════════════════════════════════════ -->
+<style>
+  /* ── FAB Button ── */
+  #coach-fab{position:fixed;right:1.4rem;bottom:1.4rem;height:56px;padding:0 1.4rem 0 1.1rem;border-radius:30px;border:none;cursor:pointer;z-index:1060;background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;font-size:1.3rem;display:flex;align-items:center;gap:10px;box-shadow:0 6px 20px rgba(58,12,163,.45);transition:all .25s;}
+  #coach-fab:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 26px rgba(58,12,163,.55);}
+  #coach-fab .coach-fab-label{font-size:.92rem;font-weight:800;letter-spacing:.4px;white-space:nowrap;}
+  #coach-fab-badge{position:absolute;top:-6px;right:-6px;background:#dc3545;color:#fff;font-size:.65rem;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid #fff;display:none;}
+
+  /* ── Overlay ── */
+  #coach-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1065;opacity:0;visibility:hidden;transition:opacity .3s ease;}
+  #coach-overlay.open{opacity:1;visibility:visible;}
+
+  /* ── Drawer ── */
+  #coach-drawer{position:fixed;top:0;right:0;height:100%;width:400px;max-width:95vw;background:#fff;z-index:1070;box-shadow:-8px 0 40px rgba(58,12,163,.18);transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;}
+  #coach-drawer.open{transform:translateX(0);}
+
+  /* ── Drawer Head ── */
+  .coach-drawer-head{background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;padding:1rem 1.2rem;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .coach-drawer-head-info{flex:1;}
+  .coach-drawer-head-info h2{font-size:1rem;font-weight:800;margin:0;letter-spacing:.4px;}
+  .coach-drawer-head-info p{font-size:.72rem;opacity:.8;margin:0;margin-top:2px;}
+  .coach-drawer-avatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border:2px solid rgba(255,255,255,.35);}
+  .coach-head-actions{display:flex;gap:6px;align-items:center;}
+  .coach-head-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:.3rem .75rem;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .coach-head-btn:hover{background:rgba(255,255,255,.32);}
+  .coach-head-close{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.18);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;}
+  .coach-head-close:hover{background:rgba(220,53,69,.7);}
+
+  /* ── Page awareness badge ── */
+
+
+  /* ── Messages ── */
+  .coach-messages{flex:1;overflow-y:auto;padding:1rem;background:#f8f7ff;display:flex;flex-direction:column;gap:.75rem;}
+  .coach-messages::-webkit-scrollbar{width:4px;}
+  .coach-messages::-webkit-scrollbar-thumb{background:#7209b7;border-radius:4px;}
+  .coach-msg{display:flex;gap:8px;align-items:flex-start;}
+  .coach-msg.user{flex-direction:row-reverse;}
+  .coach-msg-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0;margin-top:2px;}
+  .coach-msg.bot .coach-msg-avatar{background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;}
+  .coach-msg.user .coach-msg-avatar{background:linear-gradient(135deg,#f4623a,#ffc107);color:#fff;}
+  .coach-msg-bubble{max-width:82%;padding:.65rem .9rem;border-radius:4px 16px 16px 16px;font-size:.83rem;line-height:1.65;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .coach-msg.bot .coach-msg-bubble{background:#fff;color:#333;border:1px solid rgba(58,12,163,.1);}
+  .coach-msg.user .coach-msg-bubble{background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;border-radius:16px 4px 16px 16px;}
+  .coach-msg-bubble strong{color:inherit;}
+
+  /* ── Quote display inside bubble ── */
+  .coach-quote-card{background:linear-gradient(135deg,#3a0ca3,#7209b7);border-radius:12px;padding:.8rem 1rem;margin-top:.5rem;color:#fff;}
+  .coach-quote-text{font-style:italic;font-size:.85rem;line-height:1.6;margin-bottom:.4rem;}
+  .coach-quote-author{font-size:.72rem;opacity:.8;font-weight:600;}
+  .coach-save-btn{margin-top:.6rem;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:.3rem .8rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+  .coach-save-btn:hover{background:rgba(255,255,255,.35);}
+
+  /* ── Loading dots ── */
+  .coach-loading-dots{display:inline-flex;gap:4px;align-items:center;padding:.2rem 0;}
+  .coach-loading-dots span{width:7px;height:7px;border-radius:50%;background:#7209b7;animation:coachBounce .8s ease-in-out infinite;}
+  .coach-loading-dots span:nth-child(2){animation-delay:.15s;}
+  .coach-loading-dots span:nth-child(3){animation-delay:.3s;}
+  @keyframes coachBounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
+
+  /* ── Quick chips ── */
+  .coach-chips{padding:.7rem 1rem;border-top:1px solid #f0eeff;background:#fff;display:flex;flex-wrap:wrap;gap:.35rem;}
+  .coach-chip{background:#f0eeff;border:1px solid rgba(114,9,183,.2);color:#3a0ca3;border-radius:20px;padding:.28rem .75rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .coach-chip:hover{background:#7209b7;color:#fff;border-color:#7209b7;}
+
+  /* ── Input ── */
+  .coach-input-row{display:flex;gap:8px;padding:.8rem 1rem;border-top:2px solid #f0eeff;background:#fff;flex-shrink:0;}
+  .coach-input{flex:1;border:2px solid #e9ecef;border-radius:12px;padding:.55rem .9rem;font-size:.85rem;font-family:"Merriweather Sans",sans-serif;transition:all .2s;}
+  .coach-input:focus{border-color:#7209b7;box-shadow:0 0 0 3px rgba(114,9,183,.12);outline:none;}
+  .coach-send{background:linear-gradient(135deg,#3a0ca3,#7209b7);border:none;color:#fff;border-radius:12px;padding:.55rem 1.1rem;font-weight:700;cursor:pointer;transition:all .2s;font-size:.82rem;white-space:nowrap;}
+  .coach-send:hover{opacity:.9;transform:translateY(-1px);}
+  .coach-send:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+
+  @media(max-width:576px){
+    #coach-fab{right:1rem;bottom:1rem;height:50px;padding:0 1rem 0 .9rem;font-size:1.1rem;}
+    #coach-fab .coach-fab-label{font-size:.8rem;}
+    #coach-drawer{width:100%;max-width:100%;}
+  }
+</style>
+
+<button id="coach-fab" onclick="toggleCoachDrawer()" title="CoachAlchemy">
+  <i class="bi bi-robot"></i>
+  <span class="coach-fab-label">CoachAlchemy</span>
+  <span id="coach-fab-badge"></span>
+</button>
+
+<div id="coach-overlay" onclick="toggleCoachDrawer()"></div>
+
+<div id="coach-drawer">
+  <!-- Head -->
+  <div class="coach-drawer-head">
+    <div class="coach-drawer-avatar">🤖</div>
+    <div class="coach-drawer-head-info">
+      <h2>CoachAlchemy</h2>
+      <p>Your personal AI wellness coach</p>
+    </div>
+    <div class="coach-head-actions">
+
+      <button class="coach-head-btn" onclick="coachNewChat()" title="Start fresh conversation">🔄 New Chat</button>
+      <button class="coach-head-close" onclick="toggleCoachDrawer()"><i class="bi bi-x-lg"></i></button>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="coach-messages" id="coach-messages"></div>
+
+  <!-- Quick chips -->
+  <div class="coach-chips" id="coach-chips">
+    <span class="coach-chip" onclick="coachQuickSend('Give me a workout tip')">💪 Workout Tip</span>
+    <span class="coach-chip" onclick="coachQuickSend('Suggest a healthy meal')">🍽️ Meal Idea</span>
+    <span class="coach-chip" onclick="coachQuickSend('Motivate me to keep going')">✨ Motivate Me</span>
+    <span class="coach-chip" onclick="coachQuickSend('How am I doing overall?')">📊 My Overview</span>
+    <span class="coach-chip" onclick="coachQuickSend('I am feeling stressed')">😤 Stressed</span>
+    <span class="coach-chip" onclick="coachQuickSend('How can I sleep better?')">😴 Sleep Tips</span>
+    <span class="coach-chip" onclick="coachQuickSend('Suggest something based on my condition')">🎯 Suggest For Me</span>
+    <span class="coach-chip" onclick="coachQuickSend('Hello, what can you do?')">👋 What can you do</span>
+  </div>
+
+  <!-- Input -->
+  <div class="coach-input-row">
+    <input type="text" class="coach-input" id="coach-input" placeholder="Ask CoachAlchemy anything..." onkeypress="coachHandleKey(event)"/>
+    <button class="coach-send" id="coach-send-btn" onclick="coachSend()"><i class="bi bi-send-fill me-1"></i>Send</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'coachalchemy_history_' + (localStorage.getItem('userId') || 'guest');
+  const MAX_HISTORY = 50;
+
+  const WELCOME = `Hey! 👋 I'm <strong>CoachAlchemy</strong>, your personal wellness coach!<br><br>
+Here's what I can help you with:<br>
+💪 <strong>Workout</strong> — exercise tips, routines, form guidance<br>
+🍽️ <strong>Meal</strong> — meal ideas, macros, nutrition advice<br>
+✨ <strong>Quotes</strong> — motivation and inspiration<br>
+💙 <strong>Wellness</strong> — stress, sleep, hydration, mental health<br>
+📊 <strong>Your Status</strong> — personalised health overview<br><br>
+What would you like today? 🚀`;
+
+  // ── History ──
+  function loadHistory() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+    catch(e) { return []; }
+  }
+  function saveHistory(msgs) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs.slice(-MAX_HISTORY))); } catch(e) {}
+  }
+
+  // ── Render ──
+  function renderMessages(msgs) {
+    const container = document.getElementById('coach-messages');
+    container.innerHTML = '';
+    msgs.forEach(m => appendBubble(m.role, m.html, false));
+    scrollCoach();
+  }
+
+  function appendBubble(role, html, scroll) {
+    if (scroll === undefined) scroll = true;
+    const container = document.getElementById('coach-messages');
+    const wrap = document.createElement('div');
+    wrap.className = 'coach-msg ' + role;
+    const icon = role === 'bot' ? '🤖' : '🧑';
+    wrap.innerHTML = '<div class="coach-msg-avatar">' + icon + '</div><div class="coach-msg-bubble">' + html + '</div>';
+    container.appendChild(wrap);
+    if (scroll) scrollCoach();
+  }
+
+  function scrollCoach() {
+    const c = document.getElementById('coach-messages');
+    c.scrollTop = c.scrollHeight;
+  }
+
+  // ── Loading ──
+  let loadingEl = null;
+  function showLoading() {
+    const container = document.getElementById('coach-messages');
+    loadingEl = document.createElement('div');
+    loadingEl.className = 'coach-msg bot';
+    loadingEl.innerHTML = '<div class="coach-msg-avatar">🤖</div><div class="coach-msg-bubble"><div class="coach-loading-dots"><span></span><span></span><span></span></div></div>';
+    container.appendChild(loadingEl);
+    scrollCoach();
+  }
+  function removeLoading() { if (loadingEl) { loadingEl.remove(); loadingEl = null; } }
+
+  // ── Toggle drawer ──
+  window.toggleCoachDrawer = function() {
+    const drawer  = document.getElementById('coach-drawer');
+    const overlay = document.getElementById('coach-overlay');
+    const isOpen  = drawer.classList.toggle('open');
+    overlay.classList.toggle('open');
+    if (isOpen) {
+      const msgs = loadHistory();
+      if (msgs.length === 0) {
+        appendBubble('bot', WELCOME);
+        saveHistory([{ role:'bot', html: WELCOME }]);
+      } else {
+        renderMessages(msgs);
+      }
+      setTimeout(function(){ document.getElementById('coach-input').focus(); }, 350);
+    }
+  };
+
+  // ── New Chat ──
+  window.coachNewChat = function() {
+    localStorage.removeItem(STORAGE_KEY);
+    document.getElementById('coach-messages').innerHTML = '';
+    appendBubble('bot', WELCOME);
+    saveHistory([{ role:'bot', html: WELCOME }]);
+    document.getElementById('coach-input').focus();
+  };
+
+  // ── Send ──
+  window.coachSend = async function() {
+    const input   = document.getElementById('coach-input');
+    const sendBtn = document.getElementById('coach-send-btn');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const userId = localStorage.getItem('userId');
+    input.value = ''; input.disabled = true; sendBtn.disabled = true;
+
+    appendBubble('user', message);
+    const msgs = loadHistory();
+    msgs.push({ role:'user', html: message });
+    showLoading();
+
+    try {
+      const res  = await fetch('/api/coach', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ message, userId })
+      });
+      const data = await res.json();
+      removeLoading();
+
+      let botHtml = data.text || "Sorry, I couldn't process that. Please try again!";
+
+      if (data.intent === 'quote' && data.quote) {
+        const q = data.quote;
+        botHtml += '<div class="coach-quote-card">' +
+          '<div class="coach-quote-text">\u201C' + q.quote + '\u201D</div>' +
+          '<div class="coach-quote-author">\u2014 ' + (q.author || 'Unknown') + '</div>' +
+          '<button class="coach-save-btn" onclick="coachSaveQuote(\'' + encodeURIComponent(q.quote) + '\',\'' + encodeURIComponent(q.author || '') + '\',\'' + encodeURIComponent(q.category || '') + '\')">' +
+          '<i class="bi bi-heart-fill"></i> Save to Favorites</button></div>';
+      }
+
+      appendBubble('bot', botHtml);
+      msgs.push({ role:'bot', html: botHtml });
+      saveHistory(msgs);
+
+      try {
+        await fetch('/api/chatlog/save', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ userId, userMessage: message, botResponse: data.text || '' })
+        });
+      } catch(e) {}
+
+    } catch(err) {
+      removeLoading();
+      appendBubble('bot', "Something went wrong 😓. Please try again!");
+    }
+
+    input.disabled = false; sendBtn.disabled = false; input.focus();
+  };
+
+  window.coachQuickSend = function(prompt) {
+    document.getElementById('coach-input').value = prompt;
+    coachSend();
+  };
+
+  window.coachHandleKey = function(e) { if (e.key === 'Enter') coachSend(); };
+
+  window.coachSaveQuote = async function(encodedQuote, encodedAuthor, encodedCat) {
+    const userId = localStorage.getItem('userId');
+    const quote  = decodeURIComponent(encodedQuote);
+    const author = decodeURIComponent(encodedAuthor);
+    const cat    = decodeURIComponent(encodedCat);
+    try {
+      let res  = await fetch('/api/favorites?userId=' + userId);
+      let favs = await res.json();
+      if (!favs.quote) favs.quote = [];
+      const already = favs.quote.some(function(q){ return (q.content || q.quote) === quote && q.author === author; });
+      if (already) { coachShowToast('Already in favorites! 💙'); return; }
+      favs.quote.push({ content: quote, author: author, category: cat, _saved_at: new Date().toISOString() });
+      res = await fetch('/api/favorites', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ userId, favorites: favs }) });
+      if (res.ok) {
+        coachShowToast('Quote saved to favorites! ❤️');
+        const badge = document.getElementById('fav-fab-badge');
+        if (badge) { badge.textContent = favs.quote.length; badge.style.display = 'flex'; }
+      } else {
+        coachShowToast('Failed to save. Try again.');
+      }
+    } catch(e) { coachShowToast('Error saving quote.'); }
+  };
+
+  window.coachShowToast = function(msg) {
+    if (typeof showPopup === 'function') { showPopup('success', 'CoachAlchemy', msg); return; }
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:80px;right:1.5rem;background:linear-gradient(135deg,#3a0ca3,#7209b7);color:#fff;padding:.7rem 1.3rem;border-radius:12px;font-weight:700;font-size:.85rem;z-index:9999;box-shadow:0 6px 20px rgba(58,12,163,.35);';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 3000);
+  };
+})();
+</script>
+
+
+</body>
