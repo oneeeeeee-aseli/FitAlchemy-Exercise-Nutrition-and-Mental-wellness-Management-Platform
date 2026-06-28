@@ -1,457 +1,359 @@
-# 💪 FitAlchemy - MVC Architecture (EXACT CODE)
+<div align="center">
 
-> **100% EXACT code from your original `index.js`** - Just reorganized into MVC pattern
-> **Database:** `fyp` | **User:** `root` | **Password:** `admin`
-> **No changes needed** - Just copy, paste, and run!
+<img src="public/img/logo fitt.png" alt="FitAlchemy Logo" width="100"/>
+
+# 💪 FitAlchemy
+### AI-Powered Fitness & Wellness Management Platform
+
+[![Node.js](https://img.shields.io/badge/Node.js-22.x-68a063?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-5.x-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479a1?style=for-the-badge&logo=mysql&logoColor=white)](https://mysql.com/)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952b3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
+[![Railway](https://img.shields.io/badge/Deployed-Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app/)
+[![License](https://img.shields.io/badge/License-ISC-green?style=for-the-badge)](LICENSE)
+
+**A comprehensive web-based wellness platform combining workout planning, meal tracking, AI coaching, and automated health status evaluation — all in one system.**
+
+[🚀 Live Demo](https://fitalchemy-exercise-nutrition-and-mental-wellnes-production.up.railway.app) · [📋 Features](#-features) · [⚙️ Installation](#️-installation) · [📁 Project Structure](#-project-structure) · [🛠️ Tech Stack](#️-tech-stack)
 
 ---
 
-## ✅ **GUARANTEED COMPATIBILITY**
+</div>
 
-This is your **EXACT** original code, just organized better:
-- ✅ Same database name: `fyp`
-- ✅ Same database user: `root`  
-- ✅ Same database password: `admin`
-- ✅ Same functionality - everything works identical
-- ✅ Same API endpoints
-- ✅ Same logic - no changes!
+## 📌 About
+
+**FitAlchemy** is a Final Year Project (FYP) developed for the Faculty of Computer Science and Mathematics (FSKM), Universiti Malaysia Terengganu (UMT). It addresses the common problem of fragmented fitness applications by unifying workout planning, meal tracking, motivational quotes, AI-powered coaching, and automated health evaluation into a single, cohesive platform.
+
+> 🎓 **FYP — Batch 2025/2026 | FSKM, UMT**
 
 ---
 
-## 📁 **Project Structure**
+## ✨ Features
+
+### 🏋️ Workout Planning
+- Browse thousands of exercises powered by the **Wger API**
+- Filter by muscle category (Arms, Chest, Legs, Back, Shoulders, Abs, etc.)
+- View exercise tutorials and descriptions
+- Add exercises to personalised weekly routine with calendar scheduling
+- Track completion status with visual B&W "done" effect
+
+### 🍽️ Meal Planning
+- Discover thousands of recipes via **Spoonacular API**
+- Full nutritional information (calories, protein, carbs, fat)
+- Plan meals by day and meal type (Breakfast, Lunch, Dinner, Snack)
+- Save favourite recipes and view complete ingredients + instructions
+
+### 🤖 CoachAlchemy AI Chatbot
+- Rule-based AI coach with **30+ intelligent intent categories**
+- Supports **English**, **Bahasa Malaysia**, and **Manglish**
+- Available as a floating drawer on **every page**
+- Covers: workout tips, meal advice, emotional support, sleep, hydration, injury, supplements, Islamic fitness, and more
+- Chat history persists across all pages via localStorage
+- All interactions logged to database for health metrics analysis
+
+### ✨ Quote Assistant
+- Mood-based quote discovery using **API Ninjas**
+- 9 mood categories (Sad, Stressed, Morning, Lazy, Happy, Focused, Active, Reflective, Brave)
+- Quick topic chips and free-text search
+- Save favourite quotes with persistent floating drawer
+
+### 📊 Automated Health Status
+Three-pillar automated wellness evaluation:
+| Pillar | Method | Statuses |
+|--------|--------|----------|
+| **Physical** | BMI calculation from profile | Underweight / Normal / Overweight / Obese |
+| **Fitness** | Workout activity vs WHO targets | Sedentary / Lightly Active / Active / Very Active |
+| **Mental** | Sentiment analysis of chatbot logs | Low Mood / Neutral / Motivated |
+
+### 📈 Progress Reports
+- Daily and weekly activity tracking
+- WHO 150 min/week activity benchmark
+- Calorie burn vs calorie intake visualisation
+- Fat ratio tracking
+- Interactive weekly streak calendar
+
+### 🌐 Landing Page
+- Mobile-responsive showcase page
+- Animated particle background
+- CoachAlchemy live chat simulation
+- QR code destination for poster presentations
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Runtime** | Node.js 22.x |
+| **Framework** | Express.js 5.x (MVC Architecture) |
+| **Database** | MySQL 8.0 (mysql2/promise) |
+| **Frontend** | HTML5, CSS3, Vanilla JavaScript (ES6+) |
+| **UI Framework** | Bootstrap 5.3, Bootstrap Icons 1.11 |
+| **Fonts** | Google Fonts (Merriweather, Merriweather Sans, Bebas Neue) |
+| **External APIs** | Wger API, Spoonacular API, API Ninjas |
+| **Email** | Nodemailer (Gmail SMTP) |
+| **Auth** | bcrypt password hashing |
+| **Deployment** | Railway (App + MySQL) |
+
+---
+
+## 📁 Project Structure
 
 ```
-FitAlchemy-EXACT/
-├── config/                    # Configuration files
-│   ├── database.js           # MySQL: fyp, root, admin
-│   ├── email.js              # Nodemailer setup
-│   └── resetCodes.js         # Password reset codes
+FitAlchemylatestMVC/
 │
-├── models/                    # Database operations
-│   ├── User.js               # Lines 63-89 from original
-│   ├── Routine.js            # Lines 310-332 from original
-│   ├── MealPlan.js           # Lines 335-353 from original
-│   └── Favorites.js          # Lines 356-405 from original
+├── 📁 config/
+│   ├── database.js          # MySQL connection pool (supports Railway SSL)
+│   ├── email.js             # Nodemailer Gmail SMTP config
+│   └── resetCodes.js        # In-memory password reset code store
 │
-├── controllers/               # Business logic
-│   ├── AuthController.js     # Lines 63-173 from original
-│   ├── ExerciseController.js # Lines 176-237 from original
-│   ├── MealController.js     # Lines 241-269, 408-421 from original
-│   ├── QuoteController.js    # Lines 272-307 from original
-│   ├── RoutineController.js  # Lines 310-332 from original
-│   ├── MealPlanController.js # Lines 335-353 from original
-│   └── FavoritesController.js# Lines 356-405 from original
+├── 📁 controllers/
+│   ├── AuthController.js         # Register, login, logout, forgot password
+│   ├── CoachAlchemyController.js # AI chatbot — 30+ intents, EN/MY/Manglish
+│   ├── ExerciseController.js     # Wger API integration + image proxy
+│   ├── FavoritesController.js    # Save/retrieve/delete favorite quotes
+│   ├── HealthStatusController.js # BMI + fitness + sentiment analysis
+│   ├── MealController.js         # Spoonacular API recipe search
+│   ├── MealPlanController.js     # CRUD meal plan management
+│   ├── QuoteController.js        # API Ninjas quote fetching + batch cache
+│   ├── ReportController.js       # Daily/weekly progress reports
+│   └── RoutineController.js      # CRUD workout routine management
 │
-├── routes/                    # API endpoints
-│   ├── authRoutes.js         # /api/register, /api/login, etc.
-│   ├── exerciseRoutes.js     # /api/exercises
-│   ├── mealRoutes.js         # /api/search, /api/recommend, etc.
-│   ├── quoteRoutes.js        # /api/quote
-│   ├── routineRoutes.js      # /api/routine
-│   ├── mealPlanRoutes.js     # /api/mealplan
-│   └── favoritesRoutes.js    # /api/favorites
+├── 📁 models/
+│   ├── ChatbotLog.js    # Save/retrieve chatbot conversation logs
+│   ├── Favorites.js     # Favorites JSON storage per user
+│   ├── HealthStatus.js  # Health status CRUD
+│   ├── MealPlan.js      # Meal plan DB operations
+│   ├── Routine.js       # Workout routine DB operations
+│   └── User.js          # User profile CRUD
 │
-├── views/                     # Your original HTML files (unchanged)
-│   ├── login.html
-│   ├── dashboard.html
-│   ├── wger.html
-│   └── spoonacular.html
+├── 📁 routes/
+│   ├── authRoutes.js       # /api/register, /api/login, /api/forgot-password
+│   ├── coachRoutes.js      # /api/coach (POST)
+│   ├── exerciseRoutes.js   # /api/exercises
+│   ├── favoritesRoutes.js  # /api/favorites
+│   ├── healthRoutes.js     # /api/health-status
+│   ├── mealPlanRoutes.js   # /api/mealplan
+│   ├── mealRoutes.js       # /api/recipes/search, /api/recipes/recommend
+│   ├── quoteRoutes.js      # /api/quote, /api/quote/batch, /api/chatlog
+│   ├── reportRoutes.js     # /api/report/daily, /api/report/weekly
+│   └── routineRoutes.js    # /api/routine
 │
-├── public/img/                # Your original images (unchanged)
+├── 📁 views/
+│   ├── landing.html     # Public landing page (QR destination)
+│   ├── login.html       # Login & registration
+│   ├── dashboard.html   # Main dashboard
+│   ├── wger.html        # Workout planning page
+│   ├── spoonacular.html # Meal planning page
+│   ├── quote.html       # Quote assistant page
+│   ├── report.html      # Progress reports page
+│   └── profile.html     # User profile management
 │
-├── index.js                   # Main server (70 lines instead of 425!)
-├── package.json               # Same dependencies
-└── .env.example               # Environment template
+├── 📁 public/
+│   ├── img/             # Static images (logo, backgrounds)
+│   └── exercise-images/ # Cached exercise images from Wger
+│
+├── 📄 index.js          # Express app entry point
+├── 📄 DB.sql            # Full database schema (local)
+├── 📄 DB_railway.sql    # Railway-compatible schema (no DROP DATABASE)
+├── 📄 package.json      # Dependencies
+└── 📄 .gitignore        # Ignores .env and node_modules
 ```
 
 ---
 
-## 🚀 **QUICK START (3 STEPS)**
+## 🗄️ Database Schema
 
-### **Step 1: Install Dependencies**
+```sql
+fitalchemy_db
+├── users           — Profile, credentials, fitness goal, dietary preference
+├── routines        — Saved workout exercises (planned_date, is_completed)
+├── meal_plans      — Saved recipes (macros, planned_date, is_completed)
+├── chatbot_logs    — CoachAlchemy conversation history (for sentiment analysis)
+├── health_status   — Physical / Fitness / Mental status per user
+├── weekly_reports  — Aggregated weekly activity data
+└── favorites       — Saved quotes (JSON format)
+```
+
+---
+
+## ⚙️ Installation
+
+### Prerequisites
+- Node.js 18+ 
+- MySQL 8.0
+- npm
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/oneeeeeee-aseli/FitAlchemy-Exercise-Nutrition-and-Mental-wellness-Management-Platform.git
+cd FitAlchemy-Exercise-Nutrition-and-Mental-wellness-Management-Platform
+```
+
+### 2. Install dependencies
 ```bash
 npm install
 ```
 
-### **Step 2: Setup Environment (Optional)**
-```bash
-# Copy .env.example to .env
-cp .env.example .env
+### 3. Set up environment variables
+Create a `.env` file in the root directory:
+```env
+PORT=3000
 
-# Edit .env with your email settings (optional - only for password reset)
-nano .env
+# MySQL Database
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASS=your_mysql_password
+DB_NAME=fitalchemy_db
+DB_SSL=false
+
+# API Keys
+SPOONACULAR_API_KEY=your_spoonacular_key
+API_NINJAS_KEY=your_api_ninjas_key
+
+# Email (Gmail SMTP)
+EMAIL_USER=your_gmail@gmail.com
+EMAIL_PASS=your_gmail_app_password
 ```
 
-### **Step 3: Run Server**
+### 4. Set up the database
 ```bash
+# In MySQL Workbench or CLI, run:
+source DB.sql
+```
+
+### 5. Run the application
+```bash
+# Development
+npm run dev
+
+# Production
 npm start
 ```
 
-**That's it!** Open http://localhost:3000
+### 6. Open in browser
+```
+http://localhost:3000
+```
 
 ---
 
-## 💾 **Database Configuration**
+## 🌐 API Endpoints
 
-### **Already Configured - No Changes Needed!**
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/register` | Register new user |
+| POST | `/api/login` | User login |
+| POST | `/api/forgot-password` | Send reset email |
+| POST | `/api/reset-password` | Reset password |
+| GET | `/api/user?userId=` | Get user profile |
+| PUT | `/api/user` | Update profile |
 
-The code uses your **EXACT** database settings:
+### Workout
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/exercises` | Fetch exercises (Wger API) |
+| GET | `/api/routine?userId=` | Get user routine |
+| POST | `/api/routine` | Save routine |
 
-```javascript
-// config/database.js
-const db = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'admin',
-  database: 'fyp',
-});
-```
+### Meal
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/recipes/search` | Search recipes (Spoonacular) |
+| GET | `/api/mealplan?userId=` | Get meal plan |
+| POST | `/api/mealplan` | Save meal plan |
 
-**Your existing database `fyp` will work immediately!**
+### AI Coach
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/coach` | Send message to CoachAlchemy |
+| GET | `/api/chatlog?userId=` | Get chat history |
+| POST | `/api/chatlog/save` | Save chat log |
+| DELETE | `/api/chatlog` | Clear chat history |
 
-Required tables (should already exist):
-- `users`
-- `routines`
-- `meal_plans`
-- `favorites`
+### Health & Reports
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/health-status?userId=` | Get health status |
+| POST | `/api/health-status/evaluate` | Re-evaluate health status |
+| GET | `/api/report/daily` | Daily progress report |
+| GET | `/api/report/weekly` | Weekly progress report |
 
----
-
-## 📝 **Environment Variables (Optional)**
-
-Only needed if you want password reset emails to work:
-
-```env
-# .env file
-PORT=3000
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
-SPOONACULAR_API_KEY=your_key_here
-```
-
-**App works without .env file!** Email and Spoonacular are optional features.
-
----
-
-## 🎯 **What Changed vs Original?**
-
-### **BEFORE (Original Structure)**
-```javascript
-// index.js - 425 lines
-// Line 12-17:   Database config
-// Line 30-36:   Email config
-// Line 39:      Reset codes Map
-// Line 63-75:   Register code
-// Line 78-89:   Login code
-// Line 92-135:  Request reset code
-// Line 138-173: Reset password code
-// Line 176-237: Exercises code
-// Line 241-269: Meal search code
-// Line 272-307: Quote code
-// Line 310-332: Routine code
-// Line 335-353: Meal plan code
-// Line 356-405: Favorites code
-// Line 408-421: Recipe details code
-// ... everything mixed together
-```
-
-### **AFTER (MVC Structure)**
-```
-index.js           → 70 lines (just setup & routing)
-config/            → 3 files (database, email, reset codes)
-models/            → 4 files (database operations)
-controllers/       → 7 files (business logic)
-routes/            → 7 files (API endpoints)
-views/             → Same (unchanged)
-public/            → Same (unchanged)
-```
-
-**Same code, just organized!**
+### Quotes & Favorites
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/quote/batch` | Fetch quotes by category |
+| GET | `/api/favorites?userId=` | Get favorites |
+| POST | `/api/favorites` | Save favorites |
 
 ---
 
-## ✅ **EXACT Code Mapping**
+## 🚀 Deployment (Railway)
 
-Every line of your original code is preserved:
+This project is deployed on Railway with:
+- **Web Service** — Node.js app (auto-deploy from GitHub)
+- **MySQL Database** — Railway managed MySQL
 
-| Original Line | New Location | Code |
-|---------------|--------------|------|
-| 12-17 | config/database.js | Database pool |
-| 30-36 | config/email.js | Email transporter |
-| 39 | config/resetCodes.js | Reset codes Map |
-| 63-75 | controllers/AuthController.js | register() |
-| 78-89 | controllers/AuthController.js | login() |
-| 92-135 | controllers/AuthController.js | requestReset() |
-| 138-173 | controllers/AuthController.js | resetPassword() |
-| 176-237 | controllers/ExerciseController.js | getExercises() |
-| 241-255 | controllers/MealController.js | searchRecipes() |
-| 257-269 | controllers/MealController.js | getRecommendedRecipes() |
-| 272-307 | controllers/QuoteController.js | getRandomQuote() |
-| 310-325 | controllers/RoutineController.js | saveRoutine() |
-| 328-332 | controllers/RoutineController.js | getRoutine() |
-| 335-346 | controllers/MealPlanController.js | saveMealPlan() |
-| 349-353 | controllers/MealPlanController.js | getMealPlan() |
-| 356-379 | controllers/FavoritesController.js | saveFavorites() |
-| 382-405 | controllers/FavoritesController.js | getFavorites() |
-| 408-421 | controllers/MealController.js | getRecipeDetails() |
+### Environment Variables (Railway)
+Set these in your Railway service Variables tab:
 
-**100% of your code is preserved!**
-
----
-
-## 🔍 **How It Works Now**
-
-### **Example: User Registration**
-
-**BEFORE (All in index.js):**
-```javascript
-app.post('/api/register', async (req, res) => {
-  // All code here (12 lines)
-});
+```
+DB_HOST        → reference MYSQLHOST
+DB_PORT        → reference MYSQLPORT  
+DB_USER        → reference MYSQLUSER
+DB_PASS        → reference MYSQLPASSWORD
+DB_NAME        → reference MYSQLDATABASE
+DB_SSL         → false
+SPOONACULAR_API_KEY → your key
+API_NINJAS_KEY → your key
+EMAIL_USER     → your gmail
+EMAIL_PASS     → your app password
+PORT           → 3000
 ```
 
-**AFTER (Organized in MVC):**
-
-**1. Route receives request:**
-```javascript
-// routes/authRoutes.js
-router.post('/register', AuthController.register);
-```
-
-**2. Controller processes:**
-```javascript
-// controllers/AuthController.js
-static async register(req, res) {
-  await User.register(email, password);
-}
-```
-
-**3. Model handles database:**
-```javascript
-// models/User.js
-static async register(email, password) {
-  await db.query('INSERT INTO users...');
-}
-```
-
-**4. Database config:**
-```javascript
-// config/database.js
-const db = mysql.createPool({ 
-  database: 'fyp', 
-  user: 'root', 
-  password: 'admin' 
-});
-```
-
-**Same exact code, just separated for clarity!**
-
----
-
-## 📊 **API Endpoints (All Same as Before)**
-
-### **Authentication**
-```
-POST /api/register         - Register new user
-POST /api/login            - Login user
-POST /api/request-reset    - Request password reset code
-POST /api/reset-password   - Reset password with code
-```
-
-### **Exercises (Wger API)**
-```
-GET /api/exercises         - Get exercises
-GET /api/exercises?category=Arms    - Filter by category
-GET /api/exercises?sort=category    - Sort by category
-```
-
-### **Meals (Spoonacular API)**
-```
-GET /api/search?query=pasta        - Search recipes
-GET /api/recommend                 - Get random recipes
-GET /api/recipe/:id                - Get recipe details
-```
-
-### **Quotes (ZenQuotes API)**
-```
-GET /api/quote             - Get random quote
-```
-
-### **Workout Routines**
-```
-POST /api/routine          - Save workout routine
-GET /api/routine?userId=1  - Get workout routine
-```
-
-### **Meal Plans**
-```
-POST /api/mealplan         - Save meal plan
-GET /api/mealplan?userId=1 - Get meal plan
-```
-
-### **Favorites**
-```
-POST /api/favorites        - Save favorites
-GET /api/favorites?userId=1 - Get favorites
-```
-
-**All endpoints work exactly the same!**
-
----
-
-## 🎓 **For Your FYP Report**
-
-### **What to Write:**
-
-**Architecture:**
-> "The application implements the Model-View-Controller (MVC) architectural pattern, separating the codebase into distinct layers: Models for database operations, Views for presentation, and Controllers for business logic. The main server file was refactored from 425 lines to 70 lines, with functionality distributed across 21 organized files."
-
-**Database:**
-> "The application uses MySQL database (`fyp`) with a connection pool configuration supporting concurrent requests. Database credentials are: user `root`, password `admin`, running on `localhost`."
-
-**Benefits:**
-1. **Separation of Concerns** - Each file has single responsibility
-2. **Maintainability** - Easy to locate and modify code
-3. **Scalability** - Easy to add new features without affecting existing code
-4. **Code Reusability** - Models and controllers can be reused
-5. **Professional Structure** - Industry-standard organization
-
----
-
-## 🔧 **Files Overview**
-
-### **Config (3 files) - Configuration**
-- `database.js` - MySQL connection pool (fyp, root, admin)
-- `email.js` - Nodemailer transporter for password reset
-- `resetCodes.js` - In-memory storage for reset codes
-
-### **Models (4 files) - Database Operations**
-- `User.js` - User CRUD operations
-- `Routine.js` - Workout routine database operations
-- `MealPlan.js` - Meal plan database operations
-- `Favorites.js` - Favorites database operations
-
-### **Controllers (7 files) - Business Logic**
-- `AuthController.js` - Authentication logic (register, login, reset)
-- `ExerciseController.js` - Wger API integration
-- `MealController.js` - Spoonacular API integration
-- `QuoteController.js` - ZenQuotes API integration
-- `RoutineController.js` - Routine business logic
-- `MealPlanController.js` - Meal plan business logic
-- `FavoritesController.js` - Favorites business logic
-
-### **Routes (7 files) - API Endpoints**
-- `authRoutes.js` - Authentication endpoints
-- `exerciseRoutes.js` - Exercise endpoints
-- `mealRoutes.js` - Meal/recipe endpoints
-- `quoteRoutes.js` - Quote endpoints
-- `routineRoutes.js` - Routine endpoints
-- `mealPlanRoutes.js` - Meal plan endpoints
-- `favoritesRoutes.js` - Favorites endpoints
-
----
-
-## ✅ **Verification Steps**
-
-After starting the server, test these:
-
-1. **Server Starts**
-   - Run `npm start`
-   - Should see: "Server running on http://localhost:3000"
-   - No errors in console
-
-2. **Database Connection**
-   - Open http://localhost:3000
-   - Login page loads
-   - Try registering/logging in
-
-3. **All APIs Work**
-   - Register new user ✅
-   - Login with credentials ✅
-   - Request password reset ✅
-   - View exercises from Wger ✅
-   - Search recipes from Spoonacular ✅
-   - Get random quote ✅
-   - Save workout routine ✅
-   - Save meal plan ✅
-   - Save favorites ✅
-
----
-
-## 🐛 **Troubleshooting**
-
-### **"Cannot find module"**
+### Auto-deploy workflow
 ```bash
-npm install
-```
-
-### **Database connection error**
-Check `config/database.js` - should be:
-```javascript
-database: 'fyp',
-user: 'root',
-password: 'admin'
-```
-
-### **Port already in use**
-Change in .env:
-```env
-PORT=3001
-```
-
-### **Email not sending**
-It's optional! App works without emails. Only needed for password reset feature.
-
----
-
-## 📦 **Dependencies (Same as Before)**
-
-```json
-{
-  "axios": "^1.10.0",
-  "bcrypt": "^6.0.0",
-  "cors": "^2.8.5",
-  "dotenv": "^16.5.0",
-  "express": "^5.1.0",
-  "mysql2": "^3.14.1",
-  "nodemailer": "^7.0.3"
-}
+git add .
+git commit -m "your message"
+git push
+# Railway auto-redeploys in ~1-2 minutes
 ```
 
 ---
 
-## 🎉 **Summary**
+## 👨‍💻 Developer
 
-### **What You Have:**
-✅ **EXACT same functionality** - nothing changed  
-✅ **Same database** - fyp, root, admin  
-✅ **Same API endpoints** - all identical  
-✅ **Same dependencies** - package.json unchanged  
-✅ **Same views** - HTML files unchanged  
-✅ **Same images** - public/img unchanged  
-✅ **Better organization** - MVC pattern  
-✅ **Professional structure** - 21 organized files  
-
-### **From Original:**
-```
-index.js (425 lines)  →  21 organized files
-```
-
-### **Benefits:**
-- ✅ Easier to maintain
-- ✅ Easier to add features
-- ✅ Professional code structure
-- ✅ Perfect for FYP report
+**Wan Aimi Firdaus bin Wan Azarie**
+- 📧 [wanaimi04@gmail.com](mailto:wanaimi04@gmail.com)
+- 📸 [@wannnkt._](https://www.instagram.com/wannnkt._)
+- 🎥 [YouTube](https://www.youtube.com/@WANAIMIFIRDAUSBINWANAZARIE)
 
 ---
 
-**Just run `npm install` and `npm start` - It works immediately!** 🚀
+## 🏫 Academic Info
+
+| | |
+|--|--|
+| **Project** | Final Year Project (FYP) |
+| **Institution** | Universiti Malaysia Terengganu (UMT) |
+| **Faculty** | Computer Science and Mathematics (FSKM) |
+| **Year** | 2025/2026 |
+| **Supervisor** | *(your supervisor name)* |
 
 ---
 
-**Created:** January 2026  
-**Database:** fyp (MySQL)  
-**User:** root  
-**Password:** admin  
-**Architecture:** MVC Pattern  
-**Language:** Node.js + Express.js
+## 📄 License
+
+This project is licensed under the **ISC License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**Built with ❤️ for FYP | FSKM, UMT 2026**
+
+⭐ Star this repo if you find it useful!
+
+</div>
