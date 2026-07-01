@@ -601,7 +601,12 @@
     try {
       const res  = await fetch(`/api/chatlog?userId=${userId}`);
       const logs = await res.json();
-      renderHistory(logs);
+      // Show only Quote Bot entries — identified by the quote bot response pattern
+      const quoteLogs = logs.filter(log =>
+        log.bot_response && log.bot_response.startsWith("Here's a") &&
+        log.bot_response.includes('quote:')
+      );
+      renderHistory(quoteLogs);
     } catch(e) { console.error('History load error:', e); }
   }
 
