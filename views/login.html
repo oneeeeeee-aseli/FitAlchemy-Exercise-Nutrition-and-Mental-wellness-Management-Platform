@@ -761,7 +761,7 @@
                   <label class="form-label" for="resetEmail"><i class="bi bi-envelope me-1"></i>Email</label>
                   <input id="resetEmail" type="email" class="form-control" placeholder="your@email.com" required/>
                 </div>
-                <button type="submit" class="btn-primary-fa mb-2">
+                <button type="button" class="btn-primary-fa mb-2" onclick="handleSendResetCode()">
                   <i class="bi bi-send me-1"></i>Send Reset Code
                 </button>
                 <div id="requestResetMsg" style="font-size:.85rem;margin-top:.5rem;"></div>
@@ -779,7 +779,7 @@
                   <label class="form-label" for="confirmPassword2"><i class="bi bi-lock-fill me-1"></i>Confirm Password</label>
                   <input id="confirmPassword2" type="password" class="form-control" placeholder="••••••••"/>
                 </div>
-                <button type="submit" class="btn-primary-fa mb-2">
+                <button type="button" class="btn-primary-fa mb-2" onclick="handleResetPassword()">
                   <i class="bi bi-check-circle me-1"></i>Reset Password
                 </button>
                 <div id="resetPasswordMsg" style="font-size:.85rem;margin-top:.5rem;display:none;"></div>
@@ -910,9 +910,77 @@
     });
 
     // ── REQUEST RESET ──────────────────────────────────────────────────────────
+    // ── RESET PASSWORD HANDLERS (global functions for direct button onclick) ──────
+    async function handleSendResetCode() {
+      const email = document.getElementById('resetEmail').value.trim();
+      const el    = document.getElementById('requestResetMsg');
+      if (!email) { el.style.color='red'; el.textContent='Please enter your email.'; return; }
+      el.style.color='#666'; el.textContent='Sending...';
+      try {
+        const response = await fetch('/api/request-reset', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          el.style.color = 'green';
+          el.textContent = data.message || 'Reset code sent to your email!';
+          showPopup('info', 'Reset Code Sent! 📧', 'Check your email for the verification code.', 4000);
+          document.getElementById('resetPasswordForm').style.display = 'flex';
+          document.getElementById('resetPasswordForm').style.flexDirection = 'column';
+          document.getElementById('resetPasswordForm').style.gap = '18px';
+        } else {
+          el.style.color = 'red';
+          el.textContent = data.message || 'Failed to send reset code.';
+        }
+      } catch (err) {
+        el.style.color = 'red';
+        el.textContent = 'Network error. Please try again.';
+      }
+    }
+
+    async function handleResetPassword() {
+      const email       = document.getElementById('resetEmail').value.trim();
+      const resetCode   = document.getElementById('resetCode').value.trim();
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPw2  = document.getElementById('confirmPassword2').value;
+      const el          = document.getElementById('resetPasswordMsg');
+      el.style.display  = 'block';
+      if (!resetCode) { el.style.color='red'; el.textContent='Please enter the reset code.'; return; }
+      if (newPassword !== confirmPw2) { el.style.color='red'; el.textContent='Passwords do not match!'; return; }
+      el.style.color='#666'; el.textContent='Resetting...';
+      try {
+        const response = await fetch('/api/reset-password', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code: resetCode, newPassword })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          el.style.color = 'green';
+          el.textContent = data.message || 'Password reset successful!';
+          showPopup('success', 'Password Reset Successful! 🔑', 'Your password has been updated. Redirecting...', 3000);
+          setTimeout(() => {
+            document.getElementById('resetSection').style.display = 'none';
+            document.getElementById('loginRegisterSection').style.display = 'block';
+            document.getElementById('requestResetForm').reset();
+            document.getElementById('resetPasswordForm').reset();
+            document.getElementById('resetPasswordForm').style.display = 'none';
+            showTab('login');
+          }, 3000);
+        } else {
+          el.style.color = 'red';
+          el.textContent = data.message || 'Failed to reset password.';
+        }
+      } catch (err) {
+        el.style.color = 'red';
+        el.textContent = 'Network error. Please try again.';
+      }
+    }
+
     document.getElementById('requestResetForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('resetEmail').value;
+      await handleSendResetCode();
+    });
       try {
         const response = await fetch('/api/request-reset', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
