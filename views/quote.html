@@ -260,7 +260,7 @@
         <div class="history-card">
           <div class="history-head">
             <div class="history-head-title">
-              <i class="bi bi-clock-history"></i> Quote History
+              <i class="bi bi-clock-history"></i> Chat History
               <span class="history-count" id="historyCount">0</span>
             </div>
             <button class="history-clear-btn" onclick="clearHistory()"><i class="bi bi-trash3 me-1"></i>Clear All</button>
@@ -519,11 +519,14 @@
   }
 
   // ── Send from input ──
+  let _sending = false;
   async function sendMessage() {
+    if (_sending) return;
+    _sending = true;
     const input   = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
     const message = input.value.trim();
-    if (!message) return;
+    if (!message) { _sending = false; return; }
     input.value = ''; input.disabled = true; sendBtn.disabled = true;
     showQuoteLoading();
     const tag = extractQuoteTag(message);
@@ -540,6 +543,7 @@
       document.getElementById('quote-display-body').innerHTML = '<div class="quote-empty"><i class="bi bi-exclamation-circle"></i>Something went wrong. Please try again!</div>';
     }
     input.disabled = false; sendBtn.disabled = false; input.focus();
+    _sending = false;
   }
 
   // ── Quick chip ──
@@ -578,7 +582,12 @@
   }
 
   // ── Key press ──
-  function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+  function handleKeyPress(e) { 
+    if (e.key === 'Enter') { 
+      e.preventDefault(); 
+      sendMessage(); 
+    } 
+  }
 
   // ── Log to chatlog (shared with CoachAlchemy for health metrics) ──
   async function logToHistory(userMessage, botResponse) {
@@ -601,12 +610,7 @@
     try {
       const res  = await fetch(`/api/chatlog?userId=${userId}`);
       const logs = await res.json();
-      // Show only Quote Bot entries — identified by the quote bot response pattern
-      const quoteLogs = logs.filter(log =>
-        log.bot_response && log.bot_response.startsWith("Here's a") &&
-        log.bot_response.includes('quote:')
-      );
-      renderHistory(quoteLogs);
+      renderHistory(logs);
     } catch(e) { console.error('History load error:', e); }
   }
 
