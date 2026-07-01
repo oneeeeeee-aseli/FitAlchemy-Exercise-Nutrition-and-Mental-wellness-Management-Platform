@@ -914,6 +914,62 @@
     document.getElementById('requestResetForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('resetEmail').value;
+      try {
+        const response = await fetch('/api/request-reset', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await response.json();
+        const el = document.getElementById('requestResetMsg');
+        if (response.ok) {
+          el.style.color = 'green';
+          el.textContent = data.message || 'Reset code sent to your email!';
+          showPopup('info', 'Reset Code Sent! 📧', 'Check your email for the verification code.', 4000);
+          document.getElementById('resetPasswordForm').style.display = 'flex';
+          document.getElementById('resetPasswordForm').style.flexDirection = 'column';
+          document.getElementById('resetPasswordForm').style.gap = '18px';
+        } else {
+          el.style.color = 'red';
+          el.textContent = data.message || 'Failed to send reset code';
+        }
+      } catch (err) {
+        document.getElementById('requestResetMsg').style.color = 'red';
+        document.getElementById('requestResetMsg').textContent = 'An error occurred. Please try again.';
+      }
+    });
+
+    document.getElementById('resetPasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email       = document.getElementById('resetEmail').value;
+      const resetCode   = document.getElementById('resetCode').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPw2  = document.getElementById('confirmPassword2').value;
+      const el          = document.getElementById('resetPasswordMsg');
+      el.style.display  = 'block';
+      if (newPassword !== confirmPw2) {
+        el.style.color = 'red'; el.textContent = 'Passwords do not match!'; return;
+      }
+      try {
+        const response = await fetch('/api/reset-password', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code: resetCode, newPassword })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          el.style.color = 'green';
+          el.textContent = data.message || 'Password reset successful! Redirecting...';
+          showPopup('success', 'Password Reset Successful! 🔑', 'Your password has been updated. Redirecting to login...', 3000);
+          setTimeout(() => { document.getElementById('backToLoginLink').click(); }, 3000);
+        } else {
+          el.style.color = 'red';
+          el.textContent = data.message || 'Failed to reset password';
+        }
+      } catch (err) {
+        el.style.color = 'red';
+        el.textContent = 'An error occurred. Please try again.';
+      }
+    });
+
     function showPopup(type, title, message, duration = 4000) {
       const popup = document.createElement('div');
       popup.className = `popup-notification ${type}`;
