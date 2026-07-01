@@ -82,7 +82,7 @@ class AuthController {
       if (users.length === 0) return res.status(400).json({ message: "Email not registered." });
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-      await resetCodes.set(email, { code, expiresAt });
+      resetCodes.set(email, { code, expiresAt });
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
@@ -106,13 +106,13 @@ class AuthController {
     try {
       const { email, code, newPassword } = req.body;
       if (!email || !code || !newPassword) return res.status(400).json({ message: "Email, code, and new password required." });
-      const resetData = await resetCodes.get(email);
-      if (!resetData) return res.status(400).json({ message: "No reset code found. Please request a new one." });
+      const resetData = resetCodes.get(email);
+      if (!resetData) return res.status(400).json({ message: "No reset code found." });
       if (resetData.code !== code) return res.status(400).json({ message: "Invalid verification code." });
-      if (new Date() > resetData.expiresAt) { await resetCodes.delete(email); return res.status(400).json({ message: "Code expired. Please request a new one." }); }
+      if (new Date() > resetData.expiresAt) { resetCodes.delete(email); return res.status(400).json({ message: "Code expired." }); }
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       await User.updatePassword(email, hashedPassword);
-      await resetCodes.delete(email);
+      resetCodes.delete(email);
       res.json({ message: "Password reset successful!" });
     } catch (error) {
       res.status(500).json({ message: "Failed to reset password." });
