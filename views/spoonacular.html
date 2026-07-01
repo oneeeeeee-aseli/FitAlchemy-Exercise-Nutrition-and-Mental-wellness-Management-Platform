@@ -814,13 +814,6 @@ function processSearchResults(data, resultsDiv, isLoadMore, query) {
         <div class="rc-foot">
           <div style="display:flex;gap:6px;">
             <div style="flex:1;">
-              <label style="font-size:.7rem;font-weight:800;color:#0d6efd;text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:3px;">📅 Day</label>
-              <div class="rc-select-wrap">
-
-                <i class="bi bi-chevron-down"></i>
-              </div>
-            </div>
-            <div style="flex:1;">
               <label style="font-size:.7rem;font-weight:800;color:#0d6efd;text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:3px;">🍴 Meal</label>
               <div class="rc-select-wrap">
                 <select class="meal-select">${meals.map(meal => `<option value="${meal}">${meal}</option>`).join('')}</select>
